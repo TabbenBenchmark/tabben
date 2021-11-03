@@ -1,25 +1,96 @@
+import numpy as np
 import os
+import requests
 import torch
 from torch.utils.data import Dataset
+import torchvision
+import torchvision.transforms as transforms
+# TODO: lazy loading of some dependencies
 
 
-# TODO: ogb uses a general dataset to load any dataset, should we try something similar?
-class HIGGSDataset(Dataset):
-    def __init__(self, data_dir, train=True, download=False):
-        split = 'train' if train else 'test'
+# TODO: replace this with an actual data file instead of in code
+data_urls = {
+    'arcene': 'https://drive.google.com/uc?id=1cnuQwVtQ-FsJ_En9_ln2KU0n30wJ4ffe',
+    'covertype': 'https://drive.google.com/uc?id=1ixC-jAgdAgPnCL37uaTEnBep7q43liNP',
+    'poker': 'https://drive.google.com/uc?id=1yVdp4pHSmrFasHhX4j4vtxVHYHUvciun',
+}
 
-        # TODO download data files if not already present
 
-        data_file = os.path.join(data_dir, f'{split}_data.pt')
-        label_file = os.path.join(data_dir, f'{split}_labels.pt')
+def list_datasets():
+    return list(data_urls.keys())
 
-        self.X = torch.load(data_file)
-        self.y = torch.load(label_file)
+
+def download_datafile(source_url, dest_path):
+    if not os.path.exists(dest_path):
+        r = requests.get(source_url)
+        if r.status_code == 200:
+            with open(dest_path, 'wb') as output_file:
+                output_file.write(r.content)
+        else:
+            raise RuntimeError(f'unable to download file from {source_url}')
+
+
+def extract_splits(filenames):
+    return {filename.partition('-')[0] for filename in filenames if '-' in filename}
+
+
+class OpenTabularDataset(Dataset):
+    """
+    A tabular dataset from the benchmark (except for the CIFAR10, which is
+    accessible in tabular form using `TabularCIFAR10Dataset`).
+    """
+    
+    # TODO: preprocessing?
+    def __init__(self, data_dir, name, split='train', download=True):
+        if name not in data_urls:
+            raise ValueError(f'dataset with name `{name}` not recognized')
+        
+        # load data files (download if not present)
+        data_filename = os.path.join(data_dir, f'{name}.npz')
+        download_datafile(data_urls[name], data_filename)
+
+        data = np.load(data_filename)
+
+        # check that the requested split exists
+        if split not in extract_splits(data.files):
+            raise ValueError(f'dataset `{name}` does not have a `{split}`')
+
+        # convert data to torch tensors
+        self.X = torch.from_numpy(data[f'{split}-data'])
+        self.y = torch.from_numpy(data[f'{split}-labels'])
 
     def __len__(self):
         return self.X.size(0)
 
     def __getitem__(self, idx):
-        return self.X[idx, :], self.y[idx]
+        return self.X[idx, :], self.y[idx].item()
 
+
+class TabularCIFAR10Dataset(Dataset):
+    """
+    This is a wrapper dataset class around the CIFAR10 dataset
+    provided by torchvision, which treats the input as a tabular-like
+    vector of values.
+    """
+    
+    def __init__(self, data_dir, split='train', download=True):
+        transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+        ])
+        
+        self.ds = torchvision.datasets.CIFAR10(
+                data_dir,
+                train=split == 'train',
+                download=download,
+                transform=transform,
+        )
+    
+    def __len__(self):
+        return self.ds.__len__()
+    
+    def __getitem__(self, idx):
+        im_data, im_label = self.ds.__getitem__(idx)
+        
+        return im_data.flatten(), im_label
 

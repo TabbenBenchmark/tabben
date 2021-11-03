@@ -4,6 +4,10 @@ import setuptools
 with open('README.md', encoding='utf-8') as f:
     long_description = f.read()
 
+# package dependencies and required versions
+dependencies = [
+]
+
 # package setup
 setuptools.setup(
     name='otb',
@@ -25,6 +29,7 @@ setuptools.setup(
     },
     packages=setuptools.find_packages(where='src'),
     python_requires='>=3.6',
+    install_requires=dependencies,
 )
 
 
