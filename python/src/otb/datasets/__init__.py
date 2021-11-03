@@ -20,14 +20,18 @@ def list_datasets():
     return list(data_urls.keys())
 
 
-def download_datafile(source_url, dest_path):
-    if not os.path.exists(dest_path):
+def download_datafile(source_url, dest_path, download=True):
+    if os.path.exists(dest_path):
+        print(f'Data already exists at {dest_path}')
+    elif download:
         r = requests.get(source_url)
         if r.status_code == 200:
             with open(dest_path, 'wb') as output_file:
                 output_file.write(r.content)
         else:
             raise RuntimeError(f'unable to download file from {source_url}')
+    else:
+        raise ValueError('Data files don\'t exist but not instructed to download')
 
 
 def extract_splits(filenames):
@@ -41,14 +45,14 @@ class OpenTabularDataset(Dataset):
     """
     
     # TODO: preprocessing?
-    def __init__(self, data_dir, name, split='train', download=True):
+    def __init__(self, data_dir, name, split='train', download=True, transform=None):
         name = name.lower()
         if name not in data_urls:
             raise ValueError(f'dataset with name `{name}` not recognized')
         
         # load data files (download if not present)
         data_filename = os.path.join(data_dir, f'{name}.npz')
-        download_datafile(data_urls[name], data_filename)
+        download_datafile(data_urls[name], data_filename, download)
 
         data = np.load(data_filename)
 
@@ -59,12 +63,15 @@ class OpenTabularDataset(Dataset):
         # convert data to torch tensors
         self.X = torch.from_numpy(data[f'{split}-data'])
         self.y = torch.from_numpy(data[f'{split}-labels'])
+        
+        self.transform = transform
 
     def __len__(self):
         return self.X.size(0)
 
     def __getitem__(self, idx):
-        return self.X[idx, :], self.y[idx].item()
+        example_pair = (self.X[idx, :], self.y[idx].item())
+        return self.transform(example_pair) if self.transform else example_pair
 
 
 class TabularCIFAR10Dataset(Dataset):
