@@ -31,7 +31,10 @@ def save_to_numpy_array(filename, df_dict):
     if not filename.endswith('.npz'):
         filename += '.npz'
     
-    arr_dict = {key: value.to_numpy() for key, value in df_dict.items()}
+    arr_dict = {
+        key: value.to_numpy() if not isinstance(value, np.ndarray) else value
+        for key, value in df_dict.items()
+    }
     np.savez_compressed(filename, **arr_dict)
     print(f'Data saved in NPZ format at {filename}')
 

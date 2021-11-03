@@ -13,6 +13,7 @@ data_urls = {
     'arcene': 'https://drive.google.com/uc?id=1cnuQwVtQ-FsJ_En9_ln2KU0n30wJ4ffe',
     'covertype': 'https://drive.google.com/uc?id=1ixC-jAgdAgPnCL37uaTEnBep7q43liNP',
     'poker': 'https://drive.google.com/uc?id=1yVdp4pHSmrFasHhX4j4vtxVHYHUvciun',
+    'sarcos': 'https://drive.google.com/uc?id=1Nr7MIWogLo0aY_uQdSCSfGysMr5Wswq5',
 }
 
 
@@ -70,7 +71,10 @@ class OpenTabularDataset(Dataset):
         return self.X.size(0)
 
     def __getitem__(self, idx):
-        example_pair = (self.X[idx, :], self.y[idx].item())
+        inputs = self.X[idx, :]
+        outputs = self.y[idx].item() if self.y[idx].numel() == 1 else self.y[idx]
+        example_pair = (inputs, outputs)
+        
         return self.transform(example_pair) if self.transform else example_pair
 
 
