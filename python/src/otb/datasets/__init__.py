@@ -42,6 +42,7 @@ class OpenTabularDataset(Dataset):
     
     # TODO: preprocessing?
     def __init__(self, data_dir, name, split='train', download=True):
+        name = name.lower()
         if name not in data_urls:
             raise ValueError(f'dataset with name `{name}` not recognized')
         
