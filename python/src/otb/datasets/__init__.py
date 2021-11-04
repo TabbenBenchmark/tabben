@@ -12,6 +12,7 @@ import torchvision.transforms as transforms
 data_urls = {
     'arcene': 'https://drive.google.com/uc?id=1cnuQwVtQ-FsJ_En9_ln2KU0n30wJ4ffe',
     'covertype': 'https://drive.google.com/uc?id=1ixC-jAgdAgPnCL37uaTEnBep7q43liNP',
+    'higgs': 'https://drive.google.com/uc?id=1mz6E-5eV5ThnzdbimvTTeTTGSoJTjS_I', 
     'poker': 'https://drive.google.com/uc?id=1yVdp4pHSmrFasHhX4j4vtxVHYHUvciun',
     'sarcos': 'https://drive.google.com/uc?id=1Nr7MIWogLo0aY_uQdSCSfGysMr5Wswq5',
 }
