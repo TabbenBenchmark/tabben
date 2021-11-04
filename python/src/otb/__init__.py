@@ -1,6 +1,4 @@
 
-# datasets
-
 # included for testing purposes
-VERSION = '0.1.0'
+version = '0.1.0'
 

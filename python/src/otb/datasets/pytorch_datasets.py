@@ -11,7 +11,7 @@ from .utils import google_drive_download_link
 """
 URLs (and, later, possibly other metadata) for each non-CIFAR dataset.
 
-Note: these do not need to be updated if a new version is uploaded to the drive,
+Note: these ids do not need to be updated if a new version is uploaded to the drive,
 only if the file is completely "changed" (i.e. Google is treating it like a different
 file).
 """
@@ -25,20 +25,41 @@ data_urls = {
 
 
 def download_datafile(source_url, dest_path, download=True):
+    """
+    Ensures that the file (the NPZ archive) exists (will download if the destination
+    file does not exist and `download` is True).
+    
+    Args:
+        source_url: download url (should be a google drive download link)
+        dest_path: full path of the destination file
+        download: whether to download if not present (will error if data is not already present)
+    """
+    
     if os.path.exists(dest_path):
-        print(f'Data already exists at {dest_path}')
+        print(f'Data already available at `{dest_path}`')
     elif download:
+        print(f'Downloading data from `{source_url}` into `{dest_path}`')
         r = requests.get(source_url)
         if r.status_code == 200:
+            os.makedirs(os.path.dirname(dest_path), exist_ok=True)
             with open(dest_path, 'wb') as output_file:
                 output_file.write(r.content)
         else:
-            raise RuntimeError(f'unable to download file from {source_url}')
+            raise RuntimeError(f'unable to download file from `{source_url}`')
     else:
         raise ValueError('Data files don\'t exist but not instructed to download')
 
 
 def extract_splits(filenames):
+    """
+    Extract the available splits from the "filenames" in our standard NPZ archive file.
+    
+    Args:
+        filenames: iterable of "files" in the NPZ archive
+
+    Returns:
+        set of the available splits
+    """
     return {filename.partition('-')[0] for filename in filenames if '-' in filename}
 
 
@@ -48,7 +69,6 @@ class OpenTabularDataset(Dataset):
     accessible in tabular form using `TabularCIFAR10Dataset`).
     """
     
-    # TODO: preprocessing?
     # TODO: factor non-pytorch sections into its own thing (for non-pytorch users)
     def __init__(self, data_dir, name, split='train', download=True, transform=None):
         name = name.lower()
@@ -79,4 +99,6 @@ class OpenTabularDataset(Dataset):
         outputs = self.y[idx].item() if self.y[idx].numel() == 1 else self.y[idx]
         example_pair = (inputs, outputs)
         
+        # apply transforms if there are any to the input-output pair
         return self.transform(example_pair) if self.transform else example_pair
+

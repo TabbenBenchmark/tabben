@@ -11,6 +11,7 @@ class TabularCIFAR10Dataset(Dataset):
     """
     
     def __init__(self, data_dir, split='train', download=True):
+        # allow torchvision as an optional dependency
         if not has_package_installed('torchvision'):
             raise ImportError('torchvision is not installed, but is required for the CIFAR10 dataset')
         else:
