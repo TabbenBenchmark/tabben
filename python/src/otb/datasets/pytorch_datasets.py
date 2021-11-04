@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import pandas as pd
 import requests
 import torch
 from torch.utils.data import Dataset
@@ -60,8 +61,45 @@ def extract_splits(filenames):
     Returns:
         set of the available splits
     """
-    return {filename.partition('-')[0] for filename in filenames if '-' in filename}
+    return {filename.partition('-')[0] for filename in filenames
+            if '-' in filename and not filename.startswith('_')}
 
+
+def _load_data(data_dir, name, download=True):
+    name = name.lower()
+    if name not in data_urls:
+        raise ValueError(f'dataset with name `{name}` not recognized')
+    
+    # load data files (download if not present)
+    data_filename = os.path.join(data_dir, f'{name}.npz')
+    download_datafile(data_urls[name], data_filename, download)
+    
+    return np.load(data_filename)
+
+
+def load_dataset(data_dir, name, split='train', download=True, output=np.ndarray):
+    if output not in (np.ndarray, pd.DataFrame):
+        raise ValueError('output format should be either be the numpy ndarray type or pandas dataframe type')
+    
+    data = _load_data(data_dir, name, download=download)
+
+    # check that the requested split exists
+    if split not in extract_splits(data.files):
+        raise ValueError(f'dataset `{name}` does not have a `{split}`')
+    
+    # return requested split
+    input_arr, output_arr = data[f'{split}-data'], data[f'{split}-labels']
+    if output is np.ndarray:
+        return input_arr, output_arr
+    elif output is pd.DataFrame:
+        combined = np.hstack((
+            input_arr,
+            np.expand_dims(output_arr, -1) if input_arr.ndim == output_arr.ndim + 1 else output_arr
+        ))
+        all_columns = np.hstack((data['_columns-data'], data['_columns-labels']))
+        
+        return pd.DataFrame(data=combined, columns=all_columns)
+    
 
 class OpenTabularDataset(Dataset):
     """
@@ -71,19 +109,7 @@ class OpenTabularDataset(Dataset):
     
     # TODO: factor non-pytorch sections into its own thing (for non-pytorch users)
     def __init__(self, data_dir, name, split='train', download=True, transform=None):
-        name = name.lower()
-        if name not in data_urls:
-            raise ValueError(f'dataset with name `{name}` not recognized')
-        
-        # load data files (download if not present)
-        data_filename = os.path.join(data_dir, f'{name}.npz')
-        download_datafile(data_urls[name], data_filename, download)
-
-        data = np.load(data_filename)
-
-        # check that the requested split exists
-        if split not in extract_splits(data.files):
-            raise ValueError(f'dataset `{name}` does not have a `{split}`')
+        data, labels = load_dataset(data_dir, name, split=split, download=download)
 
         # convert data to torch tensors
         self.X = torch.from_numpy(data[f'{split}-data'])

@@ -1,6 +1,7 @@
 import os
 
-from utils import save_to_numpy_array, create_csv_reader, default_arg_parser, split_by_label
+from utils import column_name_array, save_to_numpy_array, create_csv_reader, default_arg_parser, \
+    split_by_label
 
 column_names = [
     'S1',
@@ -35,6 +36,8 @@ def convert_format(config):
         'train-labels': train_labels_df,
         'test-data': test_data_df,
         'test-labels': test_labels_df,
+        '_columns-data': column_name_array(train_data_df),
+        '_columns-labels': column_name_array(train_labels_df),
     })
 
 

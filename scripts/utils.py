@@ -27,22 +27,22 @@ def default_arg_parser(*,
     return parser
 
 
+def column_name_array(df):
+    return np.array(df.columns, dtype=np.str_)
+
+
 def save_to_numpy_array(filename, df_dict):
     if not filename.endswith('.npz'):
         filename += '.npz'
     
     arr_dict = {
-        key: value.to_numpy() if not isinstance(value, np.ndarray) else value
+        key: value.to_numpy().squeeze() if not isinstance(value, np.ndarray) else value
         for key, value in df_dict.items()
     }
     np.savez_compressed(filename, **arr_dict)
-    print(f'Data saved in NPZ format at {filename}')
+    print(f'Data saved in NPZ format at `{filename}`')
 
 
-def save_metadata(filename, metadata):
-    pass
-
-
-def split_by_label(df, colname='label'):
-    return df.drop(colname, axis=1), df[colname]
+def split_by_label(df, col_name='label'):
+    return df.drop(col_name, axis=1), df[[col_name]]
 

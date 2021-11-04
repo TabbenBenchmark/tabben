@@ -32,6 +32,20 @@ for inputs, labels in DataLoader(cifar_ds, batch_size=4):
     # do something with inputs and labels
 ```
 
+The non-image tabular datasets can also be accessed as either numpy arrays or pandas dataframes:
+```python
+from otb.datasets import load_dataset
+import pandas as pd
+
+# load the training set as numpy arrays 
+train_X, train_y = load_dataset('./', 'covertype')  # defaults are numpy arrays of the training set
+
+# load the test set as a single pandas dataframe
+df = load_dataset('./', 'sarcos', split='test', output=pd.DataFrame)
+
+
+```
+
 For a list of all the currently implemented datasets in the benchmark (except for CIFAR10), there's the function:
 ```python
 from otb.datasets import list_datasets

@@ -1,6 +1,6 @@
 import os
 
-from utils import save_to_numpy_array, create_csv_reader, default_arg_parser
+from utils import save_to_numpy_array, create_csv_reader, default_arg_parser, column_name_array
 
 
 def convert_format(config):
@@ -29,6 +29,8 @@ def convert_format(config):
         'train-labels': train_labels_df['label'],
         'valid-data': valid_data_df,
         'valid-labels': valid_labels_df['label'],
+        '_columns-data': column_name_array(train_data_df),
+        '_columns-labels': column_name_array(train_labels_df),
     })
 
 

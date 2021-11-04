@@ -5,9 +5,19 @@ Note: this dataset should be downloaded locally first (don't supply a URL source
 """
 
 import os
+
+import numpy as np
 from scipy.io import loadmat
 
 from utils import save_to_numpy_array, create_csv_reader, default_arg_parser, split_by_label
+
+input_column_names = [
+    *[f'P{num}' for num in range(1, 7+1)],
+    *[f'V{num}' for num in range(1, 7+1)],
+    *[f'A{num}' for num in range(1, 7+1)],
+]
+
+output_column_names = [f'T{num}' for num in range(1, 7+1)]
 
 
 def input_output_split(mat):
@@ -26,6 +36,8 @@ def convert_format(config):
         'train-labels': train_labels,
         'test-data'   : test_data,
         'test-labels' : test_labels,
+        '_columns-data': np.array(input_column_names, dtype=np.str_),
+        '_columns-labels': np.array(output_column_names, dtype=np.str_),
     })
 
 
