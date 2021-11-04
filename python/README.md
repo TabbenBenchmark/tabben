@@ -38,3 +38,10 @@ from otb.datasets import list_datasets
 
 print(list_datasets())
 ```
+
+## Testing
+After installing `pytest`, all the tests can be run by just running
+```shell
+pytest
+```
+from this directory.
