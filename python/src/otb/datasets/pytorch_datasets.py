@@ -25,7 +25,7 @@ data_urls = {
 }
 
 
-def download_datafile(source_url, dest_path, download=True):
+def _download_datafile(source_url, dest_path, download=True):
     """
     Ensures that the file (the NPZ archive) exists (will download if the destination
     file does not exist and `download` is True).
@@ -51,7 +51,7 @@ def download_datafile(source_url, dest_path, download=True):
         raise ValueError('Data files don\'t exist but not instructed to download')
 
 
-def extract_splits(filenames):
+def _extract_splits(filenames):
     """
     Extract the available splits from the "filenames" in our standard NPZ archive file.
     
@@ -63,7 +63,7 @@ def extract_splits(filenames):
     """
     return {filename.partition('-')[0] for filename in filenames
             if '-' in filename and not filename.startswith('_')}
-
+    
 
 def _load_data(data_dir, name, download=True):
     name = name.lower()
@@ -72,7 +72,7 @@ def _load_data(data_dir, name, download=True):
     
     # load data files (download if not present)
     data_filename = os.path.join(data_dir, f'{name}.npz')
-    download_datafile(data_urls[name], data_filename, download)
+    _download_datafile(data_urls[name], data_filename, download)
     
     return np.load(data_filename)
 
@@ -84,7 +84,7 @@ def load_dataset(data_dir, name, split='train', download=True, output=np.ndarray
     data = _load_data(data_dir, name, download=download)
 
     # check that the requested split exists
-    if split not in extract_splits(data.files):
+    if split not in _extract_splits(data.files):
         raise ValueError(f'dataset `{name}` does not have a `{split}`')
     
     # return requested split
@@ -112,8 +112,8 @@ class OpenTabularDataset(Dataset):
         data, labels = load_dataset(data_dir, name, split=split, download=download)
 
         # convert data to torch tensors
-        self.X = torch.from_numpy(data[f'{split}-data'])
-        self.y = torch.from_numpy(data[f'{split}-labels'])
+        self.X = torch.from_numpy(data)
+        self.y = torch.from_numpy(labels)
         
         self.transform = transform
 
