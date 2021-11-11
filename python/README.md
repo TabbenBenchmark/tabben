@@ -2,7 +2,7 @@
 
 ## Set Up
 
-When testing locally (especially until the package is registered in PyPI), you can install the `otb` package locally; from this directory,
+When testing/using locally (especially until the package is registered in PyPI), you can install the `otb` package locally; from this directory,
 ```shell
 pip3 install -e .
 ```
@@ -21,7 +21,7 @@ for inputs, labels in DataLoader(ds, batch_size=4):
     # do stuff with inputs and labels
 ```
 
-All of the currently implemented datasets are accessible this way, except for the CIFAR10 dataset. Since it's a standard computer vision dataset, we just wrap the CIFAR10 Dataset from `torchvision` and convert the images into a vector.
+All the currently implemented datasets are accessible this way, except for the CIFAR10 dataset. Since it's a standard computer vision dataset, we just wrap the CIFAR10 Dataset from `torchvision` and convert the images into a vector.
 
 ```python
 from otb.datasets import TabularCIFAR10Dataset
@@ -34,16 +34,18 @@ for inputs, labels in DataLoader(cifar_ds, batch_size=4):
 
 The non-image tabular datasets can also be accessed as either numpy arrays or pandas dataframes:
 ```python
-from otb.datasets import load_dataset
+from otb.datasets import OpenTabularDataset
 import pandas as pd
 
-# load the training set as numpy arrays 
-train_X, train_y = load_dataset('./', 'covertype')  # defaults are numpy arrays of the training set
+# load the training set as numpy arrays (these are NOT copies) 
+ds = OpenTabularDataset('./', 'covertype')  # defaults are numpy arrays of the training set
+train_X, train_y = ds.numpy()
 
-# load the test set as a single pandas dataframe
-df = load_dataset('./', 'sarcos', split='test', output=pd.DataFrame)
+# load as a single pandas dataframe
+df = ds.dataframe()
 
-
+ds_inputs = df[ds.input_attributes]
+ds_outputs = df[ds.output_attributes]
 ```
 
 For a list of all the currently implemented datasets in the benchmark (except for CIFAR10), there's the function:
@@ -58,4 +60,4 @@ After installing `pytest`, all the tests can be run by just running
 ```shell
 pytest
 ```
-from this directory.
+from a parent directory.

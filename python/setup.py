@@ -6,6 +6,10 @@ with open('README.md', encoding='utf-8') as f:
 
 # package dependencies and required versions
 dependencies = [
+    'torch',
+    'tqdm',
+    'requests',
+    'toml',
 ]
 
 # package setup

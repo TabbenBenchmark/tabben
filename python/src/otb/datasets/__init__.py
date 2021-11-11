@@ -1,5 +1,5 @@
 from .image_datasets import TabularCIFAR10Dataset
-from .pytorch_datasets import data_urls, OpenTabularDataset, load_dataset
+from .pytorch_datasets import data_urls, OpenTabularDataset
 
 
 def list_datasets():
