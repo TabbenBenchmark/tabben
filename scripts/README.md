@@ -6,7 +6,8 @@ At least right now, the scripts use a (mostly) standard calling convention:
 ```shell
 python3 [script name] [destination directory] --source [source directory or url parent] 
 ```
-For example, if the raw data is already downloaded in the `data` folder,
+
+For example, if the raw data is already downloaded in the `data` folder and we're trying to download the 
 ```shell
 python3 arcene.py ./ --source ./data
 ```

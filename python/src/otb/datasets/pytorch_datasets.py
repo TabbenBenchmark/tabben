@@ -1,14 +1,14 @@
-import os
 from functools import cached_property
+from pathlib import Path
 
 import numpy as np
 import requests
+import toml
 import torch
 from torch.utils.data import Dataset
 
 from .utils import google_drive_download_link
 
-# TODO: replace this with an actual data file instead of in code
 """
 URLs (and, later, possibly other metadata) for each non-CIFAR dataset.
 
@@ -16,13 +16,7 @@ Note: these ids do not need to be updated if a new version is uploaded to the dr
 only if the file is completely "changed" (i.e. Google is treating it like a different
 file).
 """
-data_urls = {
-    'arcene': google_drive_download_link('1cnuQwVtQ-FsJ_En9_ln2KU0n30wJ4ffe'),
-    'covertype': google_drive_download_link('1ixC-jAgdAgPnCL37uaTEnBep7q43liNP'),
-    'higgs': google_drive_download_link('1mz6E-5eV5ThnzdbimvTTeTTGSoJTjS_I'),
-    'poker': google_drive_download_link('1yVdp4pHSmrFasHhX4j4vtxVHYHUvciun'),
-    'sarcos': google_drive_download_link('1Nr7MIWogLo0aY_uQdSCSfGysMr5Wswq5'),
-}
+metadata = toml.load(Path(__file__).parent / 'data.toml')
 
 
 def _download_datafile(source_url, dest_path, download=True):
@@ -36,7 +30,7 @@ def _download_datafile(source_url, dest_path, download=True):
         download: whether to download if not present (will error if data is not already present)
     """
     
-    if os.path.exists(dest_path):
+    if dest_path.exists():
         print(f'Data already available at `{dest_path}`')
     elif download:
         print(f'Downloading data from `{source_url}` into `{dest_path}`')
@@ -44,25 +38,23 @@ def _download_datafile(source_url, dest_path, download=True):
         
         if r.status_code != requests.codes.ok:
             r.raise_for_status()
-            raise RuntimeError(f'unable to download file from `{source_url}`')
+            raise RuntimeError(f'Unable to download file from `{source_url}`')
         
-        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+        dest_path.parent.mkdir(parents=True, exist_ok=True)
+        dest_path.write_bytes(r.content)
         declared_file_size = int(r.headers.get('Content-Length', 0))
-        
-        with open(dest_path, 'wb') as output_file:
-            output_file.write(r.content)
     else:
         raise ValueError('Data files don\'t exist but not instructed to download')
     
 
 def _load_data(data_dir, name, download=True):
     name = name.lower()
-    if name not in data_urls:
+    if name not in metadata:
         raise ValueError(f'dataset with name `{name}` not recognized')
     
     # load data files (download if not present)
-    data_filename = os.path.join(data_dir, f'{name}.npz')
-    _download_datafile(data_urls[name], data_filename, download)
+    data_filename = data_dir / f'{name}.npz'
+    _download_datafile(google_drive_download_link(metadata[name]['doc_id']), data_filename, download)
     
     return np.load(data_filename)
 
@@ -74,17 +66,17 @@ class OpenTabularDataset(Dataset):
     """
     
     def __init__(self, data_dir, name, split='train', download=True, transform=None):
-        self.data = _load_data(data_dir, name, download=download)
+        self.data_dir = Path(data_dir)
+        self.name = name
+        self.split = split
+        self.transform = transform
+        
+        self.data = _load_data(self.data_dir, name, download=download)
         self.inputs, self.outputs = self._extract_split(self.data, split)
 
         # convert data to torch tensors
         self.X = torch.from_numpy(self.inputs)
         self.y = torch.from_numpy(self.outputs)
-        
-        self.data_dir = data_dir
-        self.name = name
-        self.split = split
-        self.transform = transform
 
     def _extract_split(self, data, split):
         if split not in self.splits:

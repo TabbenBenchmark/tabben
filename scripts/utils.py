@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 
 import numpy as np
 import os
@@ -32,14 +33,13 @@ def column_name_array(df):
 
 
 def save_to_numpy_array(filename, df_dict):
-    if not filename.endswith('.npz'):
-        filename += '.npz'
+    filename = Path(filename).with_suffix('.npz')
     
     arr_dict = {
         key: value.to_numpy().squeeze() if not isinstance(value, np.ndarray) else value
         for key, value in df_dict.items()
     }
-    np.savez_compressed(filename, **arr_dict)
+    np.savez_compressed(str(filename), **arr_dict)
     print(f'Data saved in NPZ format at `{filename}`')
 
 

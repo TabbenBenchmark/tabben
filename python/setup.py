@@ -1,8 +1,8 @@
+from pathlib import Path
 import setuptools
 
 # load local README as long description text
-with open('README.md', encoding='utf-8') as f:
-    long_description = f.read()
+long_description = Path('README.md').read_text(encoding='utf-8')
 
 # package dependencies and required versions
 dependencies = [
@@ -34,5 +34,6 @@ setuptools.setup(
     packages=setuptools.find_packages(where='src'),
     python_requires='>=3.8',
     install_requires=dependencies,
+    include_package_data=True,
 )
 
