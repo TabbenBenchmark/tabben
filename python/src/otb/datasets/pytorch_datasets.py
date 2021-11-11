@@ -1,10 +1,12 @@
-from functools import cached_property
+import shutil
+from functools import cached_property, partial
 from pathlib import Path
 
 import numpy as np
 import requests
 import toml
 import torch
+from tqdm.auto import tqdm
 from torch.utils.data import Dataset
 
 from .utils import google_drive_download_link
@@ -39,13 +41,18 @@ def _download_datafile(source_url, dest_path, download=True):
         if r.status_code != requests.codes.ok:
             r.raise_for_status()
             raise RuntimeError(f'Unable to download file from `{source_url}`')
+
+        declared_file_size = int(r.headers.get('Content-Length', 0))
+        desc = '(Unknown file size)' if declared_file_size == 0 else ''
         
         dest_path.parent.mkdir(parents=True, exist_ok=True)
-        dest_path.write_bytes(r.content)
-        declared_file_size = int(r.headers.get('Content-Length', 0))
+        r.raw.read = partial(r.raw.read, decode_content=True)
+        with tqdm.wrapattr(r.raw, "read", total=declared_file_size, desc=desc) as progressed_data:
+            with dest_path.open('wb') as output_file:
+                shutil.copyfileobj(progressed_data, output_file)
     else:
         raise ValueError('Data files don\'t exist but not instructed to download')
-    
+
 
 def _load_data(data_dir, name, download=True):
     name = name.lower()
@@ -95,6 +102,24 @@ class OpenTabularDataset(Dataset):
         
         # apply transforms if there are any to the input-output pair
         return self.transform(example_pair) if self.transform else example_pair
+
+    def __eq__(self, other):
+        if not isinstance(OpenTabularDataset, other):
+            return False
+        
+        return self.name == other.name and self.split == other.split and self.transform == other.transform
+    
+    def __repr__(self):
+        attributes = {
+            'data_dir': repr(self.data_dir),
+            'name': repr(self.name),
+            'split': repr(self.split),
+            'transform': repr(self.transform),
+        }
+        attributes_string = ', '.join(
+                '='.join(pair) for pair in attributes.items()
+        )
+        return f'OpenTabularDataset({attributes_string})'
 
     @cached_property
     def splits(self):
