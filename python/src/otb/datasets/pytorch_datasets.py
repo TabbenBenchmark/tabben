@@ -1,4 +1,3 @@
-import os
 import shutil
 from functools import cached_property, partial
 from pathlib import Path
@@ -11,7 +10,7 @@ import torch
 from torch.utils.data import Dataset
 from tqdm.auto import tqdm
 
-from .utils import google_drive_download_link, PathLike
+from .utils import PathLike
 
 """
 URLs (and, later, possibly other metadata) for each non-CIFAR dataset.
@@ -77,10 +76,10 @@ class OpenTabularDataset(Dataset):
 
         # download data if not yet already
         data_filename = self.data_dir / f'{self.name}.npz'
-        _download_datafile(google_drive_download_link(metadata[name]['doc_id']), data_filename, download)
+        _download_datafile(metadata[name]['data_url'], data_filename, download)
         
         # load the full np arrays + input/output arrays for this split
-        self.data = np.load(data_filename)
+        self.data = np.load(str(data_filename))
         self.inputs, self.outputs = self._extract_split(self.data, split)
 
         # convert data to torch tensors
@@ -149,4 +148,3 @@ class OpenTabularDataset(Dataset):
 
     def numpy(self):
         return self.inputs, self.outputs
-
