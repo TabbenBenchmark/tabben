@@ -8,6 +8,8 @@ all of the HIGGS data into memory comfortably.
 """
 
 import os
+
+import numpy as np
 import pandas as pd
 
 from utils import column_name_array, save_to_numpy_array, default_arg_parser
@@ -68,7 +70,7 @@ def convert_format(config):
         'test-data': test_data_df,
         'test-labels': test_label_df,
         '_columns-data': column_name_array(train_data_df),
-        '_columns-labels': column_name_array(train_label_df),
+        '_columns-labels': np.array(['label'], dtype=np.str_),
     })
 
 
