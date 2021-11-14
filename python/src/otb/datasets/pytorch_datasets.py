@@ -1,15 +1,17 @@
+import os
 import shutil
 from functools import cached_property, partial
 from pathlib import Path
+from typing import Iterable, Union
 
 import numpy as np
 import requests
 import toml
 import torch
-from tqdm.auto import tqdm
 from torch.utils.data import Dataset
+from tqdm.auto import tqdm
 
-from .utils import google_drive_download_link
+from .utils import google_drive_download_link, PathLike
 
 """
 URLs (and, later, possibly other metadata) for each non-CIFAR dataset.
@@ -21,7 +23,7 @@ file).
 metadata = toml.load(Path(__file__).parent / 'data.toml')
 
 
-def _download_datafile(source_url, dest_path, download=True):
+def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True):
     """
     Ensures that the file (the NPZ archive) exists (will download if the destination
     file does not exist and `download` is True).
@@ -54,38 +56,38 @@ def _download_datafile(source_url, dest_path, download=True):
         raise ValueError('Data files don\'t exist but not instructed to download')
 
 
-def _load_data(data_dir, name, download=True):
-    name = name.lower()
-    if name not in metadata:
-        raise ValueError(f'dataset with name `{name}` not recognized')
-    
-    # load data files (download if not present)
-    data_filename = data_dir / f'{name}.npz'
-    _download_datafile(google_drive_download_link(metadata[name]['doc_id']), data_filename, download)
-    
-    return np.load(data_filename)
-
-
 class OpenTabularDataset(Dataset):
     """
     A tabular dataset from the benchmark (except for the CIFAR10, which is
     accessible in tabular form using `TabularCIFAR10Dataset`).
     """
     
-    def __init__(self, data_dir, name, split='train', download=True, transform=None):
+    def __init__(self, data_dir: PathLike, name: str,
+                 split: Union[str, Iterable[str]] = 'train',
+                 download=True,
+                 transform=None):
+        
         self.data_dir = Path(data_dir)
-        self.name = name
+        self.name = name.lower()
         self.split = split
         self.transform = transform
+
+        if self.name not in metadata:
+            raise ValueError(f'dataset with name `{self.name}` not recognized')
+
+        # download data if not yet already
+        data_filename = self.data_dir / f'{self.name}.npz'
+        _download_datafile(google_drive_download_link(metadata[name]['doc_id']), data_filename, download)
         
-        self.data = _load_data(self.data_dir, name, download=download)
+        # load the full np arrays + input/output arrays for this split
+        self.data = np.load(data_filename)
         self.inputs, self.outputs = self._extract_split(self.data, split)
 
         # convert data to torch tensors
         self.X = torch.from_numpy(self.inputs)
         self.y = torch.from_numpy(self.outputs)
 
-    def _extract_split(self, data, split):
+    def _extract_split(self, data, split: str):
         if split not in self.splits:
             raise ValueError(f'dataset `{self.name}` does not have a `{split}` split')
     

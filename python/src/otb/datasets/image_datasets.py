@@ -1,6 +1,8 @@
+from typing import Union, Iterable
+
 from torch.utils.data import Dataset
 
-from .utils import has_package_installed
+from .utils import has_package_installed, PathLike
 
 
 class TabularCIFAR10Dataset(Dataset):
@@ -10,7 +12,7 @@ class TabularCIFAR10Dataset(Dataset):
     vector of values.
     """
     
-    def __init__(self, data_dir, split='train', download=True):
+    def __init__(self, data_dir: PathLike, split: Union[str, Iterable[str]] = 'train', download=True):
         # allow torchvision as an optional dependency
         if not has_package_installed('torchvision'):
             raise ImportError('torchvision is not installed, but is required for the CIFAR10 dataset')
