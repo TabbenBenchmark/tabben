@@ -6,6 +6,7 @@ long_description = Path('README.md').read_text(encoding='utf-8')
 
 # package dependencies and required versions
 dependencies = [
+    'numpy',
     'torch',
     'tqdm',
     'requests',

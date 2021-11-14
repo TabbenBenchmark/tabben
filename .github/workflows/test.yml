@@ -18,13 +18,15 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - name: Install Package
-        run: |
-          cd python
-          pip install .
-      - name: Install Python Dependencies
+      - name: Load Cached Python Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ hashFiles('python/setup.py') }}-${{ hashFiles('python/tests/requirements.txt') }}
+      - name: Install Python Package & Dependencies
+        working-directory: ./python/
         run: |
           python -m pip install --upgrade pip
-          pip install -r python/tests/requirements.txt
+          pip install --upgrade --upgrade-strategy eager -r python/tests/requirements.txt -e .
       - name: Run Tests
         run: pytest
