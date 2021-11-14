@@ -25,6 +25,17 @@ Other metadata can be included in this file with keys that start with `_`, but i
 
 (Files should not require `pickle`.)
 
+## Metadata
+Metadata is saved as json, starting with the output of the dataprofiler.
+
+Additional fields that need/can be added at the top-level of the json object:
+- task (required, used to determine appropriate metrics)
+  - `binary-classification`
+  - `multiclass-classification`
+  - `regression`
+- license
+- bibtex
+
 ## Data Processing Checklist
 - [ ] labels for classification problems
   - binary: positive class should be `1`, negative class should be `0`
@@ -34,5 +45,7 @@ Other metadata can be included in this file with keys that start with `_`, but i
   - if no meaningful names, can just use numeric names (e.g. `'0'`, `'1'`)
   - prefer `label` for the output attribute name
 - [ ] form numpy arrays for each training split based on [the above format](#Data Format)
+- [ ] generate metadata
+- [ ] upload data files to the public Google drive and put document ids in [data.toml](/python/src/otb/datasets/data.toml)
 - [ ] if not excessively large dataset, add unit tests
 

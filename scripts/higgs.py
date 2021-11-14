@@ -10,7 +10,7 @@ all of the HIGGS data into memory comfortably.
 import os
 import pandas as pd
 
-from utils import save_to_numpy_array, default_arg_parser
+from utils import column_name_array, save_to_numpy_array, default_arg_parser
 
 column_names = [
     'label',
@@ -53,18 +53,22 @@ def convert_format(config):
             index_col=None,
             names=column_names)
 
-    # rename columns
-    df.columns = [f'A{cname}' if cname != 0 else 'label' for cname in df.columns]
-    
     # split into their standard train/test sets
     train_df = df[:-500_000]
     test_df = df[-500_000:]
+    
+    train_data_df = train_df.drop('label', axis=1)
+    train_label_df = train_df['label']
+    test_data_df = test_df.drop('label', axis=1)
+    test_label_df = test_df['label']
 
     save_to_numpy_array(os.path.join(config.outputdirectory, 'higgs'), {
-        'train-data': train_df.drop('label', axis=1),
-        'train-labels': train_df['label'],
-        'test-data': test_df.drop('label', axis=1),
-        'test-labels': test_df['label'],
+        'train-data': train_data_df,
+        'train-labels': train_label_df,
+        'test-data': test_data_df,
+        'test-labels': test_label_df,
+        '_columns-data': column_name_array(train_data_df),
+        '_columns-labels': column_name_array(train_label_df),
     })
 
 
