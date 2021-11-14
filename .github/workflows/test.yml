@@ -22,7 +22,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache/pip
-          key: ${{ hashFiles('python/setup.py') }}-${{ hashFiles('python/tests/requirements.txt') }}
+          key: ${{ hashFiles('./python/setup.py') }}-${{ hashFiles('./python/tests/requirements.txt') }}
       - name: Install Python Package & Dependencies
         working-directory: ./python/
         run: |
