@@ -7,6 +7,7 @@ import numpy as np
 import requests
 import toml
 import torch
+from requests import HTTPError
 from torch.utils.data import Dataset
 from tqdm.auto import tqdm
 
@@ -14,10 +15,6 @@ from .utils import PathLike
 
 """
 URLs (and, later, possibly other metadata) for each non-CIFAR dataset.
-
-Note: these ids do not need to be updated if a new version is uploaded to the drive,
-only if the file is completely "changed" (i.e. Google is treating it like a different
-file).
 """
 metadata = toml.load(Path(__file__).parent / 'data.toml')
 
@@ -55,9 +52,38 @@ def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True)
         raise ValueError('Data files don\'t exist but not instructed to download')
 
 
+def ensure_downloaded(data_dir: PathLike, *datasets: str):
+    """
+    Downloads the specified datasets (all available datasets if none specified)
+    into the data directory. This is useful e.g. using this package in an environment
+    without Internet access or establishing local caches.
+    
+    Args:
+        data_dir: directory to save the dataset files into
+        *datasets: list of dataset names to load (if empty, as if all datasets)
+    """
+    # TODO: allow downloading the CIFAR dataset?
+    
+    data_dir = Path(data_dir)
+    datasets = metadata.keys() if len(datasets) == 0 else set(datasets)
+    
+    succeeded = []
+    for name, dataset_metadata in metadata.items():
+        if name in datasets:
+            dest_filename = data_dir / f'{name}.npz'
+            try:
+                _download_datafile(dataset_metadata['data_url'], dest_filename)
+                succeeded.append(name)
+            except Union[HTTPError, RuntimeError]:
+                print(f'Unable to download the `{name}` dataset')
+    
+    succeeded_list = f' ({", ".join(succeeded)})' if len(succeeded) > 0 else ''
+    print(f'Successfully found {len(succeeded)}/{len(datasets)} datasets{succeeded_list}.')
+
+
 class OpenTabularDataset(Dataset):
     """
-    A tabular dataset from the benchmark (except for the CIFAR10, which is
+    A tabular dataset from the benchmark (except for CIFAR10, which is
     accessible in tabular form using `TabularCIFAR10Dataset`).
     """
     
