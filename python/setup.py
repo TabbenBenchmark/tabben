@@ -1,40 +1,33 @@
-from pathlib import Path
 import setuptools
 
-# load local README as long description text
-long_description = Path('README.md').read_text(encoding='utf-8')
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
 
-# package dependencies and required versions
-dependencies = [
-    'numpy',
-    'torch',
-    'tqdm',
-    'requests',
-    'toml',
-]
-
-# package setup
 setuptools.setup(
     name='otb',
-    version='0.1.0',
+    version='0.0.1',
     description='A package for working with datasets from the open benchmark for tabular data',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/nurostream/cmsc473',
+    url='https://github.com/umd-otb/OpenTabularDataBenchmark',
     project_urls={
-        'Bug Tracker': 'https://github.com/nurostream/cmsc473/issues',
+        'Bug Tracker': 'https://github.com/umd-otb/OpenTabularDataBenchmark/issues',
     },
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
-    package_dir={
-        '': 'src'
-    },
+    package_dir={'': 'src'},
     packages=setuptools.find_packages(where='src'),
-    python_requires='>=3.8',
-    install_requires=dependencies,
+    python_requires=">=3.8",
     include_package_data=True,
+    zip_safe=False,
+    install_requires=[
+        'numpy',
+        'requests',
+        'toml',
+        'torch',
+        'tqdm',
+    ]
 )
-
