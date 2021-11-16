@@ -2,6 +2,11 @@ name: Publish the Python Package to PyPI (and Test PyPI)
 
 on:
   push:
+    branches:
+      - 'main'
+      - 'releases/**'
+    tags:
+      - 'v**'
 
 jobs:
   publish:
@@ -20,9 +25,14 @@ jobs:
         working-directory: python/
         run: |
           python -m build --sdist --wheel --outdir dist/ .
-      - name: Publish to Test PyPI
+      - name: Publish to test PyPI registry
         uses: pypa/gh-action-pypi-publish@master
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
+          packages_dir: python/dist/
+      - name: Publish to PyPI registry
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
           packages_dir: python/dist/
