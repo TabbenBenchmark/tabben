@@ -1,7 +1,7 @@
 """
 Script to convert HIGGS CSV data to standardized PyTorch data. The file should be 
 already downloaded from the website (should work by downloading automatically, but
-it's a large file).
+it's a large uncompressed text file).
 
 Note: this script assumes that the host computer has sufficient memory to load
 all of the HIGGS data into memory comfortably.
@@ -50,7 +50,7 @@ column_names = [
 def convert_format(config):
     # load full CSV file into pandas
     df = pd.read_csv(
-            config.source,
+            os.path.join(config.source, 'HIGGS.csv.gz'),
             header=None,
             index_col=None,
             names=column_names)
@@ -76,7 +76,7 @@ def convert_format(config):
 
 if __name__ == '__main__':
     config = default_arg_parser(
-            source_default='https://archive.ics.uci.edu/ml/machine-learning-databases/00280/HIGGS.csv.gz',
+            source_default='https://archive.ics.uci.edu/ml/machine-learning-databases/00280/',
     ).parse_args()
     convert_format(config)
 
