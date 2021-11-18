@@ -1,0 +1,6 @@
+numpy
+pandas
+scipy
+simplejson
+DataProfiler[reports]
+requests
