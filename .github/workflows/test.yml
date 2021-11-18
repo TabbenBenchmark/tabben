@@ -6,12 +6,13 @@ on:
       - main
     paths:
       - 'python/**'
+      - '!**/*.md'
   pull_request:
     branches:
       - main
     paths:
       - 'python/**'
-  workflow_dispatch:
+      - '!**/*.md'
 
 jobs:
   test:
@@ -34,4 +35,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install --upgrade --upgrade-strategy eager -r tests/requirements.txt -e .
       - name: Run Tests
+        working-directory: python/
         run: pytest

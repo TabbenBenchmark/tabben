@@ -1,4 +1,4 @@
-name: Publish the Python Package to PyPI (and Test PyPI)
+name: Publish the Python Package to PyPI (and Test PyPI) and GitHub Releases
 
 on:
   push:
@@ -7,9 +7,10 @@ on:
       - 'releases/**'
     tags:
       - 'v**'
+  workflow_dispatch:
 
 jobs:
-  publish:
+  publish_and_release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project files
@@ -36,3 +37,8 @@ jobs:
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
           packages_dir: python/dist/
+      - name: Release package on GitHub
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "python/dist/*"
+          token: ${{ secrets.GITHUB_TOKEN }}
