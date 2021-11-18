@@ -2,9 +2,6 @@ name: Publish the Python Package to PyPI (and Test PyPI) and GitHub Releases
 
 on:
   push:
-    branches:
-      - 'main'
-      - 'releases/**'
     tags:
       - 'v**'
   workflow_dispatch:
