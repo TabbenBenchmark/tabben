@@ -1,9 +1,15 @@
 import argparse
+import os
 from pathlib import Path
 
 import numpy as np
-import os
 import pandas as pd
+from dataprofiler import Profiler
+
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 
 def create_csv_reader(*roots, **configs):
@@ -45,4 +51,20 @@ def save_to_numpy_array(filename, df_dict):
 
 def split_by_label(df, col_name='label'):
     return df.drop(col_name, axis=1), df[[col_name]]
+
+
+class JSONNumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(np.ndarray, obj):
+            return obj.tolist()
+        
+        return json.JSONEncoder.default(self, obj)
+
+
+def generate_profile(df, output_filename):
+    profile = Profiler(df)
+    report = profile.report(report_options={"output_format": "serializable"})
+    
+    with Path(output_filename).open('w') as f:
+        json.dump(f, report, cls=JSONNumpyEncoder)
 
