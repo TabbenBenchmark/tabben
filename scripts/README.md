@@ -7,13 +7,13 @@ At least right now, the scripts use a (mostly) standard calling convention:
 python3 [script name] [destination directory] --source [source directory or url parent] 
 ```
 
-For example, if the raw data is already downloaded in the `data` folder and we're trying to download the 
+For example, if the raw data is already downloaded in the `data` folder,
 ```shell
 python3 arcene.py ./ --source ./data
 ```
 
 ## Data Format
-Each dataset is an [NPZ (compressed numpy)]() file.
+Each dataset is an [NPZ (compressed NPZ)](https://numpy.org/doc/stable/reference/generated/numpy.lib.format.html#module-numpy.lib.format) file.
 - `_columns-data` (1D np.ndarray with unicode dtype): input attribute names
 - `_columns-labels` (1D np.ndarray with unicode dtype): 1D array of output attribute names
 - `{split}-data` (2D np.ndarray with numeric dtype): input data, e.g. `train-data`

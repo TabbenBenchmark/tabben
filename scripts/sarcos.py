@@ -9,7 +9,7 @@ import os
 import numpy as np
 from scipy.io import loadmat
 
-from utils import save_to_numpy_array, create_csv_reader, default_arg_parser, split_by_label
+from utils import default_arg_parser, save_to_numpy_array
 
 input_column_names = [
     *[f'P{num}' for num in range(1, 7+1)],

@@ -1,8 +1,7 @@
 import os
-from pathlib import Path
 from typing import Union
 
-PathLike = Union[str, bytes, os.PathLike, Path]
+PathLike = Union[str, bytes, os.PathLike]
 
 
 def has_package_installed(*package_names: str):

@@ -1,5 +1,6 @@
 import shutil
 from functools import cached_property, partial
+from importlib.resources import open_text
 from pathlib import Path
 from typing import Iterable, Union
 
@@ -16,7 +17,8 @@ from .utils import PathLike
 """
 URLs (and, later, possibly other metadata) for each non-CIFAR dataset.
 """
-metadata = toml.load(Path(__file__).parent / 'data.toml')
+with open_text('otb.datasets', 'data.toml') as metadata_file:
+    metadata = toml.load(metadata_file)
 
 
 def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True):
@@ -29,6 +31,7 @@ def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True)
         dest_path: full path of the destination file
         download: whether to download if not present (will error if data is not already present)
     """
+    dest_path = Path(dest_path)
     
     if dest_path.exists():
         print(f'Data already available at `{dest_path}`')
