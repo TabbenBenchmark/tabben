@@ -1,6 +1,6 @@
 from torch.utils.data import DataLoader
 
-from otb.datasets import OpenTabularDataset
+from tabben.datasets import OpenTabularDataset
 
 
 def check_sizes(ds, num_examples, num_features, num_outputs=1):
@@ -21,7 +21,11 @@ def check_sizes(ds, num_examples, num_features, num_outputs=1):
     
     assert len(item) == 2
     assert item[0].size() == (4, num_features)
-    assert item[1].numel() == 4 * num_outputs
+    
+    if num_outputs > 1:
+        assert item[1].size() == (4, num_outputs)
+    else:
+        assert item[1].numel() == 4 * num_outputs
 
 
 def check_split_sizes(directory, ds_name, splits_dict):

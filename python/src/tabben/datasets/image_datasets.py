@@ -16,9 +16,12 @@ class TabularCIFAR10Dataset(Dataset):
         # allow torchvision as an optional dependency
         if not has_package_installed('torchvision'):
             raise ImportError('torchvision is not installed, but is required for the CIFAR10 dataset')
-        else:
-            import torchvision
-            import torchvision.transforms as transforms
+        
+        import torchvision
+        import torchvision.transforms as transforms
+        
+        if isinstance(split, str):
+            split = [split]
         
         transform = transforms.Compose([
             transforms.ToTensor(),
@@ -27,7 +30,7 @@ class TabularCIFAR10Dataset(Dataset):
         
         self.ds = torchvision.datasets.CIFAR10(
                 data_dir,
-                train=split == 'train',
+                train='train' in split,
                 download=download,
                 transform=transform,
         )

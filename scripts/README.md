@@ -46,6 +46,6 @@ Additional fields that need/can be added at the top-level of the json object:
   - prefer `label` for the output attribute name
 - [ ] form numpy arrays for each training split based on [the above format](#Data Format)
 - [ ] generate metadata
-- [ ] upload data files to the public Google drive and put document ids in [data.toml](/python/src/otb/datasets/data.toml)
+- [ ] upload data files to the public Google drive and put document ids in [data.toml](/python/src/tabben/datasets/data.toml)
 - [ ] if not excessively large dataset, add unit tests
 

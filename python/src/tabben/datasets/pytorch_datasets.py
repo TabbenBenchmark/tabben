@@ -1,24 +1,98 @@
 import shutil
 from functools import cached_property, partial
-from importlib.resources import open_text
+from importlib import resources
 from pathlib import Path
 from typing import Iterable, Union
+from warnings import warn
 
 import numpy as np
 import requests
 import toml
-import torch
 from requests import HTTPError
+from torch import from_numpy
 from torch.utils.data import Dataset
 from tqdm.auto import tqdm
 
-from .utils import PathLike
+from .utils import has_package_installed, PathLike
+
+__all__ = [
+    # functions
+    'ensure_downloaded',
+    'register_dataset',
+    
+    # classes
+    'OpenTabularDataset',
+    
+    # data/variables/constants
+    'metadata',
+    'allowed_tasks',
+]
 
 """
 URLs (and, later, possibly other metadata) for each non-CIFAR dataset.
 """
-with open_text('otb.datasets', 'data.toml') as metadata_file:
+with resources.open_text('tabben.datasets', 'data.toml') as metadata_file:
     metadata = toml.load(metadata_file)
+
+
+allowed_tasks = {
+    'classification',
+    'regression',
+}
+
+
+def register_dataset(name, task='classification', *, persist=False, **kwargs):
+    """
+    Add new datasets to the benchmark at runtime (after package loading).
+    
+    Args:
+        name: the name of the dataset (used as a primary index, cannot be 'all')
+        task: which task (see `allowed_tasks`)
+    
+    Keyword Args:
+        persist:
+            whether to also save this dataset into the data file (only for this installation)
+        data_location (required):
+            URL pointing to the NPZ file for this dataset
+        outputs (recommended, defaults to 1):
+            number of output variables
+        classes (recommended for classification tasks, defaults to 2):
+            number of classes (if multiple output variables, must all have the same number)
+        **kwargs:
+            all other keyword arguments will be added as additional metadata
+    """
+    
+    if name != name.lower():
+        warn(f'Non-lowercased name `{name}` will be converted to `{name.lower()}`')
+        name = name.lower()
+    
+    if name in metadata:
+        raise ValueError(f'Dataset with name `{name}` already registered')
+    if name == 'all':
+        raise ValueError('Cannot create a dataset with the special name `all`')
+    
+    if task not in allowed_tasks:
+        raise ValueError(f'Unknown task, must be one of {allowed_tasks}')
+    kwargs['task'] = task
+    
+    if 'data_location' not in kwargs:
+        raise ValueError('A `data_location` needs to specified (remote url)')
+    
+    if 'outputs' not in kwargs:
+        warn('The number of outputs was not specified using `outputs`, assuming 1 output variable')
+        kwargs['outputs'] = 1
+        
+    if 'classes' not in kwargs and task == 'classification':
+        warn('The number of classes was not specified using `classes`, assuming 2 classes')
+        kwargs['classes'] = 2
+    if 'classes' in kwargs and task == 'regression':
+        raise ValueError('`classes` should be not specified if the task is regression')
+    
+    metadata[name] = kwargs
+    if persist:
+        with resources.path('tabben.datasets', 'data.toml') as p:
+            with p.open('w') as f:
+                toml.dump(metadata, f)
 
 
 def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True):
@@ -75,7 +149,7 @@ def ensure_downloaded(data_dir: PathLike, *datasets: str):
         if name in datasets:
             dest_filename = data_dir / f'{name}.npz'
             try:
-                _download_datafile(dataset_metadata['data_url'], dest_filename)
+                _download_datafile(dataset_metadata['data_location'], dest_filename)
                 succeeded.append(name)
             except Union[HTTPError, RuntimeError]:
                 print(f'Unable to download the `{name}` dataset')
@@ -105,15 +179,15 @@ class OpenTabularDataset(Dataset):
 
         # download data if not yet already
         data_filename = self.data_dir / f'{self.name}.npz'
-        _download_datafile(metadata[name]['data_url'], data_filename, download)
+        _download_datafile(metadata[name]['data_location'], data_filename, download)
         
         # load the full np arrays + input/output arrays for this split
         self.data = np.load(str(data_filename))
         self.inputs, self.outputs = self._extract_split(self.data, split)
 
         # convert data to torch tensors
-        self.X = torch.from_numpy(self.inputs)
-        self.y = torch.from_numpy(self.outputs)
+        self.X = from_numpy(self.inputs)
+        self.y = from_numpy(self.outputs)
 
     def _extract_split(self, data, split: str):
         if split not in self.splits:
@@ -165,6 +239,9 @@ class OpenTabularDataset(Dataset):
         return self.data['_columns-labels']
     
     def dataframe(self):
+        if not has_package_installed('pandas'):
+            raise ImportError('Install pandas to load a dataset as a pandas dataframe')
+        
         import pandas as pd
 
         combined = np.hstack((
