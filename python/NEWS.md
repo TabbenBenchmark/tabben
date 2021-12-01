@@ -1,12 +1,8 @@
-# Initial Release of the `tabben` Package
+# `tabben` v0.0.2
 
-- PyTorch Datasets for several initial datasets:
-  - arcene
-  - cifar10
-  - higgs
-  - poker
-  - sarcos
-- automatic downloading of dataset files
-- also provides numpy arrays or pandas dataframes
+## New Features
 
-Preliminary docs available in the [docs](/python/docs/src) directory of the repository.
+
+## Changes
+
+
