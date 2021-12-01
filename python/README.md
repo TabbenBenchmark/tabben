@@ -2,7 +2,12 @@
 
 ## Set Up
 
-When testing/using locally (especially until the package is registered in PyPI), you can install the `tabben` package locally; from this directory,
+For the most recent *stable* release, you can install the `tabben` package from PyPI:
+```shell
+pip3 install tabben
+```
+
+If testing/using locally from source, you can install the `tabben` package locally; from this directory,
 ```shell
 pip3 install -e .
 ```
