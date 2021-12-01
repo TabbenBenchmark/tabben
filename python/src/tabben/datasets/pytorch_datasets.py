@@ -1,3 +1,8 @@
+"""
+Implementation of a (PyTorch) Dataset for benchmarks, also providing access methods
+via numpy arrays or pandas dataframes (should not access this class directly).
+"""
+
 import shutil
 from functools import cached_property, partial
 from importlib import resources
@@ -19,6 +24,7 @@ __all__ = [
     # functions
     'ensure_downloaded',
     'register_dataset',
+    'validate_dataset_file',
     
     # classes
     'OpenTabularDataset',
@@ -28,9 +34,7 @@ __all__ = [
     'allowed_tasks',
 ]
 
-"""
-URLs (and, later, possibly other metadata) for each non-CIFAR dataset.
-"""
+# metadata for each (non-CIFAR) dataset.
 with resources.open_text('tabben.datasets', 'data.toml') as metadata_file:
     metadata = toml.load(metadata_file)
 
@@ -41,6 +45,9 @@ allowed_tasks = {
 }
 
 
+################################################################################
+#      Functional Interface: working with dataset metadata/benchmark sets      #
+################################################################################
 def register_dataset(name, task='classification', *, persist=False, **kwargs):
     """
     Add new datasets to the benchmark at runtime (after package loading).
@@ -95,6 +102,13 @@ def register_dataset(name, task='classification', *, persist=False, **kwargs):
                 toml.dump(metadata, f)
 
 
+def validate_dataset_file(filepath):
+    pass
+
+
+################################################################################
+#                               Download helper                                #
+################################################################################
 def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True):
     """
     Ensures that the file (the NPZ archive) exists (will download if the destination
@@ -117,16 +131,18 @@ def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True)
             r.raise_for_status()
             raise RuntimeError(f'Unable to download file from `{source_url}`')
 
+        # determine total file size for the progress bar
         declared_file_size = int(r.headers.get('Content-Length', 0))
         desc = '(Unknown file size)' if declared_file_size == 0 else ''
         
         dest_path.parent.mkdir(parents=True, exist_ok=True)
+        
         r.raw.read = partial(r.raw.read, decode_content=True)
         with tqdm.wrapattr(r.raw, "read", total=declared_file_size, desc=desc) as progressed_data:
             with dest_path.open('wb') as output_file:
                 shutil.copyfileobj(progressed_data, output_file)
     else:
-        raise ValueError('Data files don\'t exist but not instructed to download')
+        raise ValueError('Data file(s) don\'t exist but not instructed to download')
 
 
 def ensure_downloaded(data_dir: PathLike, *datasets: str):
@@ -158,6 +174,9 @@ def ensure_downloaded(data_dir: PathLike, *datasets: str):
     print(f'Successfully found {len(succeeded)}/{len(datasets)} datasets{succeeded_list}.')
 
 
+################################################################################
+#                Object-Oriented Interface to a single dataset                 #
+################################################################################
 class OpenTabularDataset(Dataset):
     """
     A tabular dataset from the benchmark (except for CIFAR10, which is
@@ -244,6 +263,7 @@ class OpenTabularDataset(Dataset):
         
         import pandas as pd
 
+        # put input attributes and the output labels in the same dataframe
         combined = np.hstack((
             self.inputs,
             np.expand_dims(self.outputs, -1) if self.inputs.ndim == self.outputs.ndim + 1 else self.outputs

@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v**'
+      - '!v**-pre'
 
 jobs:
   publish_and_release:
@@ -37,4 +38,5 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "python/dist/*"
+          bodyFile: "python/NEWS.md"
           token: ${{ secrets.GITHUB_TOKEN }}

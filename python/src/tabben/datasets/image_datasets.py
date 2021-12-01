@@ -1,3 +1,8 @@
+"""
+Wraps the standard torchvision CIFAR10 Dataset and treats each image as a flattened
+vector of attributes (should not be accessed directly).
+"""
+
 from typing import Union, Iterable
 
 from torch.utils.data import Dataset

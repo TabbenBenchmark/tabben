@@ -2,9 +2,9 @@
 
 ## Accessing a Dataset
 
-There are PyTorch Dataset objects available from `otb.datasets`. For example,
+There are PyTorch Dataset objects available from `tabben.datasets`. For example,
 ```python
-from otb.datasets import OpenTabularDataset
+from tabben.datasets import OpenTabularDataset
 from torch.utils.data import DataLoader
 
 # load the arcene dataset (default is train split) and
@@ -17,7 +17,7 @@ for inputs, labels in DataLoader(ds, batch_size=4):
 All the currently implemented datasets are accessible this way, except for the CIFAR10 dataset. Since it's a standard computer vision dataset, we just wrap the CIFAR10 Dataset from `torchvision` and convert the images into a vector.
 
 ```python
-from otb.datasets import TabularCIFAR10Dataset
+from tabben.datasets import TabularCIFAR10Dataset
 from torch.utils.data import DataLoader
 
 cifar_ds = TabularCIFAR10Dataset('./')
@@ -27,8 +27,7 @@ for inputs, labels in DataLoader(cifar_ds, batch_size=4):
 
 The non-image tabular datasets can also be accessed as either numpy arrays or pandas dataframes:
 ```python
-from otb.datasets import OpenTabularDataset
-import pandas as pd
+from tabben.datasets import OpenTabularDataset
 
 # load the training set as numpy arrays (these are NOT copies) 
 ds = OpenTabularDataset('./', 'covertype')  # defaults are numpy arrays of the training set
@@ -43,7 +42,7 @@ ds_outputs = df[ds.output_attributes]
 
 For a list of all the currently implemented datasets in the benchmark (except for CIFAR10), there's the function:
 ```python
-from otb.datasets import list_datasets
+from tabben.datasets import list_datasets
 
 print(list_datasets())
 ```
