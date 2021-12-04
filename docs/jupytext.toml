@@ -1,0 +1,7 @@
+# exclude metadata from md files
+notebook_metadata_filter = "-all"
+cell_metadata_filter = "-all"
+
+[formats]
+"notebooks/integrations/" = "ipynb"
+"src/integrations/" = "md"

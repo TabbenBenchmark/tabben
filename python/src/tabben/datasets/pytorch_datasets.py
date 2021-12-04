@@ -7,7 +7,7 @@ import shutil
 from functools import cached_property, partial
 from importlib import resources
 from pathlib import Path
-from typing import Iterable, Union
+from typing import Iterable, Set, Union
 from warnings import warn
 
 import numpy as np
@@ -48,7 +48,7 @@ allowed_tasks = {
 ################################################################################
 #      Functional Interface: working with dataset metadata/benchmark sets      #
 ################################################################################
-def register_dataset(name, task='classification', *, persist=False, **kwargs):
+def register_dataset(name: str, task: str = 'classification', *, persist=False, **kwargs):
     """
     Add new datasets to the benchmark at runtime (after package loading).
     
@@ -115,7 +115,7 @@ def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True)
     file does not exist and `download` is True).
     
     Args:
-        source_url: download url (should be a google drive download link)
+        source_url: download url (should point to an NPZ file)
         dest_path: full path of the destination file
         download: whether to download if not present (will error if data is not already present)
     """
@@ -245,19 +245,23 @@ class OpenTabularDataset(Dataset):
         return f'OpenTabularDataset({attributes_string})'
 
     @cached_property
-    def splits(self):
+    def splits(self) -> Set[str]:
         return {filename.partition('-')[0] for filename in self.data.files
                 if '-' in filename and not filename.startswith('_')}
 
     @cached_property
-    def input_attributes(self):
+    def input_attributes(self) -> np.ndarray:
         return self.data['_columns-data']
     
     @cached_property
-    def output_attributes(self):
+    def output_attributes(self) -> np.ndarray:
         return self.data['_columns-labels']
     
     def dataframe(self):
+        """
+        Create a pandas DataFrame consisting of both input attributes and output labels
+        for this dataset (for this specific split).
+        """
         if not has_package_installed('pandas'):
             raise ImportError('Install pandas to load a dataset as a pandas dataframe')
         
@@ -272,5 +276,5 @@ class OpenTabularDataset(Dataset):
 
         return pd.DataFrame(data=combined, columns=all_columns)
 
-    def numpy(self):
+    def numpy(self) -> (np.ndarray, np.ndarray):
         return self.inputs, self.outputs
