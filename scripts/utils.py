@@ -45,6 +45,8 @@ def save_to_numpy_array(filename, df_dict):
         key: value.to_numpy().squeeze() if not isinstance(value, np.ndarray) else value
         for key, value in df_dict.items()
     }
+    arr_dict['_version'] = '1.0.0'
+    
     np.savez_compressed(str(filename), **arr_dict)
     print(f'Data saved in NPZ format at `{filename}`')
 
