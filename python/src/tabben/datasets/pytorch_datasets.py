@@ -4,17 +4,17 @@ via numpy arrays or pandas dataframes (should not access this class directly).
 """
 
 import shutil
+from collections import defaultdict
 from functools import cached_property, partial
 from importlib import resources
 from pathlib import Path
-from typing import Iterable, Set, Union
+from typing import Iterable, Sequence, Set, Union
 from warnings import warn
 
 import numpy as np
 import requests
 import toml
 from requests import HTTPError
-from torch import from_numpy
 from torch.utils.data import Dataset
 from tqdm.auto import tqdm
 
@@ -28,6 +28,7 @@ __all__ = [
     
     # classes
     'OpenTabularDataset',
+    'DatasetFormatError',
     
     # data/variables/constants
     'metadata',
@@ -99,30 +100,137 @@ def register_dataset(name: str, task: str = 'classification', *, persist=False, 
     if persist:
         with resources.path('tabben.datasets', 'data.toml') as p:
             with p.open('w') as f:
-                toml.dump(metadata, f)
+                toml.dump(metadata, f, encoder=toml.TomlNumpyEncoder())
 
 
-def validate_dataset_file(filepath):
+class DatasetFormatError(Exception):
     pass
 
 
-################################################################################
-#                               Download helper                                #
-################################################################################
+def validate_dataset_file(filepath: PathLike):
+    filepath = Path(filepath)
+    
+    # check file itself
+    if not filepath.exists():
+        raise FileNotFoundError('Dataset file does not exist')
+    if not filepath.is_file():
+        raise IOError('Dataset path does not point to a file')
+    
+    # check numpy file format
+    try:
+        data = np.load(str(filepath))
+    except IOError:
+        raise DatasetFormatError('Dataset file is not in the correct numpy format')
+    except ValueError:
+        raise DatasetFormatError('Dataset file contains object arrays, which require pickle (not allowed)')
+    
+    try:
+        names = data.files
+    except AttributeError:
+        raise DatasetFormatError('Dataset file is not an NPZ file of multiple arrays')
+    
+    # check just the "filenames"
+    split_names = {name for name in names if not name.startswith('_')}
+    metadata_names = {name for name in names if name not in split_names}
+    
+    splits_parts = defaultdict(set)
+    for split_name in split_names:
+        if split_name.count('-') != 1:
+            raise DatasetFormatError('Dataset arrays not starting with underscore need to have exactly 1 '
+                                     'dash in the name')
+        
+        split, _, part = split_name.partition('-')
+        
+        splits_parts[split].add(part)
+    
+    for split, parts in splits_parts.items():
+        missing_parts = {'data', 'labels'} - parts
+        extra_parts = parts - {'data', 'labels'}
+        
+        if len(missing_parts) > 0:
+            raise DatasetFormatError(f'Dataset has missing parts for `{split}` split:'
+                                     f' {", ".join(missing_parts)}')
+        if len(extra_parts) > 0:
+            raise DatasetFormatError(f'Dataset has extra parts for `{split}` split: {", ".join(extra_parts)}')
+    
+    if len(splits_parts) == 0:
+        raise DatasetFormatError('The dataset file does not contain data for any splits')
+    
+    if '_columns-data' not in metadata_names:
+        raise DatasetFormatError('Dataset needs to have a `_columns-data` array')
+    if '_columns-labels' not in metadata_names:
+        raise DatasetFormatError('Dataset needs to have a `_columns-labels` array')
+    if '_version' not in metadata_names:
+        warn('This dataset file does not have a `_version` array, you may run into compatibility issues')
+    
+    # check sizes
+    num_inputs = []
+    num_outputs = []
+    
+    for split in splits_parts:
+        input_data = data[f'{split}-data']
+        output_data = data[f'{split}-labels']
+        
+        if len(input_data.shape) != 2:
+            raise DatasetFormatError('Dataset input data must be 2-dimensional')
+        if len(output_data.shape) not in (1, 2):
+            raise DatasetFormatError('Dataset output data must be either 1- or 2-dimensional')
+        
+        if input_data.shape[0] != output_data.shape[0]:
+            raise DatasetFormatError(f'The number of examples is not the same in the `{split}` split')
+        
+        num_inputs.append(input_data.shape[1])
+        num_outputs.append(output_data.shape[1] if len(output_data.shape) == 2 else 1)
+    
+    if any(num != num_inputs[0] for num in num_inputs):
+        raise DatasetFormatError('Number of input attributes does not match between splits')
+    if any(num != num_outputs[0] for num in num_outputs):
+        raise DatasetFormatError('Number of output labels does not match between splits')
+
+    print(f'Verified the dataset file located at `{filepath}`')
+    
+
+def check_version(dataset_filepath: PathLike, min_version: str):
+    min_version = tuple(min_version.split('.'))
+    with np.load(dataset_filepath) as data:
+        actual_version = tuple(data['_version'].item().split('.'))
+        
+    assert len(min_version) == len(actual_version) == 3
+    
+    for actual_part, min_part in zip(actual_version, min_version):
+        if int(actual_part) < int(min_part):
+            return False
+        
+    return True
+    
+
 def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True):
     """
     Ensures that the file (the NPZ archive) exists (will download if the destination
     file does not exist and `download` is True).
     
+    Note that the source "URL" can be a local file (if it starts with 'file://'
+    instead of 'https://') and the file will be copied from the source to the destination
+    path, even if `download=False`.
+    
     Args:
-        source_url: download url (should point to an NPZ file)
+        source_url: download uri (should point to an NPZ file)
         dest_path: full path of the destination file
         download: whether to download if not present (will error if data is not already present)
     """
     dest_path = Path(dest_path)
     
-    if dest_path.exists():
+    if dest_path.exists() and check_version(dest_path, '1.0.0'):
         print(f'Data already available at `{dest_path}`')
+        
+        # in any other case, the version in the datafile will *not* be checked:
+        # this should be fine, as long as we make sure that any version of the code
+        # cannot download dataset files with incompatible formats (assume risk with
+        # local file path)
+    elif source_url.startswith('file://'):
+        source_path = source_url[7:]
+        print(f'Copying local data from `{source_path}` to `{dest_path}`')
+        shutil.copyfile(source_path, dest_path)
     elif download:
         print(f'Downloading data from `{source_url}` into `{dest_path}`')
         r = requests.get(source_url, stream=True)
@@ -145,7 +253,7 @@ def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True)
         raise ValueError('Data file(s) don\'t exist but not instructed to download')
 
 
-def ensure_downloaded(data_dir: PathLike, *datasets: str):
+def ensure_downloaded(data_dir: PathLike, *datasets: Sequence[str]):
     """
     Downloads the specified datasets (all available datasets if none specified)
     into the data directory. This is useful e.g. using this package in an environment
@@ -186,12 +294,13 @@ class OpenTabularDataset(Dataset):
     def __init__(self, data_dir: PathLike, name: str,
                  split: Union[str, Iterable[str]] = 'train',
                  download=True,
-                 transform=None):
+                 transform=None, target_transform=None):
         
         self.data_dir = Path(data_dir)
         self.name = name.lower()
         self.split = split
         self.transform = transform
+        self.target_transform = target_transform
 
         if self.name not in metadata:
             raise ValueError(f'dataset with name `{self.name}` not recognized')
@@ -201,12 +310,12 @@ class OpenTabularDataset(Dataset):
         _download_datafile(metadata[name]['data_location'], data_filename, download)
         
         # load the full np arrays + input/output arrays for this split
-        self.data = np.load(str(data_filename))
-        self.inputs, self.outputs = self._extract_split(self.data, split)
-
-        # convert data to torch tensors
-        self.X = from_numpy(self.inputs)
-        self.y = from_numpy(self.outputs)
+        with np.load(str(data_filename)) as data:
+            self.splits = {name.partition('-')[0] for name in data.files
+                           if '-' in name and not name.startswith('_')}
+            self.inputs, self.outputs = self._extract_split(data, split)
+            self.input_attributes = data['_columns-data']
+            self.output_attributes = data['_columns-labels']
 
     def _extract_split(self, data, split: str):
         if split not in self.splits:
@@ -216,15 +325,18 @@ class OpenTabularDataset(Dataset):
         return data[f'{split}-data'], data[f'{split}-labels']
 
     def __len__(self):
-        return self.X.size(0)
+        return self.input_attributes.shape[0]
 
     def __getitem__(self, idx):
-        inputs = self.X[idx, :]
-        outputs = self.y[idx].item() if self.y[idx].numel() == 1 else self.y[idx]
-        example_pair = (inputs, outputs)
+        inputs = self.inputs[idx, :]
+        outputs = self.outputs[idx].item() if self.outputs[idx].size == 1 else self.outputs[idx]
         
-        # apply transforms if there are any to the input-output pair
-        return self.transform(example_pair) if self.transform else example_pair
+        if self.transform:
+            inputs = self.transform(inputs)
+        if self.target_transform:
+            outputs = self.target_transform(outputs)
+        
+        return inputs, outputs
 
     def __eq__(self, other):
         if not isinstance(OpenTabularDataset, other):
@@ -243,19 +355,25 @@ class OpenTabularDataset(Dataset):
                 '='.join(pair) for pair in attributes.items()
         )
         return f'OpenTabularDataset({attributes_string})'
-
-    @cached_property
-    def splits(self) -> Set[str]:
-        return {filename.partition('-')[0] for filename in self.data.files
-                if '-' in filename and not filename.startswith('_')}
-
-    @cached_property
-    def input_attributes(self) -> np.ndarray:
-        return self.data['_columns-data']
     
-    @cached_property
-    def output_attributes(self) -> np.ndarray:
-        return self.data['_columns-labels']
+    @property
+    def num_inputs(self) -> int:
+        return len(self.input_attributes)
+    
+    @property
+    def num_outputs(self) -> int:
+        return len(self.output_attributes)
+    
+    @property
+    def num_classes(self) -> int:
+        if metadata[self.name]['task'] == 'classification':
+            return metadata[self.name]['classes']
+        else:
+            raise AttributeError('Non-classification task datasets don\'t have a number of classes')
+    
+    @property
+    def task(self):
+        return metadata[self.name]['task']
     
     def dataframe(self):
         """
@@ -272,7 +390,7 @@ class OpenTabularDataset(Dataset):
             self.inputs,
             np.expand_dims(self.outputs, -1) if self.inputs.ndim == self.outputs.ndim + 1 else self.outputs
         ))
-        all_columns = np.hstack((self.data['_columns-data'], self.data['_columns-labels']))
+        all_columns = np.hstack((self.input_attributes, self.output_attributes))
 
         return pd.DataFrame(data=combined, columns=all_columns)
 

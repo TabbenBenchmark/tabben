@@ -1,12 +1,13 @@
 from torch.utils.data import DataLoader
 
-from tabben.datasets import OpenTabularDataset
+from tabben.datasets import OpenTabularDataset, validate_dataset_file
 
 
 def check_sizes(ds, num_examples, num_features, num_outputs=1):
     # check the input and output arrays themselves
-    assert ds.X.size() == (num_examples, num_features)
-    assert ds.y.numel() == num_examples * num_outputs
+    X, y = ds.numpy()
+    assert X.shape == (num_examples, num_features)
+    assert y.size == num_examples * num_outputs
     
     # test sizes for batch size of 1
     dl = DataLoader(ds)
@@ -34,13 +35,26 @@ def check_split_sizes(directory, ds_name, splits_dict):
         check_sizes(ds, *expected_size)
 
 
+def check_attributes(directory, ds_name, attributes_dict):
+    ds = OpenTabularDataset(directory, ds_name)  # which split doesn't matter here
+    for attr_name, attr_value in attributes_dict.items():
+        assert getattr(ds, attr_name) == attr_value
+
+
 def test_arcene(tmp_path):
-    train_valid_shape = (100, 10_000)
+    train_test_shape = (100, 10_000)
     
     check_split_sizes(tmp_path, 'arcene', {
-        'train': train_valid_shape,
-        'valid': train_valid_shape,
+        'train': train_test_shape,
+        'test': train_test_shape,  # arcene's "official" validation set used as test set
     })
+    
+    check_attributes(tmp_path, 'arcene', {
+        'task': 'classification',
+        'num_classes': 2,
+    })
+    
+    validate_dataset_file(tmp_path / 'arcene.npz')
 
 
 def test_covertype(tmp_path):
@@ -52,6 +66,15 @@ def test_covertype(tmp_path):
         'test': (565_892, num_features),
     })
 
+    check_attributes(tmp_path, 'covertype', {
+        'task': 'classification',
+        'num_classes': 7,
+    })
+
+    validate_dataset_file(tmp_path / 'covertype.npz')
+
+
+# test for higgs not included here because of its large size
 
 def test_poker(tmp_path):
     num_features = 10
@@ -61,6 +84,13 @@ def test_poker(tmp_path):
         'test': (1_000_000, num_features),
     })
 
+    check_attributes(tmp_path, 'poker', {
+        'task': 'classification',
+        'num_classes': 10,
+    })
+
+    validate_dataset_file(tmp_path / 'poker.npz')
+
 
 def test_sarcos(tmp_path):
     num_features = 21
@@ -68,6 +98,13 @@ def test_sarcos(tmp_path):
     
     check_split_sizes(tmp_path, 'sarcos', {
         'train': (44_484, num_features, num_outputs),
-        'test' : (4_449, num_features, num_outputs),
+        'test': (4_449, num_features, num_outputs),
     })
+
+    check_attributes(tmp_path, 'sarcos', {
+        'task': 'regression',
+        'num_outputs': 7
+    })
+
+    validate_dataset_file(tmp_path / 'sarcos.npz')
 

@@ -1,3 +1,9 @@
+"""
+This is a setup.py file used *only* for allowing `pip install -e .` to work as a dev
+environment. Everything else should use `setup.cfg` (for now, the files are manually
+kept in sync).
+"""
+
 import setuptools
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -17,6 +23,8 @@ setuptools.setup(
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
+        'Intended Audience :: Developers',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence',
     ],
     package_dir={'': 'src'},
     packages=setuptools.find_packages(where='src'),
@@ -26,7 +34,6 @@ setuptools.setup(
     install_requires=[
         'numpy',
         'requests',
-        'requests-file',
         'scikit-metrics',
         'toml',
         'torch',
