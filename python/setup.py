@@ -11,7 +11,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name='tabben',
-    version='0.0.2-dev',
+    version='0.0.2',
     description='A package for working with datasets from the open benchmark for tabular data',
     long_description=long_description,
     long_description_content_type='text/markdown',
