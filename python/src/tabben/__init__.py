@@ -5,3 +5,4 @@ of metrics
 """
 
 from . import datasets
+from . import evaluators
