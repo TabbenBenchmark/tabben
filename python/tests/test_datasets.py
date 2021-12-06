@@ -41,6 +41,24 @@ def check_attributes(directory, ds_name, attributes_dict):
         assert getattr(ds, attr_name) == attr_value
 
 
+def test_adult(tmp_path):
+    num_features = 14
+    train_examples = 32_561
+    test_examples = 16_281
+    
+    check_split_sizes(tmp_path, 'adult', {
+        'train': (train_examples, num_features),
+        'test': (test_examples, num_features),
+    })
+    
+    check_attributes(tmp_path, 'adult', {
+        'task': 'classification',
+        'num_classes': 2,
+    })
+    
+    validate_dataset_file(tmp_path / 'adult.npz')
+
+
 def test_arcene(tmp_path):
     train_test_shape = (100, 10_000)
     
