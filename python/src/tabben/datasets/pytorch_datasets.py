@@ -2,7 +2,7 @@
 Implementation of a (PyTorch) Dataset for benchmarks, also providing access methods
 via numpy arrays or pandas dataframes (should not access this class directly).
 """
-
+import pathlib
 import shutil
 from collections import defaultdict
 from functools import cached_property, partial
@@ -108,7 +108,10 @@ class DatasetFormatError(Exception):
 
 
 def validate_dataset_file(filepath: PathLike):
-    filepath = Path(filepath if not filepath.startswith('file://') else filepath[7:])
+    if not isinstance(filepath, pathlib.Path) and filepath.startswith('file://'):
+        filepath = filepath[7:]
+    else:
+        filepath = Path(filepath)
     
     # check file itself
     if not filepath.exists():
