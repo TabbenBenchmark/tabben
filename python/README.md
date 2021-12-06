@@ -1,5 +1,7 @@
 # A Python package for the Open Benchmark for Tabular Data
 
+[![Package Unit Tests](https://github.com/umd-otb/OpenTabularDataBenchmark/actions/workflows/test.yml/badge.svg)](https://github.com/umd-otb/OpenTabularDataBenchmark/actions/workflows/test.yml)
+
 ## Set Up
 
 For the most recent *stable* release, you can install the `tabben` package from PyPI:

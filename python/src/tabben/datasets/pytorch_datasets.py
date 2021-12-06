@@ -108,7 +108,7 @@ class DatasetFormatError(Exception):
 
 
 def validate_dataset_file(filepath: PathLike):
-    filepath = Path(filepath)
+    filepath = Path(filepath if not filepath.startswith('file://') else filepath[7:])
     
     # check file itself
     if not filepath.exists():
@@ -168,8 +168,14 @@ def validate_dataset_file(filepath: PathLike):
     num_outputs = []
     
     for split in splits_parts:
-        input_data = data[f'{split}-data']
-        output_data = data[f'{split}-labels']
+        try:
+            input_data = data[f'{split}-data']
+        except ValueError:
+            raise DatasetFormatError(f'Input array for `{split}` split requires pickle')
+        try:
+            output_data = data[f'{split}-labels']
+        except ValueError:
+            raise DatasetFormatError(f'Output array for `{split}` split requires pickle')
         
         if len(input_data.shape) != 2:
             raise DatasetFormatError('Dataset input data must be 2-dimensional')

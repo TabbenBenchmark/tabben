@@ -1,29 +1,29 @@
 [arcene]
-data_location = 'https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/arcene.npz'
-doc_id = '1cnuQwVtQ-FsJ_En9_ln2KU0n30wJ4ffe'
-task = 'classification'
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/arcene.npz"
+doc_id = "1cnuQwVtQ-FsJ_En9_ln2KU0n30wJ4ffe"
+task = "classification"
 classes = 2
 
 [covertype]
-data_location = 'https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/covertype.npz'
-doc_id = '1ixC-jAgdAgPnCL37uaTEnBep7q43liNP'
-task = 'classification'
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/covertype.npz"
+doc_id = "1ixC-jAgdAgPnCL37uaTEnBep7q43liNP"
+task = "classification"
 classes = 7
 
 [higgs]
-data_location = 'https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/higgs.npz'
-doc_id = '1mz6E-5eV5ThnzdbimvTTeTTGSoJTjS_I'
-task = 'classification'
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/higgs.npz"
+doc_id = "1mz6E-5eV5ThnzdbimvTTeTTGSoJTjS_I"
+task = "classification"
 classes = 2
 
 [poker]
-data_location = 'https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/poker.npz'
-doc_id = '1yVdp4pHSmrFasHhX4j4vtxVHYHUvciun'
-task = 'classification'
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/poker.npz"
+doc_id = "1yVdp4pHSmrFasHhX4j4vtxVHYHUvciun"
+task = "classification"
 classes = 10
 
 [sarcos]
-data_location = 'https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/sarcos.npz'
-doc_id = '1Nr7MIWogLo0aY_uQdSCSfGysMr5Wswq5'
-task = 'regression'
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/sarcos.npz"
+doc_id = "1Nr7MIWogLo0aY_uQdSCSfGysMr5Wswq5"
+task = "regression"
 outputs = 7

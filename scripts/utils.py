@@ -13,9 +13,9 @@ except ImportError:
 
 
 def create_csv_reader(*roots, **configs):
-    def reader(filename, use_roots=True):
+    def reader(filename, use_roots=True, **kwargs):
         filepath = os.path.join(*roots, filename) if use_roots else filename
-        return pd.read_csv(filepath, **configs)
+        return pd.read_csv(filepath, **{**configs, **kwargs})
     
     return reader
 
@@ -36,6 +36,12 @@ def default_arg_parser(*,
 
 def column_name_array(df):
     return np.array(df.columns, dtype=np.str_)
+
+
+def hvcat(arrays):
+    return pd.concat([
+        pd.concat(row, axis=1) for row in arrays
+    ], axis=0)
 
 
 def save_to_numpy_array(filename, df_dict):

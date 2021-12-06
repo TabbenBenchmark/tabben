@@ -18,12 +18,9 @@ def convert_format(config):
         valid_labels_source = os.path.join(config.source, 'arcene_valid.labels')
     
     train_data_df = read_csv('arcene_train.data')
-    train_labels_df = read_csv('arcene_train.labels')
+    train_labels_df = read_csv('arcene_train.labels', columns=['label'])
     valid_data_df = read_csv('arcene_valid.data')
-    valid_labels_df = read_csv(valid_labels_source, use_roots=False)
-    
-    train_labels_df.columns = ['label']
-    valid_labels_df.columns = ['label']
+    valid_labels_df = read_csv(valid_labels_source, use_roots=False, columns=['label'])
     
     save_to_numpy_array(os.path.join(config.outputdirectory, 'arcene'), {
         'train-data': train_data_df,
