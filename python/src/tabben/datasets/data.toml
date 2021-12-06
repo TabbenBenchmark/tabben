@@ -27,3 +27,9 @@ data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/do
 doc_id = "1Nr7MIWogLo0aY_uQdSCSfGysMr5Wswq5"
 task = "regression"
 outputs = 7
+
+[adult]
+classes = 2
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.3-pre/adult.npz"
+extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.3-pre/adult.json"
+task = "classification"
