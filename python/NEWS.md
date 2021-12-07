@@ -1,22 +1,19 @@
-# `tabben` v0.0.2
+# `tabben` v0.0.3
 
 ## New Features
-- the location of the source for each dataset can be a file URI (e.g. `file:///abs/path/to/dataset/file.npz`); this is useful locally
-- new function `validate_dataset_file` to verify that a dataset file is in the correct format and loadable
-- additional `OpenTabularDataset` properties: `num_inputs`, `num_outputs`, `num_classes`, `task`
+- new dataset: adult income prediction (#2)
+- `get_metrics` function
+  - standard set of evaluation metrics available via `tabben.evaluators` (currently, only works for binary classification tasks)
+  - same set of available evaluation metrics compatible with autogluon (optional dependency) in `tabben.autogluon`
+
+## Bugfixes
+- fixed critical bug that limits the length of Datasets to the number of input attributes
 
 ## Breaking Changes
-- dataset file format
-  - now includes a version number (versions for already downloaded files are checked and redownloaded if possible)
-- the `valid` split for the 'arcene' dataset renamed to `test`
-- `OpenTabularDataset`
-  - now generates numpy arrays instead of torch tensors, if no transform is passed in (not breaking if PyTorch DataLoader is used)
-  - `transform` argument of the constructor has been split into `transform` and `target_transform`
+
 
 ## Non-Breaking Changes
 
 
 ## Non-Code Updates
-- additions of formal documentation
-  - Markdown source files for basic and some advanced uses
-  - synced, runnable Jupyter notebooks containing the same content
+- quick guide for working with autogluon added (notebook + Markdown)
