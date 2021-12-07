@@ -1,10 +1,8 @@
-# `tabben` v0.0.4
+# `tabben` v0.0.5
 
 ## New Features
-- new dataset: `parkinsons`
 
 ## Breaking Changes
-- `autogluon` metrics module moved to be under `tabben.evaluators`
 
 ## Non-Breaking Changes
 

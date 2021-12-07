@@ -6,7 +6,7 @@
 
 For the most recent *stable* release, you can install the `tabben` package from PyPI:
 ```shell
-pip3 install tabben
+pip3 install tabben --upgrade
 ```
 
 If testing/using locally from source, you can install the `tabben` package locally; from this directory,
@@ -26,6 +26,7 @@ from torch.utils.data import DataLoader
 ds = OpenTabularDataset('./', 'arcene')
 for inputs, labels in DataLoader(ds, batch_size=4):
     # do stuff with inputs and labels
+    pass
 ```
 
 All the currently implemented datasets are accessible this way, except for the CIFAR10 dataset. Since it's a standard computer vision dataset, we just wrap the CIFAR10 Dataset from `torchvision` and convert the images into a vector.
@@ -37,6 +38,7 @@ from torch.utils.data import DataLoader
 cifar_ds = TabularCIFAR10Dataset('./')
 for inputs, labels in DataLoader(cifar_ds, batch_size=4):
     # do something with inputs and labels
+    pass
 ```
 
 The non-image tabular datasets can also be accessed as either numpy arrays or pandas dataframes:
