@@ -5,6 +5,7 @@
 ## Breaking Changes
 
 ## Non-Breaking Changes
+- update `parkinsons` dataset: different train/test split (splitting process may still need to be changed)
 
 ## Bugfixes
 

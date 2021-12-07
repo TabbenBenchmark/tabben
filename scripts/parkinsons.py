@@ -1,8 +1,5 @@
 import os
 
-import pandas as pd
-import simplejson as json
-
 from utils import save_to_numpy_array, create_csv_reader, default_arg_parser, column_name_array, \
     split_by_label
 
@@ -18,7 +15,7 @@ def convert_format(config):
     )
     
     df = read_csv('parkinsons_updrs.data')
-    df.sample(frac=1, random_state=171_234)  # shuffle rows
+    df = df.sample(frac=1, random_state=171_234)  # shuffle rows
     
     train_examples = int(0.80 * df.shape[0])
     train_df = df.iloc[:train_examples]
