@@ -18,7 +18,7 @@ from requests import HTTPError
 from torch.utils.data import Dataset
 from tqdm.auto import tqdm
 
-from .utils import has_package_installed, PathLike
+from ..utils import has_package_installed, PathLike
 
 __all__ = [
     # functions
@@ -351,7 +351,8 @@ class OpenTabularDataset(Dataset):
         if not isinstance(OpenTabularDataset, other):
             return False
         
-        return self.name == other.name and self.split == other.split and self.transform == other.transform
+        return self.name == other.name and self.split == other.split and self.transform == other.transform \
+            and self.target_transform == self.target_transform
     
     def __repr__(self):
         attributes = {
@@ -359,6 +360,7 @@ class OpenTabularDataset(Dataset):
             'name': repr(self.name),
             'split': repr(self.split),
             'transform': repr(self.transform),
+            'target_transform': repr(self.target_transform),
         }
         attributes_string = ', '.join(
                 '='.join(pair) for pair in attributes.items()

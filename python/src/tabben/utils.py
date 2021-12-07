@@ -14,9 +14,3 @@ def has_package_installed(*package_names: str):
     import importlib
     return all(importlib.util.find_spec(package_name) for package_name in package_names)
 
-
-def google_drive_download_link(identifier: str):
-    """Convert a Google Drive document id to a direct download link."""
-    
-    return f'https://drive.google.com/uc?id={identifier}&export=download'
-

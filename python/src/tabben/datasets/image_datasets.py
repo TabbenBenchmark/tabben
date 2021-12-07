@@ -7,7 +7,7 @@ from typing import Union, Iterable
 
 from torch.utils.data import Dataset
 
-from .utils import has_package_installed, PathLike
+from ..utils import has_package_installed, PathLike
 
 
 class TabularCIFAR10Dataset(Dataset):
