@@ -38,3 +38,8 @@ task = "classification"
 data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.4-pre/parkinsons.npz"
 outputs = 2
 task = "regression"
+
+[musk]
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/musk.npz"
+task = "classification"
+classes = 2
