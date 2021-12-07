@@ -96,6 +96,23 @@ def test_covertype(tmp_path):
 
 # test for higgs not included here because of its large size
 
+def test_parkinsons(tmp_path):
+    num_features = 16
+    num_outputs = 2
+    train_examples = 4700
+    test_examples = 1175
+    
+    check_split_sizes(tmp_path, 'parkinsons', {
+        'train': (train_examples, num_features, num_outputs),
+        'test': (test_examples, num_features, num_outputs),
+    }, )
+    
+    check_attributes(tmp_path, 'parkinsons', {
+        'task': 'regression',
+        'num_outputs': 2,
+    })
+
+
 def test_poker(tmp_path):
     num_features = 10
     
