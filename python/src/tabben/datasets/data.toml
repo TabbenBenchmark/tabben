@@ -33,3 +33,8 @@ classes = 2
 data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.3-pre/adult.npz"
 extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.3-pre/adult.json"
 task = "classification"
+
+[parkinsons]
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.4-pre/parkinsons.npz"
+outputs = 2
+task = "regression"
