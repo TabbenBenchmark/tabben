@@ -63,6 +63,11 @@ class ShallowClassificationNetwork(nn.Module):
         x = F.log_softmax(self.linear3(x), dim=1)
         
         return x
+    
+    def predict(self, inputs):
+        x = F.relu(self.linear1(inputs))
+        x = F.relu(self.linear2(x))
+        return F.softmax(self.linear3(x), dim=1)
 
 ```
 
@@ -125,6 +130,7 @@ You can play around with the hyperparameters, but the model isn't likely to get 
 ```python
 test_ds = OpenTabularDataset('./data/', 'poker', split='test')
 test_dl = DataLoader(test_ds, batch_size=16)
+print(len(test_ds))
 ```
 
 Let's run the model and save its outputs for later evaluation.
@@ -137,20 +143,32 @@ gt_outputs = []
 
 for test_inputs, test_outputs in test_dl:
     batch_outputs = model(test_inputs.float().to(device))
-    pred_outputs.append(batch_outputs.cpu())
+    pred_outputs.append(batch_outputs.detach().cpu())
     gt_outputs.append(test_outputs)
 ```
 
 ```python
-test_pred_outputs = torch.vstack(pred_outputs)
-test_gt_outputs = torch.vstack(gt_outputs)
+test_pred_outputs = torch.vstack(pred_outputs).detach().cpu()
+test_gt_outputs = torch.hstack(gt_outputs).detach().cpu()
+print(test_pred_outputs)
+print(test_gt_outputs)
 ```
 
-We can get an `Evaluator` object that will run the predefined evaluation metrics for us on the outputs of the test set.
+```python
+from sklearn.metrics import roc_auc_score
+print(ds.num_classes)
+roc_auc_score(test_pred_outputs, test_gt_outputs.int())
+```
+
+We can get the standard set of metrics and then evaluate the outputs of the test set on them.
 
 ```python
-evaluate = Evaluator('poker')
-test_metrics = evaluate(test_pred_outputs, test_gt_outputs)
+from tabben.evaluators import get_metrics
+
+eval_metrics = get_metrics(ds.task, classes=ds.num_classes)
+for metric in eval_metrics:
+    print(metric)
+    print(f'{metric}: {metric(test_pred_outputs, test_gt_outputs)}')
 ```
 
 ---
