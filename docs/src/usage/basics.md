@@ -51,4 +51,13 @@ print(list_datasets())
 
 ## Evaluating the Results of a Model
 
+There are standard metrics available (either from scikit-metrics or compatible with autogluon). For most cases,
+
+```python
+from tabben.evaluators import get_metrics
+
+eval_metrics = get_metrics('classification', classes=2)
+
+
+```
 

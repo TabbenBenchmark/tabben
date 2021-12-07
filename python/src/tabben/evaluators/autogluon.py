@@ -1,9 +1,9 @@
 from collections import namedtuple
 from functools import partial
 
-from . import evaluators
-from .evaluators import metrics
-from .utils import has_package_installed
+from . import metrics
+from . import get_metrics as generic_get_metrics
+from ..utils import has_package_installed
 
 if not has_package_installed('autogluon'):
     raise ImportError('Please install autogluon to use the autogluon-specific things')
@@ -33,4 +33,4 @@ ap_score = make_scorer(name='ap score',
 
 autogluon_globals = {key: val for key, val in globals().items() if not key.startswith('_')}
 attr_access_globals = namedtuple('autogluon', autogluon_globals.keys())(*autogluon_globals.values())
-get_metrics = partial(evaluators.get_metrics, namespace=attr_access_globals)
+get_metrics = partial(generic_get_metrics, namespace=attr_access_globals)
