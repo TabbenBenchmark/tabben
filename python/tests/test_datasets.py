@@ -4,6 +4,8 @@ from tabben.datasets import OpenTabularDataset, validate_dataset_file
 
 
 def check_sizes(ds, num_examples, num_features, num_outputs=1):
+    assert len(ds) == num_examples
+    
     # check the input and output arrays themselves
     X, y = ds.numpy()
     assert X.shape == (num_examples, num_features)

@@ -334,7 +334,7 @@ class OpenTabularDataset(Dataset):
         return data[f'{split}-data'], data[f'{split}-labels']
 
     def __len__(self):
-        return self.input_attributes.shape[0]
+        return self.inputs.shape[0]
 
     def __getitem__(self, idx):
         inputs = self.inputs[idx, :]
