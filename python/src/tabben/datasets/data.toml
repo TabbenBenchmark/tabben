@@ -11,7 +11,7 @@ task = "classification"
 classes = 7
 
 [higgs]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/higgs.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.4-pre/higgs.npz"
 doc_id = "1mz6E-5eV5ThnzdbimvTTeTTGSoJTjS_I"
 task = "classification"
 classes = 2
