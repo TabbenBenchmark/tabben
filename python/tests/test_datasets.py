@@ -96,6 +96,23 @@ def test_covertype(tmp_path):
 
 # test for higgs not included here because of its large size
 
+def test_musk(tmp_path):
+    num_features = 166
+    train_examples = 5278
+    test_examples = 1320
+    
+    check_split_sizes(tmp_path, 'musk', {
+        'train': (train_examples, num_features),
+        'test': (test_examples, num_features),
+    }, )
+    
+    check_attributes(tmp_path, 'musk', {
+        'task'       : 'classification',
+        'num_outputs': 1,
+        'num_classes': 2,
+    })
+
+
 def test_parkinsons(tmp_path):
     num_features = 16
     num_outputs = 2
