@@ -146,6 +146,23 @@ def test_poker(tmp_path):
     validate_dataset_file(tmp_path / 'poker.npz')
 
 
+def test_rossman(tmp_path):
+    num_features = 18
+    train_examples = 814_688
+    test_examples = 202_521
+    
+    check_split_sizes(tmp_path, 'rossman', {
+        'train': (25_010, num_features),
+        'test' : (1_000_000, num_features),
+    })
+    
+    check_attributes(tmp_path, 'rossman', {
+        'task'       : 'regression',
+    })
+    
+    validate_dataset_file(tmp_path / 'rossman.npz')
+
+
 def test_sarcos(tmp_path):
     num_features = 21
     num_outputs = 7

@@ -1,7 +1,9 @@
 # `tabben` v0.0.5
 
 ## New Features
-- new dataset: [musk (version 2)](https://archive.ics.uci.edu/ml/datasets/Musk+(Version+2))
+- new datasets:
+  - [musk (version 2)](https://archive.ics.uci.edu/ml/datasets/Musk+(Version+2))
+  - [rossman store sales prediction](https://www.kaggle.com/c/rossmann-store-sales/data?select=sample_submission.csv) (this dataset is somewhat preprocessed, splits are between stores, and the store id is removed)
 
 ## Breaking Changes
 

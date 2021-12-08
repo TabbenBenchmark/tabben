@@ -38,3 +38,9 @@ task = "regression"
 data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/musk.npz"
 task = "classification"
 classes = 2
+
+[rossman]
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/rossman.npz"
+extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/rossman.json"
+task = "regression"
+outputs = 1
