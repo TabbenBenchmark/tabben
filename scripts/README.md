@@ -1,8 +1,8 @@
 # Data Preprocessing Scripts
 
-This directory contains cmdline scripts for pre-processing the various datasets in the benchmark to a standard format.
+This directory contains cli scripts for pre-processing the various datasets in the benchmark to a standard format.
 
-At least right now, the scripts use a standard calling convention:
+The scripts use a standard calling convention:
 ```shell
 python3 [script name] [destination directory] --source [source directory or url parent] 
 ```
@@ -22,7 +22,7 @@ Each dataset is an [NPZ (compressed NPZ)](https://numpy.org/doc/stable/reference
 
 The standard split names are `train`, `valid`, and `test` (having a `valid` split is optional, but a `test` set is required).
 
-Other metadata can be included in this file with keys that start with `_`, but it's probably better to use other formats for the majority of metadata (otherwise it requires reading the entire data file in order to read metadata).
+Other metadata can be included in this file with keys that start with `_`, but it's probably better to use other formats for the majority of metadata (otherwise it requires having the data file in order to read metadata).
 
 (Files should *not* require `pickle`.)
 
@@ -32,6 +32,7 @@ Other metadata can be included in this file with keys that start with `_`, but i
 Complex metadata is saved as json, starting with the output of the dataprofiler.
 
 Additional fields that need/can be added at the top-level of the json object:
+- `'categories'`: mappings for categorical variables
 - license
 - bibtex
 
@@ -42,9 +43,9 @@ Additional fields that need/can be added at the top-level of the json object:
 - [ ] conform to a standard dtype? (not done currently)
 - [ ] produce unicode np arrays of the attribute names (one for the input attributes and one for the output attributes, see [format](#Data Format))
   - if no meaningful names, can just use numeric names (e.g. `'0'`, `'1'`, ... or `'A1'`, `'A2'`, ...)
-  - prefer `label` for the output attribute name
+  - prefer `label` for the output attribute name (not as important)
 - [ ] form numpy arrays for each training split based on [the above format](#Data Format)
 - [ ] generate metadata
-- [ ] upload data files to GitHub and add entry to [data.toml](/python/src/tabben/datasets/data.toml) (can use `tabben.datasets.register_dataset(..., persist=True, ...)`)
+- [ ] upload data files and add entry to [data.toml](/python/src/tabben/datasets/data.toml) (can use `tabben.datasets.register_dataset(..., persist=True, ...)`)
 - [ ] if not excessively large dataset, add unit tests
 

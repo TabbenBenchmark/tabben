@@ -1,3 +1,7 @@
+"""
+Set of utilities for creating standard dataset files for this benchmark.
+"""
+
 import argparse
 import os
 from pathlib import Path
@@ -20,18 +24,19 @@ def create_csv_reader(*roots, **configs):
     return reader
 
 
-def default_arg_parser(*,
-                       description='Download and convert files into a standard format',
-                       source_default='./'):
-    
+def default_config(*,
+                   description='Download and convert files into a standard format',
+                   source_default='./'):
     parser = argparse.ArgumentParser(description=description)
     
     parser.add_argument('outputdirectory', help='directory to save outputs')
-    parser.add_argument('--source', '-s',
-                        help='root of the source urls to download from, or the directory of source files',
-                        default=source_default)
+    parser.add_argument(
+        '--source', '-s',
+        help='root of the source urls to download from, or the directory of source files',
+        default=source_default
+    )
     
-    return parser
+    return parser.parse_args()
 
 
 def column_name_array(df):
@@ -39,9 +44,11 @@ def column_name_array(df):
 
 
 def hvcat(arrays):
-    return pd.concat([
-        pd.concat(row, axis=1) for row in arrays
-    ], axis=0)
+    return pd.concat(
+        [
+            pd.concat(row, axis=1) for row in arrays
+        ], axis=0
+    )
 
 
 def save_to_numpy_array(filename, df_dict):
@@ -58,10 +65,14 @@ def save_to_numpy_array(filename, df_dict):
 
 
 def split_by_label(df, col_name='label'):
-    return df.drop(col_name, axis=1), df[[col_name]]
+    if isinstance(col_name, str):
+        col_name = [col_name]
+    
+    return df.drop(col_name, axis=1), df[col_name]
 
 
 class JSONNumpyEncoder(json.JSONEncoder):
+    
     def default(self, obj):
         if isinstance(np.ndarray, obj):
             return obj.tolist()
@@ -76,3 +87,15 @@ def generate_profile(df, output_filename):
     with Path(output_filename).open('w') as f:
         json.dump(f, report, cls=JSONNumpyEncoder)
 
+
+def convert_categorical(df):
+    categorical_columns = df.select_dtypes(['category']).columns
+    
+    categories = {}
+    
+    for column in categorical_columns:
+        categories[column] = list(df[column].cat.categories)
+    
+    df[categorical_columns] = df[categorical_columns].apply(lambda x: x.cat.codes)
+    
+    return categories

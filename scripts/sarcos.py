@@ -1,5 +1,6 @@
 """
-
+Convert the source files for the sarcos dataset to the standardized format. The raw
+files are in a MATLAB .mat format.
 
 Note: this dataset should be downloaded locally first (don't supply a URL source).
 """
@@ -9,15 +10,15 @@ import os
 import numpy as np
 from scipy.io import loadmat
 
-from utils import default_arg_parser, save_to_numpy_array
+from utils import default_config, save_to_numpy_array
 
 input_column_names = [
-    *[f'P{num}' for num in range(1, 7+1)],
-    *[f'V{num}' for num in range(1, 7+1)],
-    *[f'A{num}' for num in range(1, 7+1)],
+    *[f'P{num}' for num in range(1, 7 + 1)],
+    *[f'V{num}' for num in range(1, 7 + 1)],
+    *[f'A{num}' for num in range(1, 7 + 1)],
 ]
 
-output_column_names = [f'T{num}' for num in range(1, 7+1)]
+output_column_names = [f'T{num}' for num in range(1, 7 + 1)]
 
 
 def input_output_split(mat):
@@ -30,19 +31,19 @@ def convert_format(config):
     
     train_data, train_labels = input_output_split(train_mat)
     test_data, test_labels = input_output_split(test_mat)
-
-    save_to_numpy_array(os.path.join(config.outputdirectory, 'sarcos'), {
-        'train-data'  : train_data,
-        'train-labels': train_labels,
-        'test-data'   : test_data,
-        'test-labels' : test_labels,
-        '_columns-data': np.array(input_column_names, dtype=np.str_),
-        '_columns-labels': np.array(output_column_names, dtype=np.str_),
-    })
+    
+    save_to_numpy_array(
+        os.path.join(config.outputdirectory, 'sarcos'), {
+            'train-data': train_data,
+            'train-labels': train_labels,
+            'test-data': test_data,
+            'test-labels': test_labels,
+            '_columns-data': np.array(input_column_names, dtype=np.str_),
+            '_columns-labels': np.array(output_column_names, dtype=np.str_),
+        }
+    )
 
 
 if __name__ == '__main__':
-    args = default_arg_parser().parse_args()
-    
+    args = default_config()
     convert_format(args)
-

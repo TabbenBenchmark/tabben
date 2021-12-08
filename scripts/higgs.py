@@ -1,10 +1,10 @@
 """
-Script to convert HIGGS CSV data to standardized PyTorch data. The file should be 
+Convert HIGGS CSV data to the standardized format. The file should be
 already downloaded from the website (should work by downloading automatically, but
-it's a large uncompressed text file).
+it's a large uncompressed text file and sometimes has failed).
 
 Note: this script assumes that the host computer has sufficient memory to load
-all of the HIGGS data into memory comfortably.
+all the HIGGS data into memory *comfortably*.
 """
 
 import os
@@ -12,7 +12,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from utils import column_name_array, save_to_numpy_array, default_arg_parser
+from utils import column_name_array, default_config, save_to_numpy_array, split_by_label
 
 column_names = [
     'label',
@@ -50,34 +50,33 @@ column_names = [
 def convert_format(config):
     # load full CSV file into pandas
     df = pd.read_csv(
-            os.path.join(config.source, 'HIGGS.csv.gz'),
-            header=None,
-            index_col=None,
-            names=column_names)
-
+        os.path.join(config.source, 'HIGGS.csv.gz'),
+        header=None,
+        index_col=None,
+        names=column_names
+    )
+    
     # split into their standard train/test sets
     train_df = df[:-500_000]
     test_df = df[-500_000:]
     
-    train_data_df = train_df.drop('label', axis=1)
-    train_label_df = train_df['label']
-    test_data_df = test_df.drop('label', axis=1)
-    test_label_df = test_df['label']
-
-    save_to_numpy_array(os.path.join(config.outputdirectory, 'higgs'), {
-        'train-data': train_data_df,
-        'train-labels': train_label_df,
-        'test-data': test_data_df,
-        'test-labels': test_label_df,
-        '_columns-data': column_name_array(train_data_df),
-        '_columns-labels': np.array(['label'], dtype=np.str_),
-    })
+    train_data_df, train_labels_df = split_by_label(train_df)
+    test_data_df, test_labels_df = split_by_label(test_df)
+    
+    save_to_numpy_array(
+        os.path.join(config.outputdirectory, 'higgs'), {
+            'train-data': train_data_df,
+            'train-labels': train_labels_df,
+            'test-data': test_data_df,
+            'test-labels': test_labels_df,
+            '_columns-data': column_name_array(train_data_df),
+            '_columns-labels': np.array(['label'], dtype=np.str_),
+        }
+    )
 
 
 if __name__ == '__main__':
-    config = default_arg_parser(
-            source_default='https://archive.ics.uci.edu/ml/machine-learning-databases/00280/',
-    ).parse_args()
+    config = default_config(
+        source_default='https://archive.ics.uci.edu/ml/machine-learning-databases/00280/',
+    )
     convert_format(config)
-
-
