@@ -170,8 +170,8 @@ def test_rossman(tmp_path):
     test_examples = 202_521
     
     check_split_sizes(tmp_path, 'rossman', {
-        'train': (25_010, num_features),
-        'test' : (1_000_000, num_features),
+        'train': (train_examples, num_features),
+        'test' : (test_examples, num_features),
     })
     
     check_attributes(tmp_path, 'rossman', {
