@@ -61,6 +61,24 @@ def test_adult(tmp_path):
     validate_dataset_file(tmp_path / 'adult.npz')
 
 
+def test_amazon(tmp_path):
+    num_features = 9
+    train_examples = 26_215
+    test_examples = 6_554
+    
+    check_split_sizes(tmp_path, 'amazon', {
+        'train': (train_examples, num_features),
+        'test' : (test_examples, num_features),
+    })
+    
+    check_attributes(tmp_path, 'amazon', {
+        'task'       : 'classification',
+        'num_classes': 2,
+    })
+    
+    validate_dataset_file(tmp_path / 'amazon.npz')
+
+
 def test_arcene(tmp_path):
     train_test_shape = (100, 10_000)
     
