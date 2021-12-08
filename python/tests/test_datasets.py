@@ -116,8 +116,8 @@ def test_musk(tmp_path):
 def test_parkinsons(tmp_path):
     num_features = 16
     num_outputs = 2
-    train_examples = 4700
-    test_examples = 1175
+    train_examples = 4646
+    test_examples = 1229
     
     check_split_sizes(tmp_path, 'parkinsons', {
         'train': (train_examples, num_features, num_outputs),

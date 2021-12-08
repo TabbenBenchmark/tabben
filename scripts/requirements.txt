@@ -1,6 +1,7 @@
 numpy
 pandas
 scipy
+scikit-learn
 simplejson
 DataProfiler[reports]
 requests

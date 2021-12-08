@@ -6,7 +6,7 @@
 ## Breaking Changes
 
 ## Non-Breaking Changes
-- update `parkinsons` dataset: different train/test split (splitting process may still need to be changed)
+- update `parkinsons` dataset: different train/test split (splits by subject---no subject appears in both train and test)
 
 ## Bugfixes
 

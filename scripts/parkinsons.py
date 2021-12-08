@@ -1,7 +1,8 @@
 import os
 
-from utils import save_to_numpy_array, create_csv_reader, default_arg_parser, column_name_array, \
-    split_by_label
+from sklearn.model_selection import train_test_split
+
+from utils import column_name_array, create_csv_reader, default_arg_parser, save_to_numpy_array
 
 
 def convert_format(config):
@@ -9,7 +10,6 @@ def convert_format(config):
             config.source,
             header=0,
             index_col=None,
-            usecols=range(4, 22),
             sep=',',
             skipinitialspace=True,
     )
@@ -17,12 +17,14 @@ def convert_format(config):
     df = read_csv('parkinsons_updrs.data')
     df = df.sample(frac=1, random_state=171_234)  # shuffle rows
     
-    train_examples = int(0.80 * df.shape[0])
-    train_df = df.iloc[:train_examples]
-    test_df = df.iloc[train_examples:]
+    train_subjects, test_subjects = train_test_split(df['subject#'].unique(), train_size=0.8,
+                                                     random_state=171_234, )
     
-    input_columns = df.columns[2:]
-    output_columns = df.columns[:2]
+    train_df = df[df['subject#'].isin(train_subjects)]
+    test_df = df[df['subject#'].isin(test_subjects)]
+    
+    input_columns = df.columns[6:]
+    output_columns = df.columns[4:5+1]
     
     train_data_df, train_labels_df = train_df[input_columns], train_df[output_columns]
     test_data_df, test_labels_df = test_df[input_columns], test_df[output_columns]
