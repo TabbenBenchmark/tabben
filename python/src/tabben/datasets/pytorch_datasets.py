@@ -202,6 +202,8 @@ def validate_dataset_file(filepath: PathLike):
 def check_version(dataset_filepath: PathLike, min_version: str):
     min_version = tuple(min_version.split('.'))
     with np.load(dataset_filepath) as data:
+        if '_version' not in data.files:
+            return False
         actual_version = tuple(data['_version'].item().split('.'))
         
     assert len(min_version) == len(actual_version) == 3

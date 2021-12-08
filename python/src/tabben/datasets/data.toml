@@ -1,36 +1,37 @@
 [arcene]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/arcene.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/arcene.npz"
 task = "classification"
 classes = 2
 
 [covertype]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/covertype.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/covertype.npz"
+extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/covertype.json"
 task = "classification"
 classes = 7
 
 [higgs]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.4-pre/higgs.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/higgs.npz"
 task = "classification"
 classes = 2
 
 [poker]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/poker.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/poker.npz"
 task = "classification"
 classes = 10
 
 [sarcos]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.2-pre/sarcos.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/sarcos.npz"
 task = "regression"
 outputs = 7
 
 [adult]
 classes = 2
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.3-pre/adult.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.3-pre/adult.json"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/adult.npz"
+extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/adult.json"
 task = "classification"
 
 [parkinsons]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.4-pre/parkinsons.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/parkinsons.npz"
 outputs = 2
 task = "regression"
 
@@ -46,7 +47,7 @@ task = "regression"
 outputs = 1
 
 [amazon]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/musk.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/amazon.npz"
 task = "classification"
 outputs = 1
 classes = 2
