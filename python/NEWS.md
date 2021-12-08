@@ -9,7 +9,9 @@
 ## Breaking Changes
 
 ## Non-Breaking Changes
+- latest dataset files all have versions; versions are now required in the dataset files (will redownload if not present)
 - update `parkinsons` dataset: different train/test split (splits by subject---no subject appears in both train and test)
+- `covertype` labels now range from 0-6 (previously were 1-7, which can sometimes cause issues)
 
 ## Bugfixes
 
