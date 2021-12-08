@@ -116,8 +116,8 @@ def test_covertype(tmp_path):
 
 def test_musk(tmp_path):
     num_features = 166
-    train_examples = 5278
-    test_examples = 1320
+    train_examples = 5548
+    test_examples = 1050
     
     check_split_sizes(tmp_path, 'musk', {
         'train': (train_examples, num_features),

@@ -27,8 +27,16 @@ def convert_format(config):
     )
     
     df = read_csv('clean2.data')
-    train_molecules, test_molecules = train_test_split(df, train_size=0.8, random_state=171_234,
-                                                       stratify=df['musk'])
+    
+    molecule_musk = df[['molecule_name', 'musk']] \
+        .groupby('molecule_name', as_index=False) \
+        .agg(lambda x: int(x.value_counts().index[0]))
+    
+    train_molecules, test_molecules = train_test_split(
+        molecule_musk['molecule_name'], train_size=0.8,
+        random_state=17_123,
+        stratify=molecule_musk['musk']
+        )
     
     train_df = df[df['molecule_name'].isin(train_molecules)].drop(column_names[:2], axis=1)
     test_df = df[df['molecule_name'].isin(test_molecules)].drop(column_names[:2], axis=1)
