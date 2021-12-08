@@ -23,12 +23,15 @@ def convert_format(config):
         header=None,
         index_col=None,
         names=column_names,
-        usecols=column_names[2:],
         sep=',',
     )
     
     df = read_csv('clean2.data')
-    train_df, test_df = train_test_split(df, train_size=0.8, random_state=171_234)
+    train_molecules, test_molecules = train_test_split(df, train_size=0.8, random_state=171_234,
+                                                       stratify=df['musk'])
+    
+    train_df = df[df['molecule_name'].isin(train_molecules)].drop(column_names[:2], axis=1)
+    test_df = df[df['molecule_name'].isin(test_molecules)].drop(column_names[:2], axis=1)
     
     train_data_df, train_labels_df = split_by_label(train_df, 'musk')
     test_data_df, test_labels_df = split_by_label(test_df, 'musk')
