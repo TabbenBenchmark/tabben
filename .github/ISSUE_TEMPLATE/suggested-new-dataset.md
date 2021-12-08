@@ -1,5 +1,5 @@
 ---
-name: Suggested new dataset
+name: Suggest a new dataset
 about: Suggest the addition of a new tabular dataset for the benchmark
 title: ''
 labels: enhancement
