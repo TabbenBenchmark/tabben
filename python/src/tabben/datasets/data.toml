@@ -19,11 +19,6 @@ data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/do
 task = "classification"
 classes = 10
 
-[sarcos]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/sarcos.npz"
-task = "regression"
-outputs = 7
-
 [adult]
 classes = 2
 data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/adult.npz"

@@ -180,20 +180,3 @@ def test_rossman(tmp_path):
     
     validate_dataset_file(tmp_path / 'rossman.npz')
 
-
-def test_sarcos(tmp_path):
-    num_features = 21
-    num_outputs = 7
-    
-    check_split_sizes(tmp_path, 'sarcos', {
-        'train': (44_484, num_features, num_outputs),
-        'test': (4_449, num_features, num_outputs),
-    })
-
-    check_attributes(tmp_path, 'sarcos', {
-        'task': 'regression',
-        'num_outputs': 7
-    })
-
-    validate_dataset_file(tmp_path / 'sarcos.npz')
-
