@@ -12,4 +12,4 @@ ensure_downloaded('path/to/directory',
                   'higgs')
 ```
 
-Note that this doesn't include the CIFAR10 dataset (yet).
+Note that this doesn't handle the CIFAR10 dataset automatically (yet).
