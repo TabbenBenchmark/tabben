@@ -1,6 +1,6 @@
 # A Python package for the Open Benchmark for Tabular Data
 
-[![Package Unit Tests](https://github.com/umd-otb/OpenTabularDataBenchmark/actions/workflows/test.yml/badge.svg)](https://github.com/umd-otb/OpenTabularDataBenchmark/actions/workflows/test.yml)
+[![Package Unit Tests (Latest)](https://github.com/umd-otb/OpenTabularDataBenchmark/actions/workflows/test.yml/badge.svg)](https://github.com/umd-otb/OpenTabularDataBenchmark/actions/workflows/test.yml)
 
 ## Set Up
 
@@ -9,7 +9,7 @@ For the most recent *stable* release, you can install the `tabben` package from 
 pip3 install tabben --upgrade
 ```
 
-If testing/using locally from source, you can install the `tabben` package locally; from this directory,
+If testing/using locally from source, you can install the `tabben` package locally; first clone this repository locally, and then install from this directory:
 ```shell
 pip3 install -e .
 ```

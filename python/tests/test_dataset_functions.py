@@ -1,3 +1,8 @@
+"""
+Test the functions used for maintaining the state of the datasets (handling of
+metadata, registering new datasets, etc.).
+"""
+
 from tabben.datasets import register_dataset, list_datasets
 import pytest
 

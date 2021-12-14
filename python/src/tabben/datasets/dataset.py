@@ -1,7 +1,9 @@
 """
-Implementation of a (PyTorch) Dataset for benchmarks, also providing access methods
-via numpy arrays or pandas dataframes (should not access this class directly).
+Implementation of a dataset class for benchmarks, also providing access methods
+via numpy arrays or pandas dataframes (should not access this class directly). If
+PyTorch is installed, the dataset class can be used as a PyTorch-compatible dataset.
 """
+
 import pathlib
 import shutil
 from collections import defaultdict
@@ -15,10 +17,16 @@ import numpy as np
 import requests
 import toml
 from requests import HTTPError
-from torch.utils.data import Dataset
 from tqdm.auto import tqdm
 
 from ..utils import has_package_installed, PathLike
+
+if not has_package_installed('torch'):
+    # since torch is a heavy requirement for those who don't use it, make it optional
+    warn('Install PyTorch to use the dataset as a PyTorch-compatible dataset')
+    Dataset = object
+else:
+    from torch.utils.data import Dataset
 
 __all__ = [
     # functions
@@ -38,7 +46,6 @@ __all__ = [
 # metadata for each (non-CIFAR) dataset.
 with resources.open_text('tabben.datasets', 'data.toml') as metadata_file:
     metadata = toml.load(metadata_file)
-
 
 allowed_tasks = {
     'classification',
@@ -89,7 +96,7 @@ def register_dataset(name: str, task: str = 'classification', *, persist=False, 
     if 'outputs' not in kwargs:
         warn('The number of outputs was not specified using `outputs`, assuming 1 output variable')
         kwargs['outputs'] = 1
-        
+    
     if 'classes' not in kwargs and task == 'classification':
         warn('The number of classes was not specified using `classes`, assuming 2 classes')
         kwargs['classes'] = 2
@@ -139,8 +146,10 @@ def validate_dataset_file(filepath: PathLike):
     splits_parts = defaultdict(set)
     for split_name in split_names:
         if split_name.count('-') != 1:
-            raise DatasetFormatError('Dataset arrays not starting with underscore need to have exactly 1 '
-                                     'dash in the name')
+            raise DatasetFormatError(
+                'Dataset arrays not starting with underscore need to have exactly 1 '
+                'dash in the name'
+            )
         
         split, _, part = split_name.partition('-')
         
@@ -151,8 +160,10 @@ def validate_dataset_file(filepath: PathLike):
         extra_parts = parts - {'data', 'labels'}
         
         if len(missing_parts) > 0:
-            raise DatasetFormatError(f'Dataset has missing parts for `{split}` split:'
-                                     f' {", ".join(missing_parts)}')
+            raise DatasetFormatError(
+                f'Dataset has missing parts for `{split}` split:'
+                f' {", ".join(missing_parts)}'
+            )
         if len(extra_parts) > 0:
             raise DatasetFormatError(f'Dataset has extra parts for `{split}` split: {", ".join(extra_parts)}')
     
@@ -195,25 +206,27 @@ def validate_dataset_file(filepath: PathLike):
         raise DatasetFormatError('Number of input attributes does not match between splits')
     if any(num != num_outputs[0] for num in num_outputs):
         raise DatasetFormatError('Number of output labels does not match between splits')
-
-    print(f'Verified the dataset file located at `{filepath}`')
     
+    print(f'Verified the dataset file located at `{filepath}`')
+
 
 def check_version(dataset_filepath: PathLike, min_version: str):
     min_version = tuple(min_version.split('.'))
     with np.load(dataset_filepath) as data:
+        # if `_version` not in the file, treat as incompatible with any version
         if '_version' not in data.files:
             return False
-        actual_version = tuple(data['_version'].item().split('.'))
         
+        actual_version = tuple(data['_version'].item().split('.'))
+    
     assert len(min_version) == len(actual_version) == 3
     
     for actual_part, min_part in zip(actual_version, min_version):
         if int(actual_part) < int(min_part):
             return False
-        
-    return True
     
+    return True
+
 
 def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True):
     """
@@ -249,7 +262,7 @@ def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True)
         if r.status_code != requests.codes.ok:
             r.raise_for_status()
             raise RuntimeError(f'Unable to download file from `{source_url}`')
-
+        
         # determine total file size for the progress bar
         declared_file_size = int(r.headers.get('Content-Length', 0))
         desc = '(Unknown file size)' if declared_file_size == 0 else ''
@@ -264,7 +277,7 @@ def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True)
         raise ValueError('Data file(s) don\'t exist but not instructed to download')
 
 
-def ensure_downloaded(data_dir: PathLike, *datasets: Sequence[str]):
+def ensure_downloaded(data_dir: PathLike, *datasets: str):
     """
     Downloads the specified datasets (all available datasets if none specified)
     into the data directory. This is useful e.g. using this package in an environment
@@ -312,10 +325,10 @@ class OpenTabularDataset(Dataset):
         self.split = split
         self.transform = transform
         self.target_transform = target_transform
-
+        
         if self.name not in metadata:
             raise ValueError(f'dataset with name `{self.name}` not recognized')
-
+        
         # download data if not yet already
         data_filename = self.data_dir / f'{self.name}.npz'
         _download_datafile(metadata[name]['data_location'], data_filename, download)
@@ -327,17 +340,17 @@ class OpenTabularDataset(Dataset):
             self.inputs, self.outputs = self._extract_split(data, split)
             self.input_attributes = data['_columns-data']
             self.output_attributes = data['_columns-labels']
-
+    
     def _extract_split(self, data, split: str):
         if split not in self.splits:
             raise ValueError(f'dataset `{self.name}` does not have a `{split}` split')
-    
+        
         # return requested split
         return data[f'{split}-data'], data[f'{split}-labels']
-
+    
     def __len__(self):
         return self.inputs.shape[0]
-
+    
     def __getitem__(self, idx):
         inputs = self.inputs[idx, :]
         outputs = self.outputs[idx].item() if self.outputs[idx].size == 1 else self.outputs[idx]
@@ -348,13 +361,13 @@ class OpenTabularDataset(Dataset):
             outputs = self.target_transform(outputs)
         
         return inputs, outputs
-
+    
     def __eq__(self, other):
         if not isinstance(OpenTabularDataset, other):
             return False
         
         return self.name == other.name and self.split == other.split and self.transform == other.transform \
-            and self.target_transform == self.target_transform
+               and self.target_transform == self.target_transform
     
     def __repr__(self):
         attributes = {
@@ -365,7 +378,7 @@ class OpenTabularDataset(Dataset):
             'target_transform': repr(self.target_transform),
         }
         attributes_string = ', '.join(
-                '='.join(pair) for pair in attributes.items()
+            '='.join(pair) for pair in attributes.items()
         )
         return f'OpenTabularDataset({attributes_string})'
     
@@ -397,15 +410,19 @@ class OpenTabularDataset(Dataset):
             raise ImportError('Install pandas to load a dataset as a pandas dataframe')
         
         import pandas as pd
-
+        
         # put input attributes and the output labels in the same dataframe
-        combined = np.hstack((
-            self.inputs,
-            np.expand_dims(self.outputs, -1) if self.inputs.ndim == self.outputs.ndim + 1 else self.outputs
-        ))
+        combined = np.hstack(
+            (
+                self.inputs,
+                np.expand_dims(
+                    self.outputs, -1
+                ) if self.inputs.ndim == self.outputs.ndim + 1 else self.outputs
+            )
+        )
         all_columns = np.hstack((self.input_attributes, self.output_attributes))
-
+        
         return pd.DataFrame(data=combined, columns=all_columns)
-
+    
     def numpy(self) -> (np.ndarray, np.ndarray):
         return self.inputs, self.outputs

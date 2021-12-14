@@ -1,9 +1,9 @@
 """
-Wraps the standard torchvision CIFAR10 Dataset and treats each image as a flattened
-vector of attributes (should not be accessed directly).
+Implements a dataset for the CIFAR10 dataset with cleaned test labels (training
+labels are not cleaned).
 """
 
-from typing import Union, Iterable
+from typing import Iterable, Union
 
 from torch.utils.data import Dataset
 
@@ -28,16 +28,18 @@ class TabularCIFAR10Dataset(Dataset):
         if isinstance(split, str):
             split = [split]
         
-        transform = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-        ])
+        transform = transforms.Compose(
+            [
+                transforms.ToTensor(),
+                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+            ]
+        )
         
         self.ds = torchvision.datasets.CIFAR10(
-                data_dir,
-                train='train' in split,
-                download=download,
-                transform=transform,
+            data_dir,
+            train='train' in split,
+            download=download,
+            transform=transform,
         )
     
     def __len__(self):
@@ -47,4 +49,3 @@ class TabularCIFAR10Dataset(Dataset):
         im_data, im_label = self.ds.__getitem__(idx)
         
         return im_data.flatten(), im_label
-

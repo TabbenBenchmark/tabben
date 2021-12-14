@@ -1,6 +1,6 @@
 """
 This is a setup.py file used *only* for allowing `pip install -e .` to work as a dev
-environment. Everything else should use `setup.cfg` (for now, the files are manually
+environment. Everything else should use `setup.cfg` (the files need to be manually
 kept in sync).
 """
 

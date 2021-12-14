@@ -1,7 +1,14 @@
-from torch.utils.data import DataLoader
+"""
+Test the dataset files themselves and whether they can loaded properly.
+"""
 
 from tabben.datasets import OpenTabularDataset, validate_dataset_file
+from torch.utils.data import DataLoader
 
+
+################################################################################
+# Common Utilities
+################################################################################
 
 def check_sizes(ds, num_examples, num_features, num_outputs=1):
     assert len(ds) == num_examples
@@ -43,20 +50,28 @@ def check_attributes(directory, ds_name, attributes_dict):
         assert getattr(ds, attr_name) == attr_value
 
 
+################################################################################
+# Tests for each individual dataset
+################################################################################
+
 def test_adult(tmp_path):
     num_features = 14
     train_examples = 32_561
     test_examples = 16_281
     
-    check_split_sizes(tmp_path, 'adult', {
-        'train': (train_examples, num_features),
-        'test': (test_examples, num_features),
-    })
+    check_split_sizes(
+        tmp_path, 'adult', {
+            'train': (train_examples, num_features),
+            'test': (test_examples, num_features),
+        }
+    )
     
-    check_attributes(tmp_path, 'adult', {
-        'task': 'classification',
-        'num_classes': 2,
-    })
+    check_attributes(
+        tmp_path, 'adult', {
+            'task': 'classification',
+            'num_classes': 2,
+        }
+    )
     
     validate_dataset_file(tmp_path / 'adult.npz')
 
@@ -66,15 +81,19 @@ def test_amazon(tmp_path):
     train_examples = 26_215
     test_examples = 6_554
     
-    check_split_sizes(tmp_path, 'amazon', {
-        'train': (train_examples, num_features),
-        'test' : (test_examples, num_features),
-    })
+    check_split_sizes(
+        tmp_path, 'amazon', {
+            'train': (train_examples, num_features),
+            'test': (test_examples, num_features),
+        }
+    )
     
-    check_attributes(tmp_path, 'amazon', {
-        'task'       : 'classification',
-        'num_classes': 2,
-    })
+    check_attributes(
+        tmp_path, 'amazon', {
+            'task': 'classification',
+            'num_classes': 2,
+        }
+    )
     
     validate_dataset_file(tmp_path / 'amazon.npz')
 
@@ -82,15 +101,19 @@ def test_amazon(tmp_path):
 def test_arcene(tmp_path):
     train_test_shape = (100, 10_000)
     
-    check_split_sizes(tmp_path, 'arcene', {
-        'train': train_test_shape,
-        'test': train_test_shape,  # arcene's "official" validation set used as test set
-    })
+    check_split_sizes(
+        tmp_path, 'arcene', {
+            'train': train_test_shape,
+            'test': train_test_shape,  # arcene's "official" validation set used as test set
+        }
+    )
     
-    check_attributes(tmp_path, 'arcene', {
-        'task': 'classification',
-        'num_classes': 2,
-    })
+    check_attributes(
+        tmp_path, 'arcene', {
+            'task': 'classification',
+            'num_classes': 2,
+        }
+    )
     
     validate_dataset_file(tmp_path / 'arcene.npz')
 
@@ -98,17 +121,21 @@ def test_arcene(tmp_path):
 def test_covertype(tmp_path):
     num_features = 54
     
-    check_split_sizes(tmp_path, 'covertype', {
-        'train': (11_340, num_features),
-        'valid': (3_780, num_features),
-        'test': (565_892, num_features),
-    })
-
-    check_attributes(tmp_path, 'covertype', {
-        'task': 'classification',
-        'num_classes': 7,
-    })
-
+    check_split_sizes(
+        tmp_path, 'covertype', {
+            'train': (11_340, num_features),
+            'valid': (3_780, num_features),
+            'test': (565_892, num_features),
+        }
+    )
+    
+    check_attributes(
+        tmp_path, 'covertype', {
+            'task': 'classification',
+            'num_classes': 7,
+        }
+    )
+    
     validate_dataset_file(tmp_path / 'covertype.npz')
 
 
@@ -119,16 +146,19 @@ def test_musk(tmp_path):
     train_examples = 5548
     test_examples = 1050
     
-    check_split_sizes(tmp_path, 'musk', {
-        'train': (train_examples, num_features),
-        'test': (test_examples, num_features),
-    }, )
+    check_split_sizes(
+        tmp_path, 'musk', {
+            'train': (train_examples, num_features),
+            'test': (test_examples, num_features),
+        }, )
     
-    check_attributes(tmp_path, 'musk', {
-        'task'       : 'classification',
-        'num_outputs': 1,
-        'num_classes': 2,
-    })
+    check_attributes(
+        tmp_path, 'musk', {
+            'task': 'classification',
+            'num_outputs': 1,
+            'num_classes': 2,
+        }
+    )
 
 
 def test_parkinsons(tmp_path):
@@ -137,30 +167,37 @@ def test_parkinsons(tmp_path):
     train_examples = 4646
     test_examples = 1229
     
-    check_split_sizes(tmp_path, 'parkinsons', {
-        'train': (train_examples, num_features, num_outputs),
-        'test': (test_examples, num_features, num_outputs),
-    }, )
+    check_split_sizes(
+        tmp_path, 'parkinsons', {
+            'train': (train_examples, num_features, num_outputs),
+            'test': (test_examples, num_features, num_outputs),
+        }, )
     
-    check_attributes(tmp_path, 'parkinsons', {
-        'task': 'regression',
-        'num_outputs': 2,
-    })
+    check_attributes(
+        tmp_path, 'parkinsons', {
+            'task': 'regression',
+            'num_outputs': 2,
+        }
+    )
 
 
 def test_poker(tmp_path):
     num_features = 10
     
-    check_split_sizes(tmp_path, 'poker', {
-        'train': (25_010, num_features),
-        'test': (1_000_000, num_features),
-    })
-
-    check_attributes(tmp_path, 'poker', {
-        'task': 'classification',
-        'num_classes': 10,
-    })
-
+    check_split_sizes(
+        tmp_path, 'poker', {
+            'train': (25_010, num_features),
+            'test': (1_000_000, num_features),
+        }
+    )
+    
+    check_attributes(
+        tmp_path, 'poker', {
+            'task': 'classification',
+            'num_classes': 10,
+        }
+    )
+    
     validate_dataset_file(tmp_path / 'poker.npz')
 
 
@@ -169,14 +206,17 @@ def test_rossman(tmp_path):
     train_examples = 814_688
     test_examples = 202_521
     
-    check_split_sizes(tmp_path, 'rossman', {
-        'train': (train_examples, num_features),
-        'test' : (test_examples, num_features),
-    })
+    check_split_sizes(
+        tmp_path, 'rossman', {
+            'train': (train_examples, num_features),
+            'test': (test_examples, num_features),
+        }
+    )
     
-    check_attributes(tmp_path, 'rossman', {
-        'task'       : 'regression',
-    })
+    check_attributes(
+        tmp_path, 'rossman', {
+            'task': 'regression',
+        }
+    )
     
     validate_dataset_file(tmp_path / 'rossman.npz')
-

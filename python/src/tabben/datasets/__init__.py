@@ -1,10 +1,10 @@
 """
 Provides Dataset objects for datasets in this benchmark, and various functions for
-working with the datasets.
+working with the datasets or collections of datasets.
 """
 
-from .image_datasets import TabularCIFAR10Dataset
-from .pytorch_datasets import *
+from .cifar import TabularCIFAR10Dataset
+from .dataset import *
 
 
 def list_datasets():
