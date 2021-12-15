@@ -1,5 +1,5 @@
 """
-Test the dataset files themselves and whether they can loaded properly.
+Test the dataset files themselves and whether they can be loaded properly.
 """
 
 from tabben.datasets import OpenTabularDataset, validate_dataset_file
@@ -160,6 +160,8 @@ def test_musk(tmp_path):
         }
     )
 
+    validate_dataset_file(tmp_path / 'musk.npz')
+
 
 def test_parkinsons(tmp_path):
     num_features = 16
@@ -179,6 +181,8 @@ def test_parkinsons(tmp_path):
             'num_outputs': 2,
         }
     )
+
+    validate_dataset_file(tmp_path / 'parkinsons.npz')
 
 
 def test_poker(tmp_path):
