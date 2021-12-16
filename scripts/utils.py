@@ -36,7 +36,20 @@ def default_config(*,
         default=source_default
     )
     
-    return parser.parse_args()
+    parser.add_argument('--dataset-file', action='store_true',
+                        help='Generate the NPZ dataset file')
+    parser.add_argument('--extras-file', action='store_true',
+                        help='Generate the metadata data if needed')
+    
+    parser.add_argument('--no-profile', action='store_true')
+    
+    args = parser.parse_args()
+    
+    if not any([args.dataset_file, args.metadata_file]):
+        args.dataset_file = True
+        args.metadata_file = True
+    
+    return args
 
 
 def column_name_array(df):
@@ -74,18 +87,20 @@ def split_by_label(df, col_name='label'):
 class JSONNumpyEncoder(json.JSONEncoder):
     
     def default(self, obj):
-        if isinstance(np.ndarray, obj):
+        if isinstance(obj, np.ndarray):
             return obj.tolist()
         
         return json.JSONEncoder.default(self, obj)
 
 
-def generate_profile(df, output_filename):
+def save_json(data, filename):
+    with Path(filename).open('w') as f:
+        json.dump(data, f, cls=JSONNumpyEncoder)
+
+
+def generate_profile(df):
     profile = Profiler(df)
-    report = profile.report(report_options={"output_format": "serializable"})
-    
-    with Path(output_filename).open('w') as f:
-        json.dump(f, report, cls=JSONNumpyEncoder)
+    return profile.report(report_options={"output_format": "serializable"})
 
 
 def convert_categorical(df):

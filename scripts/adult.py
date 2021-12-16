@@ -8,7 +8,7 @@ import pandas as pd
 import simplejson as json
 
 from utils import column_name_array, convert_categorical, create_csv_reader, default_config, \
-    save_to_numpy_array, split_by_label
+    generate_profile, save_json, save_to_numpy_array, split_by_label
 
 column_names = [
     'age',
@@ -54,28 +54,28 @@ def convert_format(config):
     combined_df[categorical_column_names] = combined_df[categorical_column_names].astype('category')
     categories = convert_categorical(combined_df)
     
-    train_df = combined_df.iloc[:32_561]
-    test_df = combined_df.iloc[32_561:]
-    train_data_df, train_labels_df = split_by_label(train_df, 'income')
-    test_data_df, test_labels_df = split_by_label(test_df, 'income')
-    
-    save_to_numpy_array(
-        os.path.join(config.outputdirectory, 'adult'), {
-            'train-data': train_data_df,
-            'train-labels': train_labels_df,
-            'test-data': test_data_df,
-            'test-labels': test_labels_df,
-            '_columns-data': column_name_array(train_data_df),
-            '_columns-labels': column_name_array(train_labels_df),
-        }
-    )
-    
-    with open(os.path.join(config.outputdirectory, 'adult.json'), 'w') as f:
-        json.dump(
-            {
-                'categories': categories,
-            }, f
+    if config.dataset_file:
+        train_df = combined_df.iloc[:32_561]
+        test_df = combined_df.iloc[32_561:]
+        train_data_df, train_labels_df = split_by_label(train_df, 'income')
+        test_data_df, test_labels_df = split_by_label(test_df, 'income')
+        
+        save_to_numpy_array(
+            os.path.join(config.outputdirectory, 'adult'), {
+                'train-data': train_data_df,
+                'train-labels': train_labels_df,
+                'test-data': test_data_df,
+                'test-labels': test_labels_df,
+                '_columns-data': column_name_array(train_data_df),
+                '_columns-labels': column_name_array(train_labels_df),
+            }
         )
+    
+    if config.extras_file:
+        save_json({
+            'profile': generate_profile(combined_df),
+            'categories': categories,
+        }, os.path.join(config.outputdirectory, 'adult.json'))
 
 
 if __name__ == '__main__':

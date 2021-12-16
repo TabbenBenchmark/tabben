@@ -12,7 +12,8 @@ import os
 import numpy as np
 import pandas as pd
 
-from utils import column_name_array, default_config, save_to_numpy_array, split_by_label
+from utils import column_name_array, default_config, generate_profile, save_json, save_to_numpy_array, \
+    split_by_label
 
 column_names = [
     'label',
@@ -56,23 +57,29 @@ def convert_format(config):
         names=column_names
     )
     
-    # split into their standard train/test sets
-    train_df = df[:-500_000]
-    test_df = df[-500_000:]
-    
-    train_data_df, train_labels_df = split_by_label(train_df)
-    test_data_df, test_labels_df = split_by_label(test_df)
-    
-    save_to_numpy_array(
-        os.path.join(config.outputdirectory, 'higgs'), {
-            'train-data': train_data_df,
-            'train-labels': train_labels_df,
-            'test-data': test_data_df,
-            'test-labels': test_labels_df,
-            '_columns-data': column_name_array(train_data_df),
-            '_columns-labels': np.array(['label'], dtype=np.str_),
-        }
-    )
+    if config.dataset_file:
+        # split into their standard train/test sets
+        train_df = df[:-500_000]
+        test_df = df[-500_000:]
+        
+        train_data_df, train_labels_df = split_by_label(train_df)
+        test_data_df, test_labels_df = split_by_label(test_df)
+        
+        save_to_numpy_array(
+            os.path.join(config.outputdirectory, 'higgs'), {
+                'train-data': train_data_df,
+                'train-labels': train_labels_df,
+                'test-data': test_data_df,
+                'test-labels': test_labels_df,
+                '_columns-data': column_name_array(train_data_df),
+                '_columns-labels': np.array(['label'], dtype=np.str_),
+            }
+        )
+
+    if config.extras_file:
+        save_json({
+            'profile': generate_profile(df),
+        }, os.path.join(config.outputdirectory, 'higgs.json'))
 
 
 if __name__ == '__main__':

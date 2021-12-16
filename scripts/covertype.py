@@ -7,7 +7,8 @@ import os
 import pandas as pd
 import simplejson as json
 
-from utils import column_name_array, convert_categorical, default_config, save_to_numpy_array, split_by_label
+from utils import column_name_array, convert_categorical, default_config, generate_profile, \
+    save_json, save_to_numpy_array, split_by_label
 
 column_names = [
     'Elevation',
@@ -34,29 +35,29 @@ def convert_format(config):
     df['Cover_Type'] = df['Cover_Type'].astype('category')
     categories = convert_categorical(df)
     
-    train_data_df, train_labels_df = split_by_label(df[:11_340], col_name='Cover_Type')
-    valid_data_df, valid_labels_df = split_by_label(df[11_340:11_340 + 3_780], col_name='Cover_Type')
-    test_data_df, test_labels_df = split_by_label(df[-565_892:], col_name='Cover_Type')
-    
-    save_to_numpy_array(
-        os.path.join(config.outputdirectory, 'covertype'), {
-            'train-data': train_data_df,
-            'train-labels': train_labels_df,
-            'valid-data': valid_data_df,
-            'valid-labels': valid_labels_df,
-            'test-data': test_data_df,
-            'test-labels': test_labels_df,
-            '_columns-data': column_name_array(train_data_df),
-            '_columns-labels': column_name_array(train_labels_df),
-        }
-    )
-    
-    with open(os.path.join(config.outputdirectory, 'covertype.json'), 'w') as f:
-        json.dump(
-            {
-                'categories': categories,
-            }, f
+    if config.dataset_file:
+        train_data_df, train_labels_df = split_by_label(df[:11_340], col_name='Cover_Type')
+        valid_data_df, valid_labels_df = split_by_label(df[11_340:11_340 + 3_780], col_name='Cover_Type')
+        test_data_df, test_labels_df = split_by_label(df[-565_892:], col_name='Cover_Type')
+        
+        save_to_numpy_array(
+            os.path.join(config.outputdirectory, 'covertype'), {
+                'train-data': train_data_df,
+                'train-labels': train_labels_df,
+                'valid-data': valid_data_df,
+                'valid-labels': valid_labels_df,
+                'test-data': test_data_df,
+                'test-labels': test_labels_df,
+                '_columns-data': column_name_array(train_data_df),
+                '_columns-labels': column_name_array(train_labels_df),
+            }
         )
+    
+    if config.extras_file:
+        save_json({
+            'profile': generate_profile(df),
+            'categories': categories,
+        }, os.path.join(config.outputdirectory, 'covertype.json'))
 
 
 if __name__ == '__main__':

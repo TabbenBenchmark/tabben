@@ -15,7 +15,8 @@ def convert_format(config):
         sep='\\s+',
     )
     
-    # labels for one of the splits is stored in the parent directory of where everything else is stored
+    # labels for one of the splits is stored in the parent directory of where everything else is stored,
+    # but this is just the organization on
     if config.source == 'https://archive.ics.uci.edu/ml/machine-learning-databases/arcene/ARCENE/':
         valid_labels_source = 'https://archive.ics.uci.edu/ml/machine-learning-databases/arcene' \
                               '/arcene_valid.labels'
