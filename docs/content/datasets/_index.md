@@ -9,4 +9,4 @@ weight = 20
 
 # Dataset Documentation
 
-Lorem Ipsum.
+Here you can find descriptions of each of the datasets, where they came from, how they were preprocessed, and partial data profiles.
