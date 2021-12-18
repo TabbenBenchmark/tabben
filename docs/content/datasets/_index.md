@@ -7,6 +7,6 @@ weight = 20
 
 ### Benchmark
 
-# Dataset Documentation
+# Datasets
 
 Here you can find descriptions of each of the datasets, where they came from, how they were preprocessed, and partial data profiles.
