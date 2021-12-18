@@ -9,4 +9,4 @@ weight = 30
 
 # Python Docs
 
-
+These are the docs for the `tabben` python. Currently, the docs are split into 2 parts: a set of [tutorials](./tutorials) and a few [how-to guides](./integrations) on how to use the package with common machine learning frameworks like Scikit-Learn or PyTorch.

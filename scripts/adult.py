@@ -5,7 +5,6 @@ Convert the adult census income prediction dataset to the standardized format.
 import os
 
 import pandas as pd
-import simplejson as json
 
 from utils import column_name_array, convert_categorical, create_csv_reader, default_config, \
     generate_profile, save_json, save_to_numpy_array, split_by_label
