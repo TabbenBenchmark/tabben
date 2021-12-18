@@ -4,7 +4,7 @@ title = "Tabben Documentation"
 
 # `tabben` Benchmark for Tabular Data
 
-This is a package for working with the `tabben` benchmark for tabular data.
+This is the documentation for the tabben benchmark for tabular data, its datasets, and python API (`tabben` python package).
 
 ## Getting Started
 
