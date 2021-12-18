@@ -366,7 +366,7 @@ class OpenTabularDataset(Dataset):
             raise ValueError(f'dataset `{self.name}` does not have a `{split}` split')
         
         # return requested split
-        return data[f'{split}-data'], data[f'{split}-labels']
+        return data[f'{split[0]}-data'], data[f'{split[0]}-labels']
     
     def __len__(self) -> int:
         return self.inputs.shape[0]
