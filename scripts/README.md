@@ -29,12 +29,13 @@ Other metadata can be included in this file with keys that start with `_`, but i
 ## Metadata (partial work in progress)
 "Basic" metadata is stored in [data.toml](/python/src/tabben/datasets/data.toml), things like the task (e.g. classification), number of classes, number of outputs, etc.
 
-Complex metadata is saved as json, starting with the output of the dataprofiler.
+Complex metadata (referred to as "extras") is saved in json format.
 
-Additional fields that need/can be added at the top-level of the json object:
+Fields that may be at the top-level of the json object:
+- '`profile'`: result of running the dataprofiler (some datasets have not been run on this because of having too many attributes)
 - `'categories'`: mappings for categorical variables
-- license
-- bibtex
+- `'license'`: licensing information for the dataset
+- `'bibtex'`: bibtex string (if available) that should be cited if the dataset is used for a research publication
 
 ## Data Processing Checklist
 - [ ] labels for classification problems

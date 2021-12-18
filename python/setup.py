@@ -35,6 +35,7 @@ setuptools.setup(
         'numpy',
         'requests',
         'scikit-metrics',
+        'simplejson',
         'toml',
         'torch',
         'tqdm',

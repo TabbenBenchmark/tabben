@@ -10,16 +10,22 @@ from collections import defaultdict
 from functools import cached_property, partial
 from importlib import resources
 from pathlib import Path
-from typing import Iterable, Sequence, Set, Union
+from typing import Iterable, Optional, Sequence, Set, Union
 from warnings import warn
 
 import numpy as np
 import requests
 import toml
+from numpy.lib.npyio import NpzFile
 from requests import HTTPError
 from tqdm.auto import tqdm
 
 from ..utils import has_package_installed, PathLike
+
+if has_package_installed('simplejson'):
+    import simplejson as json
+else:
+    import json
 
 if not has_package_installed('torch'):
     # since torch is a heavy requirement for those who don't use it, make it optional
@@ -128,7 +134,7 @@ def validate_dataset_file(filepath: PathLike):
     
     # check numpy file format
     try:
-        data = np.load(str(filepath))
+        data: NpzFile = np.load(str(filepath))
     except IOError:
         raise DatasetFormatError('Dataset file is not in the correct numpy format')
     except ValueError:
@@ -228,9 +234,10 @@ def check_version(dataset_filepath: PathLike, min_version: str):
     return True
 
 
-def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True):
+def _download_datafile(source_url: PathLike, dest_path: PathLike,
+                       download: bool = True, ignore_version: bool = False) -> None:
     """
-    Ensures that the file (the NPZ archive) exists (will download if the destination
+    Ensures that the specified resource file exists (will download if the destination
     file does not exist and `download` is True).
     
     Note that the source "URL" can be a local file (if it starts with 'file://'
@@ -238,13 +245,14 @@ def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True)
     path, even if `download=False`.
     
     Args:
-        source_url: download uri (should point to an NPZ file)
+        source_url: download uri
         dest_path: full path of the destination file
         download: whether to download if not present (will error if data is not already present)
+        ignore_version: whether to disable the version check (e.g. for non-npz datafiles)
     """
     dest_path = Path(dest_path)
     
-    if dest_path.exists() and check_version(dest_path, '1.0.0'):
+    if dest_path.exists() and (ignore_version or check_version(dest_path, '1.0.0')):
         print(f'Data already available at `{dest_path}`')
         
         # in any other case, the version in the datafile will *not* be checked:
@@ -253,15 +261,15 @@ def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True)
         # local file path)
     elif source_url.startswith('file://'):
         source_path = source_url[7:]
-        print(f'Copying local data from `{source_path}` to `{dest_path}`')
+        print(f'Copying locally from `{source_path}` to `{dest_path}`')
         shutil.copyfile(source_path, dest_path)
     elif download:
-        print(f'Downloading data from `{source_url}` into `{dest_path}`')
+        print(f'Downloading from `{source_url}` to `{dest_path}`')
         r = requests.get(source_url, stream=True)
         
         if r.status_code != requests.codes.ok:
             r.raise_for_status()
-            raise RuntimeError(f'Unable to download file from `{source_url}`')
+            raise IOError(f'Unable to download file from `{source_url}`')
         
         # determine total file size for the progress bar
         declared_file_size = int(r.headers.get('Content-Length', 0))
@@ -274,7 +282,7 @@ def _download_datafile(source_url: PathLike, dest_path: PathLike, download=True)
             with dest_path.open('wb') as output_file:
                 shutil.copyfileobj(progressed_data, output_file)
     else:
-        raise ValueError('Data file(s) don\'t exist but not instructed to download')
+        raise ValueError('File does not exist but not instructed to download')
 
 
 def ensure_downloaded(data_dir: PathLike, *datasets: str):
@@ -322,7 +330,7 @@ class OpenTabularDataset(Dataset):
         
         self.data_dir = Path(data_dir)
         self.name = name.lower()
-        self.split = split
+        self.split = [split] if isinstance(split, str) else split
         self.transform = transform
         self.target_transform = target_transform
         
@@ -331,27 +339,39 @@ class OpenTabularDataset(Dataset):
         
         # download data if not yet already
         data_filename = self.data_dir / f'{self.name}.npz'
-        _download_datafile(metadata[name]['data_location'], data_filename, download)
+        _download_datafile(metadata[self.name]['data_location'], data_filename, download)
+        
+        self.extras = None
+        if 'extras_location' in metadata[self.name]:
+            extras_filename = self.data_dir / f'{self.name}.json'
+            
+            try:
+                _download_datafile(metadata[self.name]['extras_location'], extras_filename, download, True)
+                with extras_filename.open() as f:
+                    self.extras = json.load(f)
+            except Union[HTTPError, IOError, ValueError]:
+                warn(f'Downloading extras for `{self.name}` failed, proceeding without extras data')
         
         # load the full np arrays + input/output arrays for this split
         with np.load(str(data_filename)) as data:
             self.splits = {name.partition('-')[0] for name in data.files
                            if '-' in name and not name.startswith('_')}
-            self.inputs, self.outputs = self._extract_split(data, split)
+            self.inputs, self.outputs = self._extract_split(data, self.split)
             self.input_attributes = data['_columns-data']
             self.output_attributes = data['_columns-labels']
     
-    def _extract_split(self, data, split: str):
-        if split not in self.splits:
+    def _extract_split(self, data: NpzFile, split: str) -> (np.ndarray, np.ndarray):
+        # TODO support multiple selected splits
+        if split[0] not in self.splits:
             raise ValueError(f'dataset `{self.name}` does not have a `{split}` split')
         
         # return requested split
         return data[f'{split}-data'], data[f'{split}-labels']
     
-    def __len__(self):
+    def __len__(self) -> int:
         return self.inputs.shape[0]
     
-    def __getitem__(self, idx):
+    def __getitem__(self, idx) -> (np.ndarray, np.ndarray):
         inputs = self.inputs[idx, :]
         outputs = self.outputs[idx].item() if self.outputs[idx].size == 1 else self.outputs[idx]
         
@@ -362,14 +382,14 @@ class OpenTabularDataset(Dataset):
         
         return inputs, outputs
     
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if not isinstance(OpenTabularDataset, other):
             return False
         
         return self.name == other.name and self.split == other.split and self.transform == other.transform \
                and self.target_transform == self.target_transform
     
-    def __repr__(self):
+    def __repr__(self) -> str:
         attributes = {
             'data_dir': repr(self.data_dir),
             'name': repr(self.name),
@@ -381,6 +401,19 @@ class OpenTabularDataset(Dataset):
             '='.join(pair) for pair in attributes.items()
         )
         return f'OpenTabularDataset({attributes_string})'
+    
+    @property
+    def has_extras(self) -> bool:
+        return self.extras is not None
+    
+    @property
+    def license(self) -> Optional[str]:
+        # TODO split this into 'license' and 'license_info'
+        return self.extras['license'] if 'license' in self.extras else None
+    
+    @property
+    def bibtex(self) -> Optional[str]:
+        return self.extras['bibtex'] if 'bibtex' in self.extras else None
     
     @property
     def num_inputs(self) -> int:
@@ -398,10 +431,10 @@ class OpenTabularDataset(Dataset):
             raise AttributeError('Non-classification task datasets don\'t have a number of classes')
     
     @property
-    def task(self):
+    def task(self) -> str:
         return metadata[self.name]['task']
     
-    def dataframe(self):
+    def dataframe(self) -> 'pandas.DataFrame':
         """
         Create a pandas DataFrame consisting of both input attributes and output labels
         for this dataset (for this specific split).
