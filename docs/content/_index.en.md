@@ -1,4 +1,8 @@
-# `tabben` Python Package
++++
+title = "Tabben Documentation"
++++
+
+# `tabben` Benchmark for Tabular Data
 
 This is a package for working with the `tabben` benchmark for tabular data.
 
@@ -11,7 +15,7 @@ pip install tabben
 
 Depending on what you want to use `tabben` with, you may need to install other packages to interoperate, e.g. `scikit-learn`, PyTorch, `autogluon`.
 
-Then you're off to the races! Check out [how to use the package](./usage), [walkthroughs with different machine learning frameworks](./integrations), or [details about the datasets](./datasets).
+Then you're off to the races! Check out [how to use the package](./python/usage), [walkthroughs with different machine learning frameworks](./python/integrations), or [details about the datasets](./datasets).
 
 ## Citing
 

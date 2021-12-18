@@ -1,8 +1,8 @@
-# Working with AutoGluon
++++
+title = "Working with Autogluon"
++++
 
 This guide goes through how to use this package with autogluon hyperparameter tuning package.
-
-
 
 ## Load the train and test datasets
 

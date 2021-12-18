@@ -1,4 +1,6 @@
-# How to Handle Special Cases
++++
+title = "Special Situations"
++++
 
 ## Downloading all (or some) of the datasets explicitly
 
