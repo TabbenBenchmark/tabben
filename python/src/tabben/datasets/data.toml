@@ -46,3 +46,8 @@ data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/do
 task = "classification"
 outputs = 1
 classes = 2
+
+[duolingo-original]
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5/duolingo-original.npz"
+task = "regression"
+outputs = 1
