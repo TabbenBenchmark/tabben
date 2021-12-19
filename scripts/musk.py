@@ -35,8 +35,8 @@ def convert_format(config):
     train_molecules, test_molecules = train_test_split(
         molecule_musk['molecule_name'], train_size=0.8,
         random_state=17_123,
-        stratify=molecule_musk['musk']
-        )
+        stratify=molecule_musk['musk'],
+    )
     
     train_df = df[df['molecule_name'].isin(train_molecules)].drop(column_names[:2], axis=1)
     test_df = df[df['molecule_name'].isin(test_molecules)].drop(column_names[:2], axis=1)

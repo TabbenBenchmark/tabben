@@ -5,7 +5,6 @@ Convert the forest cover type classification dataset to the standardized format.
 import os
 
 import pandas as pd
-import simplejson as json
 
 from utils import column_name_array, convert_categorical, default_config, generate_profile, \
     save_json, save_to_numpy_array, split_by_label
@@ -54,10 +53,12 @@ def convert_format(config):
         )
     
     if config.extras_file:
-        save_json({
-            'profile': generate_profile(df),
-            'categories': categories,
-        }, os.path.join(config.outputdirectory, 'covertype.json'))
+        save_json(
+            {
+                'profile': generate_profile(df),
+                'categories': categories,
+            }, os.path.join(config.outputdirectory, 'covertype.json')
+        )
 
 
 if __name__ == '__main__':

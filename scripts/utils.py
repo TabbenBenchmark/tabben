@@ -45,9 +45,9 @@ def default_config(*,
     
     args = parser.parse_args()
     
-    if not any([args.dataset_file, args.metadata_file]):
+    if not any([args.dataset_file, args.extras_file]):
         args.dataset_file = True
-        args.metadata_file = True
+        args.extras_file = True
     
     return args
 
@@ -94,8 +94,10 @@ class JSONNumpyEncoder(json.JSONEncoder):
 
 
 def save_json(data, filename):
-    with Path(filename).open('w') as f:
+    with Path(filename).with_suffix('.json').open('w') as f:
         json.dump(data, f, cls=JSONNumpyEncoder)
+    
+    print(f'Extras saved in JSON format at `{filename}`')
 
 
 def generate_profile(df):
