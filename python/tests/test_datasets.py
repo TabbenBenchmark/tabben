@@ -139,6 +139,25 @@ def test_covertype(tmp_path):
     validate_dataset_file(tmp_path / 'covertype.npz')
 
 
+def test_duolingo_original(tmp_path):
+    num_features = 10
+    
+    check_split_sizes(
+        tmp_path, 'duolingo-original', {
+            'train': (10_275_881, num_features),
+            'test': (2_578_345, num_features),
+        }
+    )
+    
+    check_attributes(
+        tmp_path, 'duolingo-original', {
+            'task': 'regression',
+        }
+    )
+    
+    validate_dataset_file(tmp_path / 'duolingo-original.npz')
+
+
 # test for higgs not included here because of its large size
 
 def test_musk(tmp_path):
