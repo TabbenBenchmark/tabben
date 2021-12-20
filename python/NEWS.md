@@ -3,7 +3,9 @@
 ## New Features
 - Some datasets now have "extras" stored as JSON, which will be downloaded and used to provide extra data like data profiles, bibtex, dataset licensing info, etc.
 - `OpenTabularDataset` has new properties: `has_extras`, `license`, `bibtex` (not all datasets have meaningful values yet)
-- new dataset: `duolingo-original`
+- new datasets: 
+  - `duolingo-original`
+  - `duolingo-categorical`
 
 ## Breaking Changes
 - removed `sarcos` dataset as a result of [this article](https://www.datarobot.com/blog/running-code-and-failing-models/)
