@@ -5,7 +5,7 @@ preprocessing of the data.
 Because of the way that the source data is distributed, the data file needs be
 downloaded first into some local directory (cannot specify a URL source).
 """
-
+import contextlib
 import os
 import re
 from itertools import chain
@@ -16,6 +16,7 @@ from sklearn.model_selection import train_test_split
 
 from utils import column_name_array, convert_categorical, default_config, generate_profile, \
     save_json, save_to_numpy_array, split_by_label
+from tqdm import tqdm
 
 bibtex = """\
 @inproceedings{settles.acl16,
@@ -32,39 +33,55 @@ bibtex = """\
 categorical_columns = ['user_id', 'learning_language', 'ui_language', 'lexeme_id']
 
 
+@contextlib.contextmanager
+def stage(action):
+    print(f'Begin {action}...', end='', flush=True)
+    yield
+    print('finished.')
+
+
 def convert_format(config):
-    df = pd.read_csv(
-        os.path.join(config.source, 'settles.acl16.learning_traces.13m.csv'),
-        header=0,
-        index_col=None,
-        #nrows=10000
-    )
-    df['lexeme_string'] = df['lexeme_string'].astype('string')
-    df[categorical_columns] = df[categorical_columns].astype('category')
+    with stage('reading CSV file'):
+        df = pd.read_csv(
+            os.path.join(config.source, 'settles.acl16.learning_traces.13m.csv'),
+            header=0,
+            index_col=None,
+            #nrows=10000,
+        )
+    
+    with stage('converting types'):
+        df['lexeme_string'] = df['lexeme_string'].astype('string')
+        df[categorical_columns] = df[categorical_columns].astype('category')
     
     # prepare the dataframe for "original"
-    orig_df = df.drop(['lexeme_string'], axis=1)
-    orig_categories = convert_categorical(orig_df)
+    with stage('creating original dataset'):
+        orig_df = df.drop(['lexeme_string'], axis=1)
+        orig_categories = convert_categorical(orig_df)
     
     # prepare the dataframe for "categorical"
-    cat_df = df.drop(['lexeme_id'], axis=1)
-    cat_df[['surface_form', 'lemma', 'part_of_speech', 'modifiers']] = \
-        df['lexeme_string'].str.extract(r'(\w+)/(\w+)<([^>]+)>(.*)').fillna('')
+    with stage('extracting surface forms, lemmas, parts of speech, and other tags'):
+        cat_df = df.drop(['lexeme_id'], axis=1)
+        cat_df[['surface_form', 'lemma', 'part_of_speech', 'modifiers']] = \
+            df['lexeme_string'].str.extract(r'(\w+)/(\w+)<([^>]+)>(.*)').fillna('')
     
-    all_tags = set(
-        chain.from_iterable(
-            re.split('>[^<>]*<', tag_str.partition('<')[-1].rpartition('>')[0])
-            for tag_str in cat_df['modifiers'].to_list()
-            if isinstance(tag_str, str) and len(tag_str.strip()) > 0
+    with stage('finding the set of all modifiers'):
+        all_tags = set(
+            chain.from_iterable(
+                re.split('>[^<>]*<', tag_str.partition('<')[-1].rpartition('>')[0])
+                for tag_str in cat_df['modifiers'].to_list()
+                if isinstance(tag_str, str) and len(tag_str.strip()) > 0
+            )
         )
-    )
-    for tag in all_tags:
-        cat_df[tag] = cat_df['modifiers'].str.contains(tag, regex=False).astype(int)
     
-    cat_df[['surface_form', 'lemma', 'part_of_speech']] = \
-        cat_df[['surface_form', 'lemma', 'part_of_speech']].astype('category')
-    cat_df = cat_df.drop(['lexeme_string', 'modifiers'], axis=1)
-    cat_categories = convert_categorical(cat_df)
+    with stage('adding new columns for each modifier/tag'):
+        for tag in tqdm(all_tags, leave=False):
+            cat_df[tag] = cat_df['modifiers'].str.contains(tag, regex=False).astype(int)
+    
+    with stage('converting types for categorical dataset'):
+        cat_df[['surface_form', 'lemma', 'part_of_speech']] = \
+            cat_df[['surface_form', 'lemma', 'part_of_speech']].astype('category')
+        cat_df = cat_df.drop(['lexeme_string', 'modifiers'], axis=1)
+        cat_categories = convert_categorical(cat_df)
     
     if config.dataset_file:
         train_users, test_users = train_test_split(
