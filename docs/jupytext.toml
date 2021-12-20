@@ -4,4 +4,4 @@ cell_metadata_filter = "-all"
 
 [formats]
 "notebooks/integrations/" = "ipynb"
-"content/integrations/" = "md"
+"content/python/integrations/" = "md"

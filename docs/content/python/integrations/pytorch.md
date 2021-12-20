@@ -4,10 +4,15 @@ title = "Working with (Vanilla) PyTorch"
 
 This guide goes through how to use this package with the standard PyTorch workflow.
 
+[Work in progress]
+
+```python
+!pip3 install tabben torch
+```
+
 ## Loading the data
 
 For this example, we'll use the poker hand prediction dataset.
-
 
 ```python
 from tabben.datasets import OpenTabularDataset
