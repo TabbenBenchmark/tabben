@@ -6,6 +6,7 @@
 - new datasets: 
   - `duolingo-original`
   - `duolingo-categorical`
+- `get_metrics` currently works for multiclass classification as well (only uses mcc metric)
 
 ## Breaking Changes
 - removed `sarcos` dataset as a result of [this article](https://www.datarobot.com/blog/running-code-and-failing-models/)

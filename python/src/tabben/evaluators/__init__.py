@@ -7,11 +7,15 @@ from . import metrics
 
 def get_metrics(task: str, *, classes: int = 2, namespace=metrics):
     if task == 'classification':
-        return [
-            namespace.auroc_binary if classes == 2 else namespace.auroc_multiclass,
-            namespace.ap_score,
-            namespace.mcc_binary if classes == 2 else namespace.mcc_multiclass,
-        ]
+        if classes == 2:
+            return [namespace.auroc_binary, namespace.ap_score, namespace.mcc_binary]
+        elif classes > 2:
+            return [
+                # namespace.auroc_multiclass,  # currently problematic
+                namespace.mcc_multiclass,
+            ]
+        else:
+            raise ValueError('invalid number of classes')
     elif task == 'regression':
         return []
     else:
