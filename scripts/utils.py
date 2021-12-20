@@ -15,6 +15,15 @@ try:
 except ImportError:
     import json
 
+uci_bibtex = """\
+@misc{Dua:2019 ,
+    author = "Dua, Dheeru and Graff, Casey",
+    year = "2017",
+    title = "{UCI} Machine Learning Repository",
+    url = "http://archive.ics.uci.edu/ml",
+    institution = "University of California, Irvine, School of Information and Computer Sciences"
+}"""
+
 
 def create_csv_reader(*roots, **configs):
     def reader(filename, use_roots=True, **kwargs):
@@ -36,10 +45,14 @@ def default_config(*,
         default=source_default
     )
     
-    parser.add_argument('--dataset-file', action='store_true',
-                        help='Generate the NPZ dataset file')
-    parser.add_argument('--extras-file', action='store_true',
-                        help='Generate the metadata data if needed')
+    parser.add_argument(
+        '--dataset-file', action='store_true',
+        help='Generate the NPZ dataset file'
+    )
+    parser.add_argument(
+        '--extras-file', action='store_true',
+        help='Generate the metadata data if needed'
+    )
     
     parser.add_argument('--no-profile', action='store_true')
     

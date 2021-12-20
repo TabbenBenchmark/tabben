@@ -4,8 +4,8 @@ task = "classification"
 classes = 2
 
 [covertype]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/covertype.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/covertype.json"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.6-pre/covertype.npz"
+extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.6-pre/covertype.json"
 task = "classification"
 classes = 7
 
@@ -21,8 +21,8 @@ classes = 10
 
 [adult]
 classes = 2
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/adult.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/adult.json"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.6-pre/adult.npz"
+extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.6-pre/adult.json"
 task = "classification"
 
 [parkinsons]

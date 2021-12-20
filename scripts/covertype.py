@@ -22,6 +22,9 @@ column_names = [
     'Cover_Type',
 ]
 
+license_info = 'Reuse of this database is unlimited with retention of copyright notice for ' \
+               'Jock A. Blackard and Colorado State University.'
+
 
 def convert_format(config):
     df = pd.read_csv(
@@ -57,6 +60,7 @@ def convert_format(config):
             {
                 'profile': generate_profile(df),
                 'categories': categories,
+                'license': license_info,
             }, os.path.join(config.outputdirectory, 'covertype.json')
         )
 

@@ -7,7 +7,7 @@ import os
 import pandas as pd
 
 from utils import column_name_array, convert_categorical, create_csv_reader, default_config, \
-    generate_profile, save_json, save_to_numpy_array, split_by_label
+    generate_profile, save_json, save_to_numpy_array, split_by_label, uci_bibtex
 
 column_names = [
     'age',
@@ -71,10 +71,13 @@ def convert_format(config):
         )
     
     if config.extras_file:
-        save_json({
-            'profile': generate_profile(combined_df),
-            'categories': categories,
-        }, os.path.join(config.outputdirectory, 'adult.json'))
+        save_json(
+            {
+                'profile': generate_profile(combined_df),
+                'bibtex': uci_bibtex,
+                'categories': categories,
+            }, os.path.join(config.outputdirectory, 'adult.json')
+        )
 
 
 if __name__ == '__main__':
