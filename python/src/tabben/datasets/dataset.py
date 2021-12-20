@@ -406,14 +406,21 @@ class OpenTabularDataset(Dataset):
     def has_extras(self) -> bool:
         return self.extras is not None
     
+    def has_extra(self, extra_name) -> bool:
+        return self.has_extras and extra_name in self.extras
+    
     @property
     def license(self) -> Optional[str]:
         # TODO split this into 'license' and 'license_info'
-        return self.extras['license'] if 'license' in self.extras else None
+        return self.extras['license'] if self.has_extra('license') else None
     
     @property
     def bibtex(self) -> Optional[str]:
-        return self.extras['bibtex'] if 'bibtex' in self.extras else None
+        return self.extras['bibtex'] if self.has_extra('bibtex') else None
+    
+    @property
+    def categorical_attributes(self) -> Optional[Sequence[str]]:
+        return self.extras['categories'].keys() if self.has_extra('categories') else None
     
     @property
     def num_inputs(self) -> int:
