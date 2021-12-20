@@ -19,4 +19,4 @@ We don't do any further processing on the `duolingo-original` variant of the dat
   - part of speech (categorical)
   - additional tags, "one-hot encoded"
 - remove the lexeme_id attribute,
-- there are a few cases where a single surface form consists of multiple lemmas (e.g. the French des breaks down into de and les), we keep all modifiers, but *only include the first lemma and its part of speech*.
+- there are a few cases where a single surface form consists of multiple lemmas (e.g. the French des breaks down into de and les), we keep all modifiers, but *only include the first lemma and its part of speech*. (However, the second part of speech is included as if it were another modifier, which should be considered a bug and should be fixed.)
