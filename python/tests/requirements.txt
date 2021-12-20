@@ -1,3 +1,4 @@
+autogluon
 pandas
 pytest
 torch

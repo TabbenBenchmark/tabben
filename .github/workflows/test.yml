@@ -36,4 +36,4 @@ jobs:
           pip install --upgrade --upgrade-strategy eager -r tests/requirements.txt -e .
       - name: Run Tests
         working-directory: python/
-        run: pytest
+        run: pytest -m "not large"

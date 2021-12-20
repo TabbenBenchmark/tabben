@@ -1,7 +1,7 @@
 """
 Test the dataset files themselves and whether they can be loaded properly.
 """
-
+import pytest
 from tabben.datasets import OpenTabularDataset, validate_dataset_file
 from torch.utils.data import DataLoader
 
@@ -9,6 +9,11 @@ from torch.utils.data import DataLoader
 ################################################################################
 # Common Utilities
 ################################################################################
+
+@pytest.fixture(scope='session')
+def data_dir(tmp_path_factory):
+    return tmp_path_factory.mktemp('data')
+
 
 def check_sizes(ds, num_examples, num_features, num_outputs=1):
     assert len(ds) == num_examples
@@ -54,75 +59,75 @@ def check_attributes(directory, ds_name, attributes_dict):
 # Tests for each individual dataset
 ################################################################################
 
-def test_adult(tmp_path):
+def test_adult(data_dir):
     num_features = 14
     train_examples = 32_561
     test_examples = 16_281
     
     check_split_sizes(
-        tmp_path, 'adult', {
+        data_dir, 'adult', {
             'train': (train_examples, num_features),
             'test': (test_examples, num_features),
         }
     )
     
     check_attributes(
-        tmp_path, 'adult', {
+        data_dir, 'adult', {
             'task': 'classification',
             'num_classes': 2,
         }
     )
     
-    validate_dataset_file(tmp_path / 'adult.npz')
+    validate_dataset_file(data_dir / 'adult.npz')
 
 
-def test_amazon(tmp_path):
+def test_amazon(data_dir):
     num_features = 9
     train_examples = 26_215
     test_examples = 6_554
     
     check_split_sizes(
-        tmp_path, 'amazon', {
+        data_dir, 'amazon', {
             'train': (train_examples, num_features),
             'test': (test_examples, num_features),
         }
     )
     
     check_attributes(
-        tmp_path, 'amazon', {
+        data_dir, 'amazon', {
             'task': 'classification',
             'num_classes': 2,
         }
     )
     
-    validate_dataset_file(tmp_path / 'amazon.npz')
+    validate_dataset_file(data_dir / 'amazon.npz')
 
 
-def test_arcene(tmp_path):
+def test_arcene(data_dir):
     train_test_shape = (100, 10_000)
     
     check_split_sizes(
-        tmp_path, 'arcene', {
+        data_dir, 'arcene', {
             'train': train_test_shape,
             'test': train_test_shape,  # arcene's "official" validation set used as test set
         }
     )
     
     check_attributes(
-        tmp_path, 'arcene', {
+        data_dir, 'arcene', {
             'task': 'classification',
             'num_classes': 2,
         }
     )
     
-    validate_dataset_file(tmp_path / 'arcene.npz')
+    validate_dataset_file(data_dir / 'arcene.npz')
 
 
-def test_covertype(tmp_path):
+def test_covertype(data_dir):
     num_features = 54
     
     check_split_sizes(
-        tmp_path, 'covertype', {
+        data_dir, 'covertype', {
             'train': (11_340, num_features),
             'valid': (3_780, num_features),
             'test': (565_892, num_features),
@@ -130,116 +135,156 @@ def test_covertype(tmp_path):
     )
     
     check_attributes(
-        tmp_path, 'covertype', {
+        data_dir, 'covertype', {
             'task': 'classification',
             'num_classes': 7,
         }
     )
     
-    validate_dataset_file(tmp_path / 'covertype.npz')
+    validate_dataset_file(data_dir / 'covertype.npz')
 
 
-def test_duolingo_original(tmp_path):
+@pytest.mark.large
+def test_duolingo_original(data_dir):
     num_features = 10
     
     check_split_sizes(
-        tmp_path, 'duolingo-original', {
+        data_dir, 'duolingo-original', {
             'train': (10_275_881, num_features),
             'test': (2_578_345, num_features),
         }
     )
     
     check_attributes(
-        tmp_path, 'duolingo-original', {
+        data_dir, 'duolingo-original', {
             'task': 'regression',
         }
     )
     
-    validate_dataset_file(tmp_path / 'duolingo-original.npz')
+    validate_dataset_file(data_dir / 'duolingo-original.npz')
 
 
-# test for higgs not included here because of its large size
+@pytest.mark.large
+def test_duolingo_categorical(data_dir):
+    num_features = 10
+    
+    check_split_sizes(
+        data_dir, 'duolingo-categorical', {
+            'train': (10_275_881, num_features),
+            'test': (2_578_345, num_features),
+        }
+    )
+    
+    check_attributes(
+        data_dir, 'duolingo-categorical', {
+            'task': 'regression',
+        }
+    )
+    
+    validate_dataset_file(data_dir / 'duolingo-categorical.npz')
 
-def test_musk(tmp_path):
+
+@pytest.mark.large
+def test_higgs(data_dir):
+    num_features = 28
+    
+    check_split_sizes(
+        data_dir, 'higgs', {
+            'train': (10_500_000, num_features),
+            'test': (500_000, num_features),
+        }
+    )
+    
+    check_attributes(
+        data_dir, 'higgs', {
+            'task': 'classification',
+            'num_classes': 2,
+        }
+    )
+    
+    validate_dataset_file(data_dir / 'higgs.npz')
+
+
+def test_musk(data_dir):
     num_features = 166
     train_examples = 5548
     test_examples = 1050
     
     check_split_sizes(
-        tmp_path, 'musk', {
+        data_dir, 'musk', {
             'train': (train_examples, num_features),
             'test': (test_examples, num_features),
         }, )
     
     check_attributes(
-        tmp_path, 'musk', {
+        data_dir, 'musk', {
             'task': 'classification',
             'num_outputs': 1,
             'num_classes': 2,
         }
     )
+    
+    validate_dataset_file(data_dir / 'musk.npz')
 
-    validate_dataset_file(tmp_path / 'musk.npz')
 
-
-def test_parkinsons(tmp_path):
+def test_parkinsons(data_dir):
     num_features = 16
     num_outputs = 2
     train_examples = 4646
     test_examples = 1229
     
     check_split_sizes(
-        tmp_path, 'parkinsons', {
+        data_dir, 'parkinsons', {
             'train': (train_examples, num_features, num_outputs),
             'test': (test_examples, num_features, num_outputs),
         }, )
     
     check_attributes(
-        tmp_path, 'parkinsons', {
+        data_dir, 'parkinsons', {
             'task': 'regression',
             'num_outputs': 2,
         }
     )
+    
+    validate_dataset_file(data_dir / 'parkinsons.npz')
 
-    validate_dataset_file(tmp_path / 'parkinsons.npz')
 
-
-def test_poker(tmp_path):
+def test_poker(data_dir):
     num_features = 10
     
     check_split_sizes(
-        tmp_path, 'poker', {
+        data_dir, 'poker', {
             'train': (25_010, num_features),
             'test': (1_000_000, num_features),
         }
     )
     
     check_attributes(
-        tmp_path, 'poker', {
+        data_dir, 'poker', {
             'task': 'classification',
             'num_classes': 10,
         }
     )
     
-    validate_dataset_file(tmp_path / 'poker.npz')
+    validate_dataset_file(data_dir / 'poker.npz')
 
 
-def test_rossman(tmp_path):
+def test_rossman(data_dir):
     num_features = 18
     train_examples = 814_688
     test_examples = 202_521
     
     check_split_sizes(
-        tmp_path, 'rossman', {
+        data_dir, 'rossman', {
             'train': (train_examples, num_features),
             'test': (test_examples, num_features),
         }
     )
     
     check_attributes(
-        tmp_path, 'rossman', {
+        data_dir, 'rossman', {
             'task': 'regression',
         }
     )
     
-    validate_dataset_file(tmp_path / 'rossman.npz')
+    validate_dataset_file(data_dir / 'rossman.npz')

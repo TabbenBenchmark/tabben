@@ -10,7 +10,7 @@ def get_metrics(task: str, *, classes: int = 2, namespace=metrics):
         return [
             namespace.auroc_binary if classes == 2 else namespace.auroc_multiclass,
             namespace.ap_score,
-            namespace.mcc
+            namespace.mcc_binary if classes == 2 else namespace.mcc_multiclass,
         ]
     elif task == 'regression':
         return []

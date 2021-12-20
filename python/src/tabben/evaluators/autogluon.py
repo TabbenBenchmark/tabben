@@ -14,9 +14,16 @@ if not has_package_installed('autogluon'):
 else:
     from autogluon.core.metrics import make_scorer
 
-mcc = make_scorer(
-    name='mcc',
-    score_func=metrics.mcc,
+mcc_binary = make_scorer(
+    name='binary mcc',
+    score_func=metrics.mcc_binary,
+    optimum=1,
+    greater_is_better=True
+)
+
+mcc_multiclass = make_scorer(
+    name='multiclass mcc',
+    score_func=metrics.mcc_multiclass,
     optimum=1,
     greater_is_better=True
 )

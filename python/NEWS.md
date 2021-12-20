@@ -9,6 +9,7 @@
 
 ## Breaking Changes
 - removed `sarcos` dataset as a result of [this article](https://www.datarobot.com/blog/running-code-and-failing-models/)
+- `mcc` metric has been split into `mcc_binary` and `mcc_multiclass` (is reflected in `get_metrics`)
 
 ## Non-Breaking Changes
 - Names of some internal modules have changed
