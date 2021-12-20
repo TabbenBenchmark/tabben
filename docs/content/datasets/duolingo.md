@@ -12,4 +12,11 @@ You can find out more about the original dataset at the [Duolingo halflife regre
 
 Both variants of the dataset have the same custom 80-20 train-test split. Splits are created so that no user_id occurs in both splits.
 
-We don't do any further processing on the `duolingo-original` variant of the dataset. For the `duolingo-categorical` variant, we split and process the tags in the lexeme_string into a sparsely encoded representation.
+We don't do any further processing on the `duolingo-original` variant of the dataset. For the `duolingo-categorical` variant, we 
+- split and process the tags in the lexeme_string into a sparsely encoded representation,
+  - surface form (categorical)
+  - lemma (categorical)
+  - part of speech (categorical)
+  - additional tags, "one-hot encoded"
+- remove the lexeme_id attribute,
+- there are a few cases where a single surface form consists of multiple lemmas (e.g. the French des breaks down into de and les), we keep all modifiers, but *only include the first lemma and its part of speech*.
