@@ -25,7 +25,7 @@ print(f'Attributes: {train_ds.input_attributes}')
 For this dataset, we can get the metric functions that we should use (for consistency across everyone's runs) for evaluating on the test set. Autogluon will only use 1 metric (that it tests on its validation data set), so we just choose one of them.
 
 ```python
-from tabben.autogluon import get_metrics
+from tabben.evaluators.autogluon import get_metrics
 
 eval_metrics = get_metrics(train_ds.task, classes=train_ds.num_classes)
 
@@ -88,4 +88,8 @@ packages = ['autogluon', 'tabben']
 
 for pkg in packages:
     print(f'{pkg}: {version(pkg)}')
+```
+
+```python
+
 ```

@@ -1,4 +1,4 @@
-# Documentation for the Python Package
+# Documentation for the Benchmark
 
 Most of the documentation can be found in either a Markdown format (used for generating the static web pages) or as a Jupyter notebook (includes all code and can be run top-down). (Of course, while notebooks are provided for all documentation pages, sometimes it doesn't make sense to run the notebook top down, or at all, as some notebooks will just be markdown.)
 

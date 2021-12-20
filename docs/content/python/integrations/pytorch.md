@@ -4,8 +4,6 @@ title = "Working with (Vanilla) PyTorch"
 
 This guide goes through how to use this package with the standard PyTorch workflow.
 
-[Work in progress]
-
 ```python
 !pip3 install tabben torch
 ```
@@ -140,7 +138,7 @@ test_dl = DataLoader(test_ds, batch_size=16)
 print(len(test_ds))
 ```
 
-Let's run the model and save its outputs for later evaluation.
+Let's run the model and save its outputs for later evaluation (since we left the softmax operation for the loss when we defined the model above, we'll need to softmax the outputs to get probabilities).
 
 ```python
 model.eval()
@@ -155,16 +153,8 @@ for test_inputs, test_outputs in test_dl:
 ```
 
 ```python
-test_pred_outputs = torch.vstack(pred_outputs).detach().cpu()
+test_pred_outputs = torch.softmax(torch.vstack(pred_outputs).detach().cpu(), axis=1)
 test_gt_outputs = torch.hstack(gt_outputs).detach().cpu()
-print(test_pred_outputs)
-print(test_gt_outputs)
-```
-
-```python
-from sklearn.metrics import roc_auc_score
-print(ds.num_classes)
-roc_auc_score(test_pred_outputs, test_gt_outputs.int())
 ```
 
 We can get the standard set of metrics and then evaluate the outputs of the test set on them.
@@ -174,8 +164,7 @@ from tabben.evaluators import get_metrics
 
 eval_metrics = get_metrics(ds.task, classes=ds.num_classes)
 for metric in eval_metrics:
-    print(metric)
-    print(f'{metric}: {metric(test_pred_outputs, test_gt_outputs)}')
+    print(f'{metric}: {metric(test_gt_outputs, test_pred_outputs)}')
 ```
 
 ---
@@ -189,4 +178,8 @@ packages = ['torch', 'tabben']
 
 for pkg in packages:
     print(f'{pkg}: {version(pkg)}')
+```
+
+```python
+
 ```
