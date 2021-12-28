@@ -1,0 +1,108 @@
+"""
+A useful script for running multiple dataset processing scripts together. This
+script assumes that the data directory contains a directory for each dataset (by
+name).
+
+The 'gh' cli can be used afterwards to upload all the assets in the output folder
+to the correct GitHub release as follows:
+```shell
+gh auth login
+gh release upload <version-tag> <files>... --clobber
+```
+"""
+
+import argparse
+import os
+import subprocess
+from pathlib import Path
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description='Automatically run data processing scripts for multiple datasets',
+    )
+    
+    parser.add_argument(
+        '--data-dir', '-d', dest='data_directory',
+        default=None,
+        help='Directory for cached data outputs',
+    )
+    parser.add_argument(
+        '--output-directory', '-o', dest='output_directory',
+        default=None,
+        help='Output directory to save processed outputs'
+    )
+    parser.add_argument(
+        'names', nargs='*',
+        help='Names of the datasets to process (if none, all scripts are run)',
+    )
+    parser.add_argument(
+        '--exclude', '-e', nargs='+', default=[],
+        help='Names of datasets to exclude from processing',
+    )
+    
+    parser.add_argument(
+        '--python', default='python3',
+        help='Name of the python executable',
+    )
+    
+    return parser.parse_args()
+
+
+def collect_dataset_scripts(config):
+    scripts = {}
+    
+    # verify paths/directories
+    scripts_directory = Path(os.path.dirname(os.path.abspath(__file__)))
+    assert scripts_directory.exists()
+    
+    if config.output_directory is None:
+        if config.data_directory is not None:
+            output_directory = Path(config.data_directory) / 'output'
+        else:
+            output_directory = Path.cwd() / 'output'
+    else:
+        output_directory = Path(config.output_directory)
+    
+    if not output_directory.exists():
+        output_directory.mkdir(parents=True, exist_ok=True)
+    
+    # when no dataset names are given, run all scripts
+    if len(config.names) == 0:
+        filenames = [file.name.partition('.')[0] for file in scripts_directory.glob('*.py')]
+        config.names = [name for name in filenames
+                        if not name.startswith('utils') and not name.startswith('all')]
+    
+    # collect the arguments for running the script for each dataset
+    for name in config.names:
+        if name not in config.exclude:
+            script_file = scripts_directory / f'{name}.py'
+            assert script_file.exists()
+            
+            scripts[name] = [config.python, script_file, output_directory]
+            if config.data_directory is not None:
+                scripts[name].extend(['-s', Path(config.data_directory) / name])
+    
+    return scripts
+
+
+def run_scripts(scripts):
+    successes = set()
+    
+    for index, (name, script_args) in enumerate(scripts.items()):
+        print(f'\u001b[34mRunning the script for the {name} dataset...\u001b[0m')
+        script_result = subprocess.run(script_args)
+        if script_result.returncode == 0:
+            successes.add(name)
+        else:
+            print(f'\u001b[31mRan into an issue for the {name} dataset (see above).\u001b[0m')
+    
+    print(f'Successfully processed {len(successes)} out of {len(scripts)} datasets.')
+    if len(successes) != len(scripts):
+        print(f'Failed datasets: {", ".join(set(scripts.keys()) - successes)}')
+        
+
+if __name__ == '__main__':
+    config = parse_args()
+    scripts = collect_dataset_scripts(config)
+    run_scripts(scripts)

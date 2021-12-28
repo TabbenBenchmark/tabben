@@ -7,7 +7,7 @@ import os
 import pandas as pd
 
 from utils import column_name_array, convert_categorical, create_csv_reader, default_config, \
-    generate_profile, save_json, save_to_numpy_array, split_by_label, uci_bibtex
+    generate_profile, save_json, save_npz, split_by_label, uci_bibtex
 
 column_names = [
     'age',
@@ -59,7 +59,7 @@ def convert_format(config):
         train_data_df, train_labels_df = split_by_label(train_df, 'income')
         test_data_df, test_labels_df = split_by_label(test_df, 'income')
         
-        save_to_numpy_array(
+        save_npz(
             os.path.join(config.outputdirectory, 'adult'), {
                 'train-data': train_data_df,
                 'train-labels': train_labels_df,

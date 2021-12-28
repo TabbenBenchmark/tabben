@@ -4,7 +4,7 @@ Convert the arcene dataset to the standardized format.
 
 import os
 
-from utils import column_name_array, create_csv_reader, default_config, save_to_numpy_array
+from utils import column_name_array, create_csv_reader, default_config, save_npz
 
 
 def convert_format(config):
@@ -28,7 +28,7 @@ def convert_format(config):
     valid_data_df = read_csv('arcene_valid.data')
     valid_labels_df = read_csv(valid_labels_source, use_roots=False, names=['label'])
     
-    save_to_numpy_array(
+    save_npz(
         os.path.join(config.outputdirectory, 'arcene'), {
             'train-data': train_data_df,
             'train-labels': train_labels_df['label'],

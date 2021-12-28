@@ -8,7 +8,7 @@ import os
 from sklearn.model_selection import train_test_split
 
 from utils import column_name_array, create_csv_reader, default_config, generate_profile, save_json, \
-    save_to_numpy_array, split_by_label
+    save_npz, split_by_label
 
 
 def convert_format(config):
@@ -27,7 +27,7 @@ def convert_format(config):
         train_data_df, train_labels_df = split_by_label(train_df, 'ACTION')
         test_data_df, test_labels_df = split_by_label(test_df, 'ACTION')
         
-        save_to_numpy_array(
+        save_npz(
             os.path.join(config.outputdirectory, 'amazon'), {
                 'train-data': train_data_df,
                 'train-labels': train_labels_df,

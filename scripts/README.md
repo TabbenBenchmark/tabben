@@ -11,6 +11,10 @@ For example, if the raw data is already downloaded in the `data` folder,
 ```shell
 python3 arcene.py ./ --source ./data
 ```
+However, there is also a convenience script that can run all or a subset of the dataset scripts:
+```shell
+python3 all.py -d data/cache/dir dataset names separated by spaces
+```
 
 ## Data Format
 Each dataset is an [NPZ (compressed NPZ)](https://numpy.org/doc/stable/reference/generated/numpy.lib.format.html#module-numpy.lib.format) file.

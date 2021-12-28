@@ -15,7 +15,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from utils import column_name_array, convert_categorical, default_config, generate_profile, \
-    save_json, save_to_numpy_array, split_by_label
+    save_json, save_npz, split_by_label
 from tqdm import tqdm
 
 bibtex = """\
@@ -96,7 +96,7 @@ def convert_format(config):
         train_data_df, train_labels_df = split_by_label(orig_train_df, col_name='p_recall')
         test_data_df, test_labels_df = split_by_label(orig_test_df, col_name='p_recall')
         
-        save_to_numpy_array(
+        save_npz(
             os.path.join(config.outputdirectory, 'duolingo-original'), {
                 'train-data': train_data_df,
                 'train-labels': train_labels_df,
@@ -114,7 +114,7 @@ def convert_format(config):
         train_data_df, train_labels_df = split_by_label(cat_train_df, col_name='p_recall')
         test_data_df, test_labels_df = split_by_label(cat_test_df, col_name='p_recall')
         
-        save_to_numpy_array(
+        save_npz(
             os.path.join(config.outputdirectory, 'duolingo-categorical'), {
                 'train-data': train_data_df,
                 'train-labels': train_labels_df,

@@ -7,7 +7,7 @@ import os
 import pandas as pd
 
 from utils import column_name_array, convert_categorical, default_config, generate_profile, \
-    save_json, save_to_numpy_array, split_by_label
+    save_json, save_npz, split_by_label
 
 column_names = [
     'Elevation',
@@ -42,7 +42,7 @@ def convert_format(config):
         valid_data_df, valid_labels_df = split_by_label(df[11_340:11_340 + 3_780], col_name='Cover_Type')
         test_data_df, test_labels_df = split_by_label(df[-565_892:], col_name='Cover_Type')
         
-        save_to_numpy_array(
+        save_npz(
             os.path.join(config.outputdirectory, 'covertype'), {
                 'train-data': train_data_df,
                 'train-labels': train_labels_df,

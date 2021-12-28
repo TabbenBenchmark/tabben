@@ -12,7 +12,7 @@ import simplejson as json
 from sklearn.model_selection import train_test_split
 
 from utils import column_name_array, convert_categorical, create_csv_reader, default_config, \
-    save_to_numpy_array, split_by_label
+    save_npz, split_by_label
 
 state_holidays = {
     'a': 'public holiday',
@@ -63,7 +63,7 @@ def convert_format(config):
     train_data_df, train_labels_df = split_by_label(train_df, 'Sales')
     test_data_df, test_labels_df = split_by_label(test_df, 'Sales')
     
-    save_to_numpy_array(
+    save_npz(
         os.path.join(config.outputdirectory, 'rossman'), {
             'train-data': train_data_df,
             'train-labels': train_labels_df,

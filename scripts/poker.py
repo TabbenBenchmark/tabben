@@ -5,7 +5,7 @@ its train-test split.
 
 import os
 
-from utils import column_name_array, create_csv_reader, default_config, save_to_numpy_array, \
+from utils import column_name_array, create_csv_reader, default_config, save_npz, \
     split_by_label
 
 column_names = [
@@ -37,7 +37,7 @@ def convert_format(config):
     train_data_df, train_labels_df = split_by_label(train_df)
     test_data_df, test_labels_df = split_by_label(test_df)
     
-    save_to_numpy_array(
+    save_npz(
         os.path.join(config.outputdirectory, 'poker'), {
             'train-data': train_data_df,
             'train-labels': train_labels_df,

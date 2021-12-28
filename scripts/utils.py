@@ -8,6 +8,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import tarfile
 from dataprofiler import Profiler
 
 try:
@@ -77,7 +78,7 @@ def hvcat(arrays):
     )
 
 
-def save_to_numpy_array(filename, df_dict):
+def save_npz(filename, df_dict):
     filename = Path(filename).with_suffix('.npz')
     
     arr_dict = {
@@ -87,7 +88,11 @@ def save_to_numpy_array(filename, df_dict):
     arr_dict['_version'] = '1.0.0'
     
     np.savez_compressed(str(filename), **arr_dict)
-    print(f'Data saved in NPZ format at `{filename}`')
+    print(f'\u001b[32mData saved in NPZ format at `{filename}`\u001b[0m')
+    
+    with tarfile.open(filename.with_suffix('.npz.tar.gz'), 'w:gz') as f:
+        f.add(filename)
+    print(f'\u001b[32mData tarred and gzipped at `{filename.with_suffix(".npz.tar.gz")}`\u001b[0m')
 
 
 def split_by_label(df, col_name='label'):
@@ -107,10 +112,17 @@ class JSONNumpyEncoder(json.JSONEncoder):
 
 
 def save_json(data, filename):
-    with Path(filename).with_suffix('.json').open('w') as f:
+    filename = Path(filename)
+    
+    with filename.with_suffix('.json').open('w') as f:
         json.dump(data, f, cls=JSONNumpyEncoder)
     
-    print(f'Extras saved in JSON format at `{filename}`')
+    print(f'\u001b[32mExtras saved in JSON format at `{filename.with_suffix(".json")}`\u001b[0m')
+    
+    with tarfile.open(filename.with_suffix('.json.tar.gz'), 'w:gz') as f:
+        f.add(filename.with_suffix('.json'))
+        
+    print(f'\u001b[32mExtras tarred and gzipped at `{filename.with_suffix(".json.tar.gz")}`\u001b[0m')
 
 
 def generate_profile(df):
