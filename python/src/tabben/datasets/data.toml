@@ -1,58 +1,56 @@
 [arcene]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/arcene.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/arcene.npz"
 task = "classification"
 classes = 2
 
 [covertype]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.6-pre/covertype.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.6-pre/covertype.json"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/covertype.npz"
+extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/covertype.json"
 task = "classification"
 classes = 7
 
 [higgs]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/higgs.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/higgs.npz"
+extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/higgs.json"
 task = "classification"
 classes = 2
 
 [poker]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/poker.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/poker.npz"
 task = "classification"
 classes = 10
 
 [adult]
 classes = 2
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.6-pre/adult.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.6-pre/adult.json"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/adult.npz"
+extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/adult.json"
 task = "classification"
 
 [parkinsons]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/parkinsons.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/parkinsons.npz"
 outputs = 2
 task = "regression"
 
 [musk]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/musk.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/musk.npz"
 task = "classification"
 classes = 2
 
 [rossman]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/rossman.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/rossman.json"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/rossman.npz"
+extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/rossman.json"
 task = "regression"
-outputs = 1
 
 [amazon]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.5-pre/amazon.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/amazon.npz"
+extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/amazon.json"
 task = "classification"
-outputs = 1
 classes = 2
 
 [duolingo-original]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.6-pre/duolingo-original.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/duolingo-original.npz"
 task = "regression"
-outputs = 1
 
 [duolingo-categorical]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.6-pre/duolingo-original.npz"
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/duolingo-original.npz"
 task = "regression"
-outputs = 1

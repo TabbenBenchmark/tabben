@@ -43,7 +43,7 @@ def stage(action):
 def convert_format(config):
     with stage('reading CSV file'):
         df = pd.read_csv(
-            os.path.join(config.source, 'settles.acl16.learning_traces.13m.csv'),
+            os.path.join(config.source, 'settles.acl16.learning_traces.13m.csv.gz'),
             header=0,
             index_col=None,
             #nrows=10000,
@@ -76,6 +76,9 @@ def convert_format(config):
     with stage('adding new columns for each modifier/tag'):
         for tag in tqdm(all_tags, leave=False):
             cat_df[tag] = cat_df['modifiers'].str.contains(tag, regex=False).astype(int)
+        
+        # defragment dataframe
+        cat_df = cat_df.copy()
     
     with stage('converting types for categorical dataset'):
         cat_df[['surface_form', 'lemma', 'part_of_speech']] = \
