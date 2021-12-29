@@ -91,7 +91,7 @@ def save_npz(filename, df_dict):
     print(f'\u001b[32mData saved in NPZ format at `{filename}`\u001b[0m')
     
     with tarfile.open(filename.with_suffix('.npz.tar.gz'), 'w:gz') as f:
-        f.add(filename)
+        f.add(filename, arcname=filename.name)
     print(f'\u001b[32mData tarred and gzipped at `{filename.with_suffix(".npz.tar.gz")}`\u001b[0m')
 
 
@@ -120,7 +120,7 @@ def save_json(data, filename):
     print(f'\u001b[32mExtras saved in JSON format at `{filename.with_suffix(".json")}`\u001b[0m')
     
     with tarfile.open(filename.with_suffix('.json.tar.gz'), 'w:gz') as f:
-        f.add(filename.with_suffix('.json'))
+        f.add(filename.with_suffix('.json'), arcname=filename.with_suffix('.json').name)
         
     print(f'\u001b[32mExtras tarred and gzipped at `{filename.with_suffix(".json.tar.gz")}`\u001b[0m')
 

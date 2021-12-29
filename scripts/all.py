@@ -58,14 +58,14 @@ def collect_dataset_scripts(config):
     
     if config.output_directory is None:
         if config.data_directory is not None:
-            output_directory = Path(config.data_directory) / 'output'
+            config.output_directory = Path(config.data_directory) / 'output'
         else:
-            output_directory = Path.cwd() / 'output'
+            config.output_directory = Path.cwd() / 'output'
     else:
-        output_directory = Path(config.output_directory)
+        config.output_directory = Path(config.output_directory)
     
-    if not output_directory.exists():
-        output_directory.mkdir(parents=True, exist_ok=True)
+    if not config.output_directory.exists():
+        config.output_directory.mkdir(parents=True, exist_ok=True)
     
     # when no dataset names are given, run all scripts
     if len(config.names) == 0:
@@ -79,7 +79,7 @@ def collect_dataset_scripts(config):
             script_file = scripts_directory / f'{name}.py'
             assert script_file.exists()
             
-            scripts[name] = [config.python, script_file, output_directory]
+            scripts[name] = [config.python, script_file, config.output_directory]
             if config.data_directory is not None:
                 scripts[name].extend(['-s', Path(config.data_directory) / name])
     
@@ -100,9 +100,20 @@ def run_scripts(scripts):
     print(f'Successfully processed {len(successes)} out of {len(scripts)} datasets.')
     if len(successes) != len(scripts):
         print(f'Failed datasets: {", ".join(set(scripts.keys()) - successes)}')
-        
+
+
+def upload_assets(config):
+    asset_files = [str(file) for file in config.output_directory.glob('*')]
+    command = [
+        'gh', 'release', 'upload', 'v0.0.7-pre',
+        *asset_files,
+        '--clobber',
+    ]
+    subprocess.run(command)
+
 
 if __name__ == '__main__':
     config = parse_args()
     scripts = collect_dataset_scripts(config)
     run_scripts(scripts)
+    upload_assets(config)
