@@ -3,7 +3,6 @@ Provides Dataset objects for datasets in this benchmark, and various functions f
 working with the datasets or collections of datasets.
 """
 
-from .cifar import TabularCIFAR10Dataset
 from .dataset import *
 
 __all__ = [
