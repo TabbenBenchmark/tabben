@@ -123,6 +123,26 @@ def test_arcene(data_dir):
     validate_dataset_file(data_dir / 'arcene.npz')
 
 
+def test_cifar10(data_dir):
+    num_features = 32 * 32 * 3
+    
+    check_split_sizes(
+        data_dir, 'cifar10', {
+            'train': (50_000, num_features),
+            'test': (10_000, num_features),
+        }
+    )
+    
+    check_attributes(
+        data_dir, 'cifar10', {
+            'task': 'classification',
+            'num_classes': 10,
+        }
+    )
+    
+    validate_dataset_file(data_dir / 'cifar10.npz')
+
+
 def test_covertype(data_dir):
     num_features = 54
     
