@@ -17,19 +17,9 @@ for inputs, labels in DataLoader(ds, batch_size=4):
     pass
 ```
 
-All the currently implemented datasets are accessible this way, except for the CIFAR10 dataset. Since it's a standard computer vision dataset, we just wrap the CIFAR10 Dataset from `torchvision` and convert the images into a vector.
+All the currently implemented datasets are accessible this way.
 
-```python
-from tabben.datasets import TabularCIFAR10Dataset
-from torch.utils.data import DataLoader
-
-cifar_ds = TabularCIFAR10Dataset('./')
-for inputs, labels in DataLoader(cifar_ds, batch_size=4):
-    # do something with inputs and labels
-    pass
-```
-
-The non-image tabular datasets can also be accessed as either numpy arrays or pandas dataframes:
+We can also access these tabular datasets as either numpy arrays or pandas dataframes:
 ```python
 from tabben.datasets import OpenTabularDataset
 

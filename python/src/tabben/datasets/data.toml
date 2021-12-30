@@ -54,3 +54,9 @@ task = "regression"
 [duolingo-categorical]
 data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/duolingo-original.npz"
 task = "regression"
+
+[cifar10]
+data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/cifar10.npz"
+extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/cifar10.json"
+task = "classification"
+classes = 10

@@ -5,3 +5,4 @@ scikit-learn
 simplejson
 DataProfiler[reports]
 requests
+torchvision
