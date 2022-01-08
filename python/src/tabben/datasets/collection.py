@@ -1,4 +1,4 @@
-from python.src.tabben.datasets import OpenTabularDataset
+from tabben.datasets import OpenTabularDataset
 
 __all__ = [
     'DatasetCollection',
@@ -120,12 +120,12 @@ class DatasetCollection:
     
     def dataframes(self):
         return (
-            name, dataset.dataframe()
+            (name, dataset.dataframe())
             for name, dataset in self.datasets.items()
         )
     
     def numpy(self):
         return (
-            name, dataset.inputs, dataset.outputs
+            (name, dataset.inputs, dataset.outputs)
             for name, dataset in self.datasets.items()
         )
