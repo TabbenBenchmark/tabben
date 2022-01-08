@@ -1,10 +1,11 @@
 # `tabben` v0.0.7
 
 ## New Features
-
+- added the CIFAR10 dataset as a standardized dataset (i.e. can be accessed directly using OpenTabularDataset)
+- added a DatasetCollection class for bulk processing of datasets
 
 ## Breaking Changes
-
+- removed the `TabularCIFAR10Dataset` as it is no longer needed
 
 ## Non-Breaking Changes
 

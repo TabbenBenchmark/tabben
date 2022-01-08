@@ -73,7 +73,8 @@ def save_arrays(config):
     
     if config.dataset_file:
         save_npz(
-            os.path.join(config.outputdirectory, 'cifar10'), {
+            config,
+            {
                 'train-data': X_train,
                 'train-labels': y_train,
                 'test-data': X_test,
@@ -85,15 +86,16 @@ def save_arrays(config):
     
     if config.extras_file:
         save_json(
+            config,
             {
                 'categories': {
                     'label': label_categories,
                 },
                 'bibtex': bibtex,
-            }, os.path.join(config.outputdirectory, 'cifar10.json')
+            }
         )
 
 
 if __name__ == '__main__':
-    config = default_config()
+    config = default_config('cifar10')
     save_arrays(config)

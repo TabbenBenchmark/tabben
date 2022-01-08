@@ -9,9 +9,12 @@ This is useful if you're trying to import the package into an environment that i
 ```python
 from tabben.datasets import ensure_downloaded
 
+# download just the arcene and higgs datasets
 ensure_downloaded('path/to/directory', 
                   'arcene', 
                   'higgs')
+
+# download all available datasets
+ensure_downloaded('path/to/directory')
 ```
 
-Note that this doesn't handle the CIFAR10 dataset automatically (yet).

@@ -4,6 +4,7 @@ working with the datasets or collections of datasets.
 """
 
 from .dataset import *
+from .collection import *
 
 __all__ = [
     # functions
@@ -15,6 +16,7 @@ __all__ = [
     # classes
     'OpenTabularDataset',
     'DatasetFormatError',
+    'DatasetCollection',
     
     # data/variables/constants
     'metadata',
