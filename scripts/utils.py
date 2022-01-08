@@ -3,6 +3,7 @@ Set of utilities for creating standard dataset files for this benchmark.
 """
 
 import argparse
+import contextlib
 import os
 from pathlib import Path
 
@@ -26,38 +27,51 @@ uci_bibtex = """\
 }"""
 
 
-def create_csv_reader(*roots, **configs):
-    def reader(filename, use_roots=True, **kwargs):
-        filepath = os.path.join(*roots, filename) if use_roots else filename
+def create_csv_reader(root, **configs):
+    def reader(filename, use_root=True, **kwargs):
+        filepath = root / filename if use_root else filename
         return pd.read_csv(filepath, **{**configs, **kwargs})
     
     return reader
 
 
-def default_config(*,
-                   description='Download and convert files into a standard format',
-                   source_default='./'):
+def default_config(name, *,
+                   description='Download or convert files into a standard format',
+                   download_root=None):
     parser = argparse.ArgumentParser(description=description)
     
-    parser.add_argument('outputdirectory', help='directory to save outputs')
     parser.add_argument(
-        '--source', '-s',
-        help='root of the source urls to download from, or the directory of source files',
-        default=source_default
+        'outputdirectory', dest='output_directory', type=Path,
+        help='local directory to save outputs'
+    )
+    parser.add_argument(
+        '--source', '-s', default=None, type=Path,
+        help='local directory of (cached) source files',
+    )
+    parser.add_argument(
+        '--download-sources', '-ds', action='store_true',
+        help='Download files from the original source if possible',
     )
     
     parser.add_argument(
         '--dataset-file', action='store_true',
-        help='Generate the NPZ dataset file'
+        help='Generate the NPZ dataset file',
     )
     parser.add_argument(
         '--extras-file', action='store_true',
-        help='Generate the metadata data if needed'
+        help='Generate the metadata data if needed',
+    )
+    parser.add_argument(
+        '--no-profile', action='store_true',
+        help='Do not generate the profile',
     )
     
-    parser.add_argument('--no-profile', action='store_true')
-    
     args = parser.parse_args()
+    args.name = name
+    
+    args.download_root = download_root
+    if download_root is None:
+        args.download_sources = False
     
     if not any([args.dataset_file, args.extras_file]):
         args.dataset_file = True
@@ -78,8 +92,9 @@ def hvcat(arrays):
     )
 
 
-def save_npz(filename, df_dict):
-    filename = Path(filename).with_suffix('.npz')
+def save_npz(config, df_dict):
+    filename = (config.output_directory / config.name).with_suffix('.npz')
+    comp_filename = filename.with_suffix('.npz.tar.gz')
     
     arr_dict = {
         key: value.to_numpy().squeeze() if not isinstance(value, np.ndarray) else value
@@ -90,9 +105,9 @@ def save_npz(filename, df_dict):
     np.savez_compressed(str(filename), **arr_dict)
     print(f'\u001b[32mData saved in NPZ format at `{filename}`\u001b[0m')
     
-    with tarfile.open(filename.with_suffix('.npz.tar.gz'), 'w:gz') as f:
+    with tarfile.open(comp_filename, 'w:gz') as f:
         f.add(filename, arcname=filename.name)
-    print(f'\u001b[32mData tarred and gzipped at `{filename.with_suffix(".npz.tar.gz")}`\u001b[0m')
+    print(f'\u001b[32mData tarred and gzipped at `{comp_filename}`\u001b[0m')
 
 
 def split_by_label(df, col_name='label'):
@@ -111,18 +126,19 @@ class JSONNumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def save_json(data, filename):
-    filename = Path(filename)
+def save_json(config, data):
+    filename = (config.output_directory / config.name).with_suffix('.json')
+    comp_filename = filename.with_suffix('.json.tar.gz')
     
-    with filename.with_suffix('.json').open('w') as f:
+    with filename.open('w') as f:
         json.dump(data, f, cls=JSONNumpyEncoder)
     
-    print(f'\u001b[32mExtras saved in JSON format at `{filename.with_suffix(".json")}`\u001b[0m')
+    print(f'\u001b[32mExtras saved in JSON format at `{filename}`\u001b[0m')
     
-    with tarfile.open(filename.with_suffix('.json.tar.gz'), 'w:gz') as f:
-        f.add(filename.with_suffix('.json'), arcname=filename.with_suffix('.json').name)
+    with tarfile.open(comp_filename, 'w:gz') as f:
+        f.add(filename, arcname=filename.name)
         
-    print(f'\u001b[32mExtras tarred and gzipped at `{filename.with_suffix(".json.tar.gz")}`\u001b[0m')
+    print(f'\u001b[32mExtras tarred and gzipped at `{comp_filename}`\u001b[0m')
 
 
 def generate_profile(df):
@@ -141,3 +157,11 @@ def convert_categorical(df):
     df[categorical_columns] = df[categorical_columns].apply(lambda x: x.cat.codes)
     
     return categories
+
+
+@contextlib.contextmanager
+def stage(action):
+    print(f'Begin {action}...', end='', flush=True)
+    yield
+    print('finished.')
+    

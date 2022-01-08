@@ -15,6 +15,9 @@ def convert_format(config):
         sep='\\s+',
     )
     
+    if config.download_sources:
+        pass
+    
     # labels for one of the splits is stored in the parent directory of where everything else is stored,
     # but this is just the organization on
     if config.source == 'https://archive.ics.uci.edu/ml/machine-learning-databases/arcene/ARCENE/':
@@ -26,10 +29,11 @@ def convert_format(config):
     train_data_df = read_csv('arcene_train.data')
     train_labels_df = read_csv('arcene_train.labels', names=['label'])
     valid_data_df = read_csv('arcene_valid.data')
-    valid_labels_df = read_csv(valid_labels_source, use_roots=False, names=['label'])
+    valid_labels_df = read_csv(valid_labels_source, use_root=False, names=['label'])
     
     save_npz(
-        os.path.join(config.outputdirectory, 'arcene'), {
+        config,
+        {
             'train-data': train_data_df,
             'train-labels': train_labels_df['label'],
             'test-data': valid_data_df,
@@ -42,7 +46,8 @@ def convert_format(config):
 
 if __name__ == '__main__':
     args = default_config(
-        source_default='https://archive.ics.uci.edu/ml/machine-learning-databases/arcene/ARCENE/',
+        'arcene',
+        download_root='https://archive.ics.uci.edu/ml/machine-learning-databases/arcene/ARCENE/',
     )
     
     convert_format(args)

@@ -2,8 +2,6 @@
 Convert the adult census income prediction dataset to the standardized format.
 """
 
-import os
-
 import pandas as pd
 
 from utils import column_name_array, convert_categorical, create_csv_reader, default_config, \
@@ -41,6 +39,9 @@ def convert_format(config):
         skipinitialspace=True,
     )
     
+    if config.download_sources:
+        pass
+    
     combined_df = pd.concat(
         [
             read_csv('adult.data'),
@@ -60,7 +61,8 @@ def convert_format(config):
         test_data_df, test_labels_df = split_by_label(test_df, 'income')
         
         save_npz(
-            os.path.join(config.outputdirectory, 'adult'), {
+            config,
+            {
                 'train-data': train_data_df,
                 'train-labels': train_labels_df,
                 'test-data': test_data_df,
@@ -72,17 +74,19 @@ def convert_format(config):
     
     if config.extras_file:
         save_json(
+            config,
             {
                 'profile': generate_profile(combined_df),
                 'bibtex': uci_bibtex,
                 'categories': categories,
-            }, os.path.join(config.outputdirectory, 'adult.json')
+            }
         )
 
 
 if __name__ == '__main__':
     args = default_config(
-        source_default='https://archive.ics.uci.edu/ml/machine-learning-databases/adult/',
+        'adult',
+        download_root='https://archive.ics.uci.edu/ml/machine-learning-databases/adult/',
     )
     
     convert_format(args)

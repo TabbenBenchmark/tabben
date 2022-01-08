@@ -28,7 +28,7 @@ license_info = 'Reuse of this database is unlimited with retention of copyright 
 
 def convert_format(config):
     df = pd.read_csv(
-        os.path.join(config.source, 'covtype.data.gz'),
+        config.source / 'covtype.data.gz',
         header=None,
         index_col=None,
         names=column_names,
@@ -43,7 +43,8 @@ def convert_format(config):
         test_data_df, test_labels_df = split_by_label(df[-565_892:], col_name='Cover_Type')
         
         save_npz(
-            os.path.join(config.outputdirectory, 'covertype'), {
+            config,
+            {
                 'train-data': train_data_df,
                 'train-labels': train_labels_df,
                 'valid-data': valid_data_df,
@@ -57,17 +58,19 @@ def convert_format(config):
     
     if config.extras_file:
         save_json(
+            config,
             {
                 'profile': generate_profile(df),
                 'categories': categories,
                 'license': license_info,
-            }, os.path.join(config.outputdirectory, 'covertype.json')
+            }
         )
 
 
 if __name__ == '__main__':
     args = default_config(
-        source_default='https://archive.ics.uci.edu/ml/machine-learning-databases/covtype/',
+        'covertype',
+        download_root='https://archive.ics.uci.edu/ml/machine-learning-databases/covtype/',
     )
     
     convert_format(args)

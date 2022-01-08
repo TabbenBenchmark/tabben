@@ -3,8 +3,6 @@ Convert the Kaggle Amazon Employee Access Prediction dataset to the standardized
 format.
 """
 
-import os
-
 from sklearn.model_selection import train_test_split
 
 from utils import column_name_array, create_csv_reader, default_config, generate_profile, save_json, \
@@ -19,6 +17,9 @@ def convert_format(config):
         sep=',',
     )
     
+    if config.download_sources:
+        pass
+    
     df = read_csv('train.csv')
     
     if config.dataset_file:
@@ -28,7 +29,8 @@ def convert_format(config):
         test_data_df, test_labels_df = split_by_label(test_df, 'ACTION')
         
         save_npz(
-            os.path.join(config.outputdirectory, 'amazon'), {
+            config,
+            {
                 'train-data': train_data_df,
                 'train-labels': train_labels_df,
                 'test-data': test_data_df,
@@ -39,12 +41,15 @@ def convert_format(config):
         )
     
     if config.extras_file:
-        save_json({
-            'profile': generate_profile(df),
-        }, os.path.join(config.outputdirectory, 'amazon.json'))
+        save_json(
+            config,
+            {
+                'profile': generate_profile(df),
+            }
+        )
 
 
 if __name__ == '__main__':
-    args = default_config()
+    args = default_config('amazon')
     
     convert_format(args)

@@ -58,7 +58,7 @@ def convert_format(config):
 
 if __name__ == '__main__':
     args = default_config(
-        source_default='https://archive.ics.uci.edu/ml/machine-learning-databases/musk/',
+        download_root='https://archive.ics.uci.edu/ml/machine-learning-databases/musk/',
     )
     
     convert_format(args)

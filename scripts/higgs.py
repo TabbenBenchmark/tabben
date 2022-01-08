@@ -84,6 +84,6 @@ def convert_format(config):
 
 if __name__ == '__main__':
     config = default_config(
-        source_default='https://archive.ics.uci.edu/ml/machine-learning-databases/00280/',
+        download_root='https://archive.ics.uci.edu/ml/machine-learning-databases/00280/',
     )
     convert_format(config)

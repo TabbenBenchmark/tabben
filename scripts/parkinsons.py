@@ -49,7 +49,7 @@ def convert_format(config):
 
 if __name__ == '__main__':
     args = default_config(
-        source_default='https://archive.ics.uci.edu/ml/machine-learning-databases/parkinsons/telemonitoring/',
+        download_root='https://archive.ics.uci.edu/ml/machine-learning-databases/parkinsons/telemonitoring/',
     )
     
     convert_format(args)

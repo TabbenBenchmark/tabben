@@ -15,7 +15,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from utils import column_name_array, convert_categorical, default_config, generate_profile, \
-    save_json, save_npz, split_by_label
+    save_json, save_npz, split_by_label, stage
 from tqdm import tqdm
 
 bibtex = """\
@@ -33,17 +33,10 @@ bibtex = """\
 categorical_columns = ['user_id', 'learning_language', 'ui_language', 'lexeme_id']
 
 
-@contextlib.contextmanager
-def stage(action):
-    print(f'Begin {action}...', end='', flush=True)
-    yield
-    print('finished.')
-
-
 def convert_format(config):
     with stage('reading CSV file'):
         df = pd.read_csv(
-            os.path.join(config.source, 'settles.acl16.learning_traces.13m.csv.gz'),
+            config.source / 'settles.acl16.learning_traces.13m.csv.gz',
             header=0,
             index_col=None,
             #nrows=10000,
@@ -150,7 +143,7 @@ def convert_format(config):
 
 if __name__ == '__main__':
     args = default_config(
-        source_default='https://archive.ics.uci.edu/ml/machine-learning-databases/covtype/',
+        download_root='https://archive.ics.uci.edu/ml/machine-learning-databases/covtype/',
     )
     
     convert_format(args)
