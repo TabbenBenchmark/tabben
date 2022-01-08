@@ -6,3 +6,4 @@ simplejson
 DataProfiler[reports]
 requests
 torchvision
+tqdm
