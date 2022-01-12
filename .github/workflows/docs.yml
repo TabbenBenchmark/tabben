@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'docs/**'
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -15,6 +16,15 @@ jobs:
     steps:
       - name: Checkout project
         uses: actions/checkout@v2
+      - name: Install Python 3
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Load Cached Python Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ hashFiles('./docs/requirements.txt') }}
       - name: Build
         working-directory: docs/
         run: make html
