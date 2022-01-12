@@ -1,10 +1,9 @@
-+++
-title = "Working with (Vanilla) PyTorch"
-+++
+
+# Working with (Vanilla) PyTorch
 
 This guide goes through how to use this package with the standard PyTorch workflow.
 
-```python
+```shell
 !pip3 install tabben torch
 ```
 

@@ -1,6 +1,5 @@
-+++
-title = "Forest Cover Type Dataset"
-+++
+
+# Forest Cover Type Dataset
 
 The forest cover type dataset is a typical multiclass classification dataset with a mix of categorical and continuous attributes.
 

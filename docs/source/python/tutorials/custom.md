@@ -1,8 +1,7 @@
-+++
-title = "Custom Datasets"
-+++
 
-It's possible to add private or other datasets in the benchmark (at least locally). The data needs to be in a NPZ file in a particular format (see the developer's documentation in the [scripts](/scripts) directory), and then you can call the `register_dataset` function:
+# Custom Datasets
+
+It's possible to add private or other datasets in the benchmark (at least locally). The data needs to be in a NPZ file in a particular format (see the developer's documentation in the [scripts](https://github.com/umd-otb/OpenTabularDataBenchmark/blob/main/scripts/README.md) directory), and then you can call the `register_dataset` function:
 ```python
 from tabben.datasets import register_dataset
 

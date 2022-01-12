@@ -1,6 +1,5 @@
-+++
-title = 'Adult Census Income Dataset'
-+++
+
+# Adult Census Income Dataset
 
 This particular adult census income dataset is a mix of mostly categorical attributes with a few continuous ones. The goal is to predict which side of the $50,000 threshold an adult is making.
 

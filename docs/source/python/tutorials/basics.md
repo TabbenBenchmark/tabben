@@ -1,6 +1,5 @@
-+++
-title = "Basic Package Usage"
-+++
+
+# Basic Package Usage
 
 ## Accessing a Dataset
 

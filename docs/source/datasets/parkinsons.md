@@ -1,6 +1,5 @@
-+++
-title = "Parkinson's Telemonitoring Dataset"
-+++
+
+# Parkinson's Telemonitoring Dataset
 
 The parkinson's telemonitoring dataset contains measurement records from a telemonitoring device for several individuals at multiple time points. There are 2 regression tasks associated with this dataset.
 

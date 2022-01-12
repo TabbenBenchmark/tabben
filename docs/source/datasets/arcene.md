@@ -1,6 +1,5 @@
-+++
-title = "Arcene Dataset"
-+++
+
+# Arcene Dataset
 
 The arcene dataset was originally used in a NeurIPS (then NIPS) challenge on feature selection in 2003. As a result, this dataset has a very large number of opaque features with not that many examples, and some features are intentionally useless.
 

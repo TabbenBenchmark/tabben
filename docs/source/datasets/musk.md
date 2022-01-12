@@ -1,6 +1,5 @@
-+++
-title = 'Musk Dataset'
-+++
+
+# Musk Dataset
 
 The musk dataset is a chemical molecule dataset trying to classify whether certain molecules (using only measurements from a particular conformation) smell like [musk](https://en.wikipedia.org/wiki/Musk). (This is using version *2* of the dataset.)
 

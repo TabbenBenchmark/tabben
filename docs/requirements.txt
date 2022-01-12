@@ -1,3 +1,4 @@
 jupyter
 jupytext
-pdoc3
+sphinx
+sphinx-book-theme

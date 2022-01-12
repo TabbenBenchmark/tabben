@@ -1,6 +1,5 @@
-+++
-title = "Duolingo Dataset"
-+++
+
+# Duolingo Dataset
 
 The Duolingo space repetition learning dataset is a set of learning traces from the Duolingo app (anonymized). This is the largest dataset in the benchmark in terms of number of examples. Note that the implicit structure within this dataset is expected to be different from many other tabular datasets, so it may be a good idea to check out the Duolingo spaced repetition model [paper](https://github.com/duolingo/halflife-regression/blob/master/settles.acl16.pdf) for some theory or [python implementation](https://github.com/duolingo/halflife-regression/blob/master/experiment.py).
 

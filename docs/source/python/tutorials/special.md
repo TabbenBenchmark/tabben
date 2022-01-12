@@ -1,6 +1,5 @@
-+++
-title = "Special Situations"
-+++
+
+# Special Situations
 
 ## Downloading all (or some) of the datasets explicitly
 

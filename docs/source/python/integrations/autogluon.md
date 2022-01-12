@@ -1,6 +1,5 @@
-+++
-title = "Working with Autogluon"
-+++
+
+# Working with Autogluon
 
 This guide goes through how to use this package with autogluon hyperparameter tuning package.
 

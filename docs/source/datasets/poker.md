@@ -1,6 +1,5 @@
-+++
-title = 'Poker Hand Dataset'
-+++
+
+# Poker Hand Dataset
 
 The poker hand dataset is a deterministic dataset predicting the type of poker hand from the suits and ranks of the five cards in the hand.
 

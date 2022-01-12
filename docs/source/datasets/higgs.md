@@ -1,6 +1,5 @@
-+++
-title = 'Higgs Dataset'
-+++
+
+# Higgs Dataset
 
 The higgs dataset is a Monte Carlo-simulated dataset from the world of particle physics. It has a small number of features, but has one of the largest numbers of examples in the benchmark.
 
