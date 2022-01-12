@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 from numpy.random import default_rng
 
-from tabben.evaluators import metrics
-from tabben.evaluators import autogluon as ag_metrics
+from tabben.evaluators.metrics import ScikitLearnMetrics as metrics
+from tabben.evaluators.autogluon import AutogluonMetrics as ag_metrics
 
 
 ################################################################################

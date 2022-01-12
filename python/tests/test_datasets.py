@@ -123,6 +123,7 @@ def test_arcene(data_dir):
     validate_dataset_file(data_dir / 'arcene.npz')
 
 
+@pytest.mark.large
 def test_cifar10(data_dir):
     num_features = 32 * 32 * 3
     

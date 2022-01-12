@@ -9,7 +9,7 @@ __all__ = [
 ]
 
 
-def get_metrics(task: str, *, classes: int = 2, _namespace=metrics):
+def get_metrics(task: str, *, classes: int = 2, _namespace=metrics.ScikitLearnMetrics):
     """
     Return the specific metric implementations given a dataset's task (and number
     of classes if classification).
