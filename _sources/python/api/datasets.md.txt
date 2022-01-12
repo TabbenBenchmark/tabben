@@ -3,19 +3,20 @@
 
 ## Dataset Class
 
-The basic unit of work for this package is the [OpenTabularDataset](tabben.datasets.OpenTabularDataset):
+The basic unit of work for this package is the [OpenTabularDataset](tabben.datasets.OpenTabularDataset).
 
 ```{eval-rst}
 .. autoclass:: tabben.datasets.OpenTabularDataset
     :show-inheritance:
     :members:
+    :special-members: __init__
+
+.. autofunction:: tabben.datasets.list_datasets
 ```
 
 ## Metadata
 
 ```{eval-rst}
-.. autodata:: tabben.datasets.metadata
-    :no-value:
 
 .. autodata:: tabben.datasets.allowed_tasks
 ```
@@ -24,6 +25,7 @@ The basic unit of work for this package is the [OpenTabularDataset](tabben.datas
 ```{eval-rst}
 .. autoclass:: tabben.datasets.DatasetCollection
     :members:
+    :special-members: __init__
 ```
 
 ## Other Utilities

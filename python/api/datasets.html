@@ -401,45 +401,220 @@
 <h1><code class="docutils literal notranslate"><span class="pre">tabben.datasets</span></code><a class="headerlink" href="#tabben-datasets" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="dataset-class">
 <h2>Dataset Class<a class="headerlink" href="#dataset-class" title="Permalink to this headline">¶</a></h2>
-<p>The basic unit of work for this package is the <a class="reference internal" href="#tabben.datasets.OpenTabularDataset" title="tabben.datasets.OpenTabularDataset"><span class="xref myst py py-class">OpenTabularDataset</span></a>:</p>
+<p>The basic unit of work for this package is the <a class="reference internal" href="#tabben.datasets.OpenTabularDataset" title="tabben.datasets.OpenTabularDataset"><span class="xref myst py py-class">OpenTabularDataset</span></a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="tabben.datasets.OpenTabularDataset">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tabben.datasets.</span></span><span class="sig-name descname"><span class="pre">OpenTabularDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">os.PathLike</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'train'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabben.datasets.OpenTabularDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.dataset.Dataset</span></code></p>
-<p>A tabular dataset from the benchmark (except for CIFAR10, which is
-accessible in tabular form using <cite>TabularCIFAR10Dataset</cite>).</p>
+<p>A tabular dataset from the benchmark.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tabben.datasets.OpenTabularDataset.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">os.PathLike</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'train'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabben.datasets.OpenTabularDataset.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and create a dataset with the given <cite>name</cite> (storing the dataset files
+in the <cite>data_dir</cite>) for the particular subset given by <cite>split</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dir</strong> (<em>path-like</em>) – Directory to load/store the dataset files</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name (primary key) of the dataset</p></li>
+<li><p><strong>split</strong> (<em>str</em><em> or </em><em>iterable of str</em><em>, </em><em>default='train'</em>) – Subset split of the dataset to load</p></li>
+<li><p><strong>download</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Whether to download the dataset files if not already present in <cite>data_dir</cite></p></li>
+<li><p><strong>transform</strong> (<em>callable</em><em>, </em><em>optional</em>) – Transform or function that will be applied to the input attributes vector</p></li>
+<li><p><strong>target_transform</strong> (<em>callable</em><em>, </em><em>optional</em>) – Transform or function that will be applied to the target variables</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tabben.datasets.OpenTabularDataset.bibtex">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bibtex</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tabben.datasets.OpenTabularDataset.bibtex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bibtex for the dataset and any associated papers that the original dataset
+providers have asked to be cited. This is useful if you are doing research
+with this benchmark and want to cite the original datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Bibtex if available, otherwise None</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tabben.datasets.OpenTabularDataset.categorical_attributes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">categorical_attributes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tabben.datasets.OpenTabularDataset.categorical_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Labels/names of the categorical attributes of this dataset if available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of names of categorical attributes if available, otherwise None</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>sequence of str or None</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="tabben.datasets.OpenTabularDataset.dataframe">
 <span class="sig-name descname"><span class="pre">dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="headerlink" href="#tabben.datasets.OpenTabularDataset.dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a pandas DataFrame consisting of both input attributes and output labels
 for this dataset (for this specific split).</p>
+<p>Since pandas is not a required dependency, make sure you already have pandas
+installed before you call this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dataframe containing the complete dataset for this split</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pandas.DataFrame</p>
+</dd>
+</dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="tabben.datasets.OpenTabularDataset.has_extra">
+<span class="sig-name descname"><span class="pre">has_extra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extra_name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tabben.datasets.OpenTabularDataset.has_extra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether this dataset has a specific extra.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>extra_name</strong> (<em>str</em>) – Name of the extra to check</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if this dataset contains an extra with this name, otherwise False</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tabben.datasets.OpenTabularDataset.has_extras">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_extras</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#tabben.datasets.OpenTabularDataset.has_extras" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this dataset has “extras” metadata, which typically contains the
+mappings for categories from numbers to labels, license information, bibtex,
+data profiles, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether this dataset has extras</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tabben.datasets.OpenTabularDataset.license">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">license</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tabben.datasets.OpenTabularDataset.license" title="Permalink to this definition">¶</a></dt>
+<dd><p>License text for the dataset itself. (The tabben package is MIT-licensed,
+but the datasets themselves may not be as permissive. Particularly if you
+intend to use the datasets in a commercial setting, make sure to check the
+license of the datasets used.)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>License text if available, otherwise None</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tabben.datasets.OpenTabularDataset.num_classes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_classes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tabben.datasets.OpenTabularDataset.num_classes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of classes for this dataset if it is a classification task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Number of classification classes</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>AttributeError</strong> – If called on a non-classification dataset</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tabben.datasets.OpenTabularDataset.num_inputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tabben.datasets.OpenTabularDataset.num_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of input attributes for this dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Number of raw input attributes (without preprocessing or transforms)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tabben.datasets.OpenTabularDataset.num_outputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tabben.datasets.OpenTabularDataset.num_outputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of output/target variables for this dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Number of raw output variables (without preprocessing or transforms)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tabben.datasets.OpenTabularDataset.numpy">
+<span class="sig-name descname"><span class="pre">numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'numpy.ndarray'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabben.datasets.OpenTabularDataset.numpy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the input and output attributes as numpy arrays in the standard
+scikit-learn format of (inputs, outputs).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>2-tuple of inputs and outputs as matrices/vectors</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple of numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tabben.datasets.OpenTabularDataset.task">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">task</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tabben.datasets.OpenTabularDataset.task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task associated with this dataset.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#tabben.datasets.allowed_tasks" title="tabben.datasets.allowed_tasks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">allowed_tasks</span></code></a></dt><dd><p>List of allowed/currently supported tasks for the benchmark</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabben.datasets.list_datasets">
+<span class="sig-prename descclassname"><span class="pre">tabben.datasets.</span></span><span class="sig-name descname"><span class="pre">list_datasets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tabben.datasets.list_datasets" title="Permalink to this definition">¶</a></dt>
+<dd><p>List the tabular datasets available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Sequence of names of all datasets in the benchmark</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>sequence of str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="metadata">
 <h2>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h2>
-<dl class="py data">
-<dt class="sig sig-object py" id="tabben.datasets.metadata">
-<span class="sig-prename descclassname"><span class="pre">tabben.datasets.</span></span><span class="sig-name descname"><span class="pre">metadata</span></span><a class="headerlink" href="#tabben.datasets.metadata" title="Permalink to this definition">¶</a></dt>
-<dd><p>dict() -&gt; new empty dictionary
-dict(mapping) -&gt; new dictionary initialized from a mapping object’s</p>
-<blockquote>
-<div><p>(key, value) pairs</p>
-</div></blockquote>
-<dl>
-<dt>dict(iterable) -&gt; new dictionary initialized as if via:</dt><dd><p>d = {}
-for k, v in iterable:</p>
-<blockquote>
-<div><p>d[k] = v</p>
-</div></blockquote>
-</dd>
-<dt>dict(<a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs) -&gt; new dictionary initialized with the name=value pairs</dt><dd><p>in the keyword argument list.  For example:  dict(one=1, two=2)</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py data">
 <dt class="sig sig-object py" id="tabben.datasets.allowed_tasks">
 <span class="sig-prename descclassname"><span class="pre">tabben.datasets.</span></span><span class="sig-name descname"><span class="pre">allowed_tasks</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'classification',</span> <span class="pre">'regression'}</span></em><a class="headerlink" href="#tabben.datasets.allowed_tasks" title="Permalink to this definition">¶</a></dt>
@@ -454,14 +629,78 @@ set(iterable) -&gt; new set object</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="tabben.datasets.DatasetCollection">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tabben.datasets.</span></span><span class="sig-name descname"><span class="pre">DatasetCollection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'train'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabben.datasets.DatasetCollection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Represents a collection of tabular datasets, providing some convenience methods
+<dd><p>A collection of tabular datasets, providing some convenience methods
 to bulk load, evaluate, or extract metadata/extras from a set of datasets.</p>
+<p>Many of the same attributes and methods for OpenTabularDataset are also
+available for DatasetCollection, although some of them are pluralized
+(e.g. <cite>task</cite> -&gt; <cite>tasks</cite>, <cite>dataframe</cite> -&gt; <cite>dataframes</cite>).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tabben.datasets.DatasetCollection.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'train'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabben.datasets.DatasetCollection.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and create a collection of datasets stored/downloaded into <cite>location</cite>
+for all the datasets with names <cite>names</cite> and for the same subset <cite>split</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>location</strong> (<em>path-like</em>) – Path to a directory where the dataset files are stored</p></li>
+<li><p><strong>*names</strong> (<em>str</em>) – Names (primary keys) of the datasets to include in this collection</p></li>
+<li><p><strong>split</strong> (<em>str</em><em>, </em><em>default='train'</em>) – Name of the dataset subset</p></li>
+<li><p><strong>download</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Whether to download the dataset files if not already present</p></li>
+<li><p><strong>transform</strong> (<em>callable</em><em> or </em><em>list of callable</em><em> or </em><em>dict of callable</em><em>, </em><em>optional</em>) – Transforms/functions to apply to the input attribute vectors (see below)</p></li>
+<li><p><strong>target_transform</strong> (<em>callable</em><em> or </em><em>list of callable</em><em> or </em><em>dict of callable</em><em>, </em><em>optional</em>) – Transforms/functions to apply to the output variables (see below)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The parameters <cite>transform</cite> and <cite>target_transform</cite> are optional,
+but can be specified as
+a single callable object,
+a sequence of callable objects, or
+a mapping from dataset names to callable objects.
+In each of these cases:</p>
+<dl class="simple">
+<dt>callable</dt><dd><p>The single callable object will be applied to all datasets.</p>
+</dd>
+<dt>sequence of callable</dt><dd><p>Based on the sequential order of the datasets, transforms are assigned
+to datasets starting at the beginning of sequence until there are either
+no more datasets or no more transforms. Datasets not matched with an
+element in the sequence (i.e. the number of datasets &gt; the length of
+the sequence) are not transformed.</p>
+</dd>
+<dt>mapping from name to callable</dt><dd><p>For each dataset in the collection, if it is a key in the mapping, then
+the corresponding callable will be applied to the examples for that
+dataset. Otherwise (if the name is not present as a key), no transform
+is applied.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="tabben.datasets.DatasetCollection.match">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabben.datasets.DatasetCollection.match" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a dataset collection where all the datasets match all given
-conditions. This can be used, for example, to get a collection of all
-binary classification datasets.</p>
+<dd><p>Create a dataset collection consisting of all benchmark datasets that match
+all given conditions. This can be used, for example, to get a collection
+of all binary classification datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>location</strong> (<em>path-like</em>) – Path to where datasets are stored/downloaded to</p></li>
+<li><p><strong>task</strong> (<em>str</em><em> or </em><em>iterable of str</em><em>, </em><em>optional</em>) – Task(s) that must be associated with the datasets</p></li>
+<li><p><strong>outputs</strong> (<em>int</em><em> or </em><em>range</em><em>, </em><em>optional</em>) – Number of outputs that datasets must have</p></li>
+<li><p><strong>classes</strong> (<em>int</em><em> or </em><em>range</em><em>, </em><em>optional</em>) – Number of classes that classification datasets must have</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Collection of datasets matching all specified conditions</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#tabben.datasets.DatasetCollection" title="tabben.datasets.DatasetCollection">DatasetCollection</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If <cite>classes</cite> is specified but classification datasets are excluded
+    using <cite>task</cite></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -471,12 +710,21 @@ binary classification datasets.</p>
 dataframe (note, this does <em>not</em> return the data attributes, but the
 meta-attributes of the datasets themselves, like task, number of examples,
 types of attributes, etc.).</p>
+<p>Because pandas is an optional dependency, make sure you have the pandas
+package installed before calling this method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>*columns</strong> – names of meta-attributes to be included</p>
+<dd class="field-odd"><p><strong>*columns</strong> (<em>str</em>) – Names of meta-attributes to include (see Notes below for a list of options)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dataframe of meta attributes about the datasets in this collection</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
-<p>Returns:</p>
+<p class="rubric">Notes</p>
+<p>These are the currently supported meta-attribute names: None. (Work in progress)</p>
 </dd></dl>
 
 </dd></dl>
@@ -486,15 +734,16 @@ types of attributes, etc.).</p>
 <h2>Other Utilities<a class="headerlink" href="#other-utilities" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="tabben.datasets.ensure_downloaded">
-<span class="sig-prename descclassname"><span class="pre">tabben.datasets.</span></span><span class="sig-name descname"><span class="pre">ensure_downloaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">os.PathLike</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabben.datasets.ensure_downloaded" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">tabben.datasets.</span></span><span class="sig-name descname"><span class="pre">ensure_downloaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">os.PathLike</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tabben.datasets.ensure_downloaded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Downloads the specified datasets (all available datasets if none specified)
-into the data directory. This is useful e.g. using this package in an environment
-without Internet access or establishing local caches.</p>
+into the data directory if they are not already present. This is useful in
+situations where this package is used in an environment without Internet
+access or for establishing local shared caches.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_dir</strong> – directory to save the dataset files into</p></li>
-<li><p><strong>*datasets</strong> – list of dataset names to load (if empty, as if all datasets)</p></li>
+<li><p><strong>data_dir</strong> (<em>path-like</em>) – Directory to save the dataset files in</p></li>
+<li><p><strong>*datasets</strong> (<em>str</em>) – Names of datasets to download (if empty, all datasets will be downloaded)</p></li>
 </ul>
 </dd>
 </dl>
@@ -502,36 +751,58 @@ without Internet access or establishing local caches.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="tabben.datasets.register_dataset">
-<span class="sig-prename descclassname"><span class="pre">tabben.datasets.</span></span><span class="sig-name descname"><span class="pre">register_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'classification'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabben.datasets.register_dataset" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">tabben.datasets.</span></span><span class="sig-name descname"><span class="pre">register_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'classification'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tabben.datasets.register_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add new datasets to the benchmark at runtime (after package loading).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – the name of the dataset (used as a primary index, cannot be ‘all’)</p></li>
-<li><p><strong>task</strong> – which task (see <cite>allowed_tasks</cite>)</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the dataset (used as a primary index, cannot be ‘all`)</p></li>
+<li><p><strong>task</strong> (<em>str</em>) – Which task is associated with this dataset (see <cite>allowed_tasks</cite>)</p></li>
+<li><p><strong>persist</strong> (<em>bool</em>) – Whether to save this dataset so that it persists between restarts (only
+for this installation)</p></li>
+<li><p><strong>data_location</strong> (<em>str</em>) – URI string pointing to the NPZ file for this dataset</p></li>
+<li><p><strong>outputs</strong> (<em>int</em><em>, </em><em>recommended</em><em>, </em><em>default=1</em>) – Number of output variables</p></li>
+<li><p><strong>classes</strong> (<em>int</em><em>, </em><em>recommended for classification tasks</em><em>, </em><em>default=2</em>) – Number of classification classes</p></li>
+<li><p><strong>extras_location</strong> (<em>str</em>) – URI string pointing to a JSON file of “extras” metadata for this dataset</p></li>
+<li><p><strong>**kwargs</strong> – All other keyword arguments are stored as additional metadata in the TOML file</p></li>
 </ul>
 </dd>
-<dt class="field-even">Keyword Arguments</dt>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#tabben.datasets.validate_dataset_file" title="tabben.datasets.validate_dataset_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_dataset_file</span></code></a></dt><dd><p>Validate the NPZ file before adding as a new dataset</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabben.datasets.validate_dataset_file">
+<span class="sig-prename descclassname"><span class="pre">tabben.datasets.</span></span><span class="sig-name descname"><span class="pre">validate_dataset_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">os.PathLike</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tabben.datasets.validate_dataset_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate a NPZ dataset file at a local path to make sure that the dataset it
+contains can be read as a valid dataset using this package. This function is
+needed for interactive use at the REPL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filepath</strong> (<em>str</em><em> or </em><em>path-like</em>) – Filepath of the NPZ dataset file</p>
+</dd>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>persist</strong> – whether to also save this dataset into the data file (only for this installation)</p></li>
-<li><p><strong>data_location</strong> (<em>required</em>) – URL pointing to the NPZ file for this dataset</p></li>
-<li><p><strong>outputs</strong> (<em>recommended</em><em>, </em><em>defaults to 1</em>) – number of output variables</p></li>
-<li><p><strong>classes</strong> (<em>recommended for classification tasks</em><em>, </em><em>defaults to 2</em>) – number of classes (if multiple output variables, must all have the same number)</p></li>
-<li><p><strong>**kwargs</strong> – all other keyword arguments will be added as additional metadata</p></li>
+<li><p><strong>FileNotFoundError</strong> – If the filepath does not exist</p></li>
+<li><p><strong>IOError</strong> – If the file cannot be read at all</p></li>
+<li><p><a class="reference internal" href="#tabben.datasets.DatasetFormatError" title="tabben.datasets.DatasetFormatError"><strong>DatasetFormatError</strong></a> – If there is an error with the format of the NPZ dataset file</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="tabben.datasets.validate_dataset_file">
-<span class="sig-prename descclassname"><span class="pre">tabben.datasets.</span></span><span class="sig-name descname"><span class="pre">validate_dataset_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">os.PathLike</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabben.datasets.validate_dataset_file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="py exception">
 <dt class="sig sig-object py" id="tabben.datasets.DatasetFormatError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tabben.datasets.</span></span><span class="sig-name descname"><span class="pre">DatasetFormatError</span></span><a class="headerlink" href="#tabben.datasets.DatasetFormatError" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>An exception due to an NPZ dataset file having an unexpected format (in addition
+to the usual NPZ file format requirements).</p>
+</dd></dl>
 
 </div>
 </div>

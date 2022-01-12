@@ -345,8 +345,26 @@
 <h1><code class="docutils literal notranslate"><span class="pre">tabben.evaluators</span></code><a class="headerlink" href="#tabben-evaluators" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="tabben.evaluators.get_metrics">
-<span class="sig-prename descclassname"><span class="pre">tabben.evaluators.</span></span><span class="sig-name descname"><span class="pre">get_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace=&lt;module</span> <span class="pre">'tabben.evaluators.metrics'</span> <span class="pre">from</span> <span class="pre">'/home/runner/work/OpenTabularDataBenchmark/OpenTabularDataBenchmark/python/src/tabben/evaluators/metrics.py'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabben.evaluators.get_metrics" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">tabben.evaluators.</span></span><span class="sig-name descname"><span class="pre">get_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_namespace=&lt;module</span> <span class="pre">'tabben.evaluators.metrics'</span> <span class="pre">from</span> <span class="pre">'/home/runner/work/OpenTabularDataBenchmark/OpenTabularDataBenchmark/python/src/tabben/evaluators/metrics.py'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabben.evaluators.get_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the specific metric implementations given a dataset’s task (and number
+of classes if classification).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> (<em>str</em>) – Task of the dataset</p></li>
+<li><p><strong>classes</strong> (<em>int</em><em>, </em><em>default=2</em>) – Number of classes if the dataset has a classification task</p></li>
+<li><p><strong>_namespace</strong> – Namespace containing the specific implementations of the metrics
+(this is an internal parameter that is used to switch backends)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Set of metrics/functions that should be used to evaluate models on this benchmark</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>sequence of callable</p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 
