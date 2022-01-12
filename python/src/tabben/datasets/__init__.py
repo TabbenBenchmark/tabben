@@ -25,6 +25,14 @@ __all__ = [
 
 
 def list_datasets():
-    """List the non-image tabular datasets available."""
+    """
+    List the tabular datasets available.
+    
+    Returns
+    -------
+    sequence of str
+        Sequence of names of all datasets in the benchmark
+    """
+    
     return list(metadata.keys())
 

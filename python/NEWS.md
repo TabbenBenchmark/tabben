@@ -14,4 +14,5 @@
 
 
 ## Non-Code Updates
+- the documentation website is now generated with sphinx, and has API reference info as well
 - there is now also a Julia package [Tabben.jl](https://umd-otb.github.io/Tabben.jl/latest/) for loading datasets and evaluating models (not at feature parity yet)

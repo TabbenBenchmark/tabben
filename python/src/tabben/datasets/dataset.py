@@ -53,6 +53,7 @@ __all__ = [
 with resources.open_text('tabben.datasets', 'data.toml') as metadata_file:
     metadata = toml.load(metadata_file)
 
+
 allowed_tasks = {
     'classification',
     'regression',
@@ -62,25 +63,33 @@ allowed_tasks = {
 ################################################################################
 #      Functional Interface: working with dataset metadata/benchmark sets      #
 ################################################################################
-def register_dataset(name: str, task: str = 'classification', *, persist=False, **kwargs):
+def register_dataset(name: str, task: str = 'classification', *, persist=False, **kwargs) -> None:
     """
     Add new datasets to the benchmark at runtime (after package loading).
     
-    Args:
-        name: the name of the dataset (used as a primary index, cannot be 'all')
-        task: which task (see `allowed_tasks`)
-    
-    Keyword Args:
-        persist:
-            whether to also save this dataset into the data file (only for this installation)
-        data_location (required):
-            URL pointing to the NPZ file for this dataset
-        outputs (recommended, defaults to 1):
-            number of output variables
-        classes (recommended for classification tasks, defaults to 2):
-            number of classes (if multiple output variables, must all have the same number)
-        **kwargs:
-            all other keyword arguments will be added as additional metadata
+    Parameters
+    ----------
+    name : str
+        Name of the dataset (used as a primary index, cannot be 'all`)
+    task : str
+        Which task is associated with this dataset (see `allowed_tasks`)
+    persist : bool
+        Whether to save this dataset so that it persists between restarts (only
+        for this installation)
+    data_location : str
+        URI string pointing to the NPZ file for this dataset
+    outputs : int, recommended, default=1
+        Number of output variables
+    classes : int, recommended for classification tasks, default=2
+        Number of classification classes
+    extras_location : str
+        URI string pointing to a JSON file of "extras" metadata for this dataset
+    **kwargs
+        All other keyword arguments are stored as additional metadata in the TOML file
+
+    See Also
+    --------
+    validate_dataset_file: Validate the NPZ file before adding as a new dataset
     """
     
     if name != name.lower():
@@ -117,10 +126,32 @@ def register_dataset(name: str, task: str = 'classification', *, persist=False, 
 
 
 class DatasetFormatError(Exception):
-    pass
+    """
+    An exception due to an NPZ dataset file having an unexpected format (in addition
+    to the usual NPZ file format requirements).
+    """
 
 
-def validate_dataset_file(filepath: PathLike):
+def validate_dataset_file(filepath: PathLike) -> None:
+    """
+    Validate a NPZ dataset file at a local path to make sure that the dataset it
+    contains can be read as a valid dataset using this package. This function is
+    needed for interactive use at the REPL.
+    
+    Parameters
+    ----------
+    filepath : str or path-like
+        Filepath of the NPZ dataset file
+
+    Raises
+    ------
+    FileNotFoundError
+        If the filepath does not exist
+    IOError
+        If the file cannot be read at all
+    DatasetFormatError
+        If there is an error with the format of the NPZ dataset file
+    """
     if not isinstance(filepath, pathlib.Path) and filepath.startswith('file://'):
         filepath = filepath[7:]
     else:
@@ -285,17 +316,21 @@ def _download_datafile(source_url: PathLike, dest_path: PathLike,
         raise ValueError('File does not exist but not instructed to download')
 
 
-def ensure_downloaded(data_dir: PathLike, *datasets: str):
+def ensure_downloaded(data_dir: PathLike, *datasets: str) -> None:
     """
     Downloads the specified datasets (all available datasets if none specified)
-    into the data directory. This is useful e.g. using this package in an environment
-    without Internet access or establishing local caches.
+    into the data directory if they are not already present. This is useful in
+    situations where this package is used in an environment without Internet
+    access or for establishing local shared caches.
     
-    Args:
-        data_dir: directory to save the dataset files into
-        *datasets: list of dataset names to load (if empty, as if all datasets)
+    Parameters
+    ----------
+    data_dir : path-like
+        Directory to save the dataset files in
+    *datasets : str
+        Names of datasets to download (if empty, all datasets will be downloaded)
+
     """
-    # TODO: allow downloading the CIFAR dataset?
     
     data_dir = Path(data_dir)
     datasets = metadata.keys() if len(datasets) == 0 else set(datasets)
@@ -319,14 +354,32 @@ def ensure_downloaded(data_dir: PathLike, *datasets: str):
 ################################################################################
 class OpenTabularDataset(Dataset):
     """
-    A tabular dataset from the benchmark (except for CIFAR10, which is
-    accessible in tabular form using `TabularCIFAR10Dataset`).
+    A tabular dataset from the benchmark.
     """
     
     def __init__(self, data_dir: PathLike, name: str,
                  split: Union[str, Iterable[str]] = 'train',
                  download=True,
                  transform=None, target_transform=None):
+        """
+        Load and create a dataset with the given `name` (storing the dataset files
+        in the `data_dir`) for the particular subset given by `split`.
+        
+        Parameters
+        ----------
+        data_dir : path-like
+            Directory to load/store the dataset files
+        name : str
+            Name (primary key) of the dataset
+        split : str or iterable of str, default='train'
+            Subset split of the dataset to load
+        download : bool, default=True
+            Whether to download the dataset files if not already present in `data_dir`
+        transform : callable, optional
+            Transform or function that will be applied to the input attributes vector
+        target_transform : callable, optional
+            Transform or function that will be applied to the target variables
+        """
         
         self.data_dir = Path(data_dir)
         self.name = name.lower()
@@ -369,6 +422,12 @@ class OpenTabularDataset(Dataset):
         return data[f'{split[0]}-data'], data[f'{split[0]}-labels']
     
     def __len__(self) -> int:
+        """
+        Returns
+        -------
+        int
+            The number of examples in this subset of the dataset
+        """
         return self.inputs.shape[0]
     
     def __getitem__(self, idx) -> (np.ndarray, np.ndarray):
@@ -404,34 +463,120 @@ class OpenTabularDataset(Dataset):
     
     @property
     def has_extras(self) -> bool:
+        """
+        Whether this dataset has "extras" metadata, which typically contains the
+        mappings for categories from numbers to labels, license information, bibtex,
+        data profiles, etc.
+        
+        Returns
+        -------
+        bool
+            Whether this dataset has extras
+        """
         return self.extras is not None
     
     def has_extra(self, extra_name) -> bool:
+        """
+        Check whether this dataset has a specific extra.
+        
+        Parameters
+        ----------
+        extra_name : str
+            Name of the extra to check
+
+        Returns
+        -------
+        bool
+            True if this dataset contains an extra with this name, otherwise False
+        """
         return self.has_extras and extra_name in self.extras
     
     @property
     def license(self) -> Optional[str]:
+        """
+        License text for the dataset itself. (The tabben package is MIT-licensed,
+        but the datasets themselves may not be as permissive. Particularly if you
+        intend to use the datasets in a commercial setting, make sure to check the
+        license of the datasets used.)
+        
+        Returns
+        -------
+        str or None
+            License text if available, otherwise None
+        """
+        
         # TODO split this into 'license' and 'license_info'
         return self.extras['license'] if self.has_extra('license') else None
     
     @property
     def bibtex(self) -> Optional[str]:
+        """
+        Bibtex for the dataset and any associated papers that the original dataset
+        providers have asked to be cited. This is useful if you are doing research
+        with this benchmark and want to cite the original datasets.
+        
+        Returns
+        -------
+        str or None
+            Bibtex if available, otherwise None
+        """
+        
         return self.extras['bibtex'] if self.has_extra('bibtex') else None
     
     @property
     def categorical_attributes(self) -> Optional[Sequence[str]]:
+        """
+        Labels/names of the categorical attributes of this dataset if available.
+        
+        Returns
+        -------
+        sequence of str or None
+            List of names of categorical attributes if available, otherwise None
+        """
+        
         return self.extras['categories'].keys() if self.has_extra('categories') else None
     
     @property
     def num_inputs(self) -> int:
+        """
+        Number of input attributes for this dataset.
+        
+        Returns
+        -------
+        int
+            Number of raw input attributes (without preprocessing or transforms)
+        """
+        
         return len(self.input_attributes)
     
     @property
     def num_outputs(self) -> int:
+        """
+        Number of output/target variables for this dataset.
+        
+        Returns
+        -------
+        int
+            Number of raw output variables (without preprocessing or transforms)
+        """
         return len(self.output_attributes)
     
     @property
     def num_classes(self) -> int:
+        """
+        Number of classes for this dataset if it is a classification task.
+        
+        Returns
+        -------
+        int
+            Number of classification classes
+            
+        Raises
+        ------
+        AttributeError
+            If called on a non-classification dataset
+        """
+        
         if metadata[self.name]['task'] == 'classification':
             return metadata[self.name]['classes']
         else:
@@ -439,13 +584,34 @@ class OpenTabularDataset(Dataset):
     
     @property
     def task(self) -> str:
+        """
+        Task associated with this dataset.
+        
+        Returns
+        -------
+
+        See Also
+        --------
+        allowed_tasks
+            List of allowed/currently supported tasks for the benchmark
+        """
+        
         return metadata[self.name]['task']
     
     def dataframe(self) -> 'pandas.DataFrame':
         """
         Create a pandas DataFrame consisting of both input attributes and output labels
         for this dataset (for this specific split).
+        
+        Since pandas is not a required dependency, make sure you already have pandas
+        installed before you call this method.
+        
+        Returns
+        -------
+        pandas.DataFrame
+            Dataframe containing the complete dataset for this split
         """
+        
         if not has_package_installed('pandas'):
             raise ImportError('Install pandas to load a dataset as a pandas dataframe')
         
@@ -465,4 +631,13 @@ class OpenTabularDataset(Dataset):
         return pd.DataFrame(data=combined, columns=all_columns)
     
     def numpy(self) -> (np.ndarray, np.ndarray):
+        """
+        Return the input and output attributes as numpy arrays in the standard
+        scikit-learn format of (inputs, outputs).
+        
+        Returns
+        -------
+        tuple of numpy.ndarray
+            2-tuple of inputs and outputs as matrices/vectors
+        """
         return self.inputs, self.outputs
