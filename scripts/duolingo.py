@@ -4,10 +4,14 @@ preprocessing of the data.
 
 Because of the way that the source data is distributed, the data file needs be
 downloaded first into some local directory (cannot specify a URL source).
+
+Additional note if you actually run this script: as written, this script requires
+a substantial amount of memory available.
 """
 import contextlib
 import os
 import re
+from copy import deepcopy
 from itertools import chain
 
 import numpy as np
@@ -39,7 +43,7 @@ def convert_format(config):
             config.source / 'settles.acl16.learning_traces.13m.csv.gz',
             header=0,
             index_col=None,
-            #nrows=10000,
+            #nrows=10_000,
         )
     
     with stage('converting types'):
@@ -49,7 +53,7 @@ def convert_format(config):
     # prepare the dataframe for "original"
     with stage('creating original dataset'):
         orig_df = df.drop(['lexeme_string'], axis=1)
-        orig_categories = convert_categorical(orig_df)
+        orig_df, orig_categories = convert_categorical(orig_df)
     
     # prepare the dataframe for "categorical"
     with stage('extracting surface forms, lemmas, parts of speech, and other tags'):
@@ -67,33 +71,46 @@ def convert_format(config):
         )
     
     with stage('adding new columns for each modifier/tag'):
-        for tag in tqdm(all_tags, leave=False):
-            cat_df[tag] = cat_df['modifiers'].str.contains(tag, regex=False).astype(int)
-        
-        # defragment dataframe
-        cat_df = cat_df.copy()
+        for idx, tag in enumerate(tqdm(all_tags, leave=False)):
+            cat_df[tag] = cat_df['modifiers'].str.contains(tag, regex=False).astype(np.bool_)
+            
+            if (idx + 1) % 10 == 0:
+                # defragment dataframe
+                cat_df = cat_df.copy()
     
     with stage('converting types for categorical dataset'):
         cat_df[['surface_form', 'lemma', 'part_of_speech']] = \
             cat_df[['surface_form', 'lemma', 'part_of_speech']].astype('category')
         cat_df = cat_df.drop(['lexeme_string', 'modifiers'], axis=1)
-        cat_categories = convert_categorical(cat_df)
+        cat_df, cat_categories = convert_categorical(cat_df)
+    
+    # split original dataset
+    train_users, test_users = train_test_split(
+        orig_df['user_id'].unique(),
+        train_size=0.8,
+        random_state=17_123,
+    )
+    
+    orig_train_df = orig_df[orig_df['user_id'].isin(train_users)]
+    orig_test_df = orig_df[orig_df['user_id'].isin(test_users)]
+    
+    train_data_df, train_labels_df = split_by_label(orig_train_df, col_name='p_recall')
+    test_data_df, test_labels_df = split_by_label(orig_test_df, col_name='p_recall')
+    
+    # "categorical" version
+    cat_train_df = cat_df[cat_df['user_id'].isin(train_users)]
+    cat_test_df = cat_df[cat_df['user_id'].isin(test_users)]
+    
+    cat_train_data_df, cat_train_labels_df = split_by_label(cat_train_df, col_name='p_recall')
+    cat_test_data_df, cat_test_labels_df = split_by_label(cat_test_df, col_name='p_recall')
+    
+    cat_config = deepcopy(config)
+    cat_config.name = 'duolingo-categorical'
     
     if config.dataset_file:
-        train_users, test_users = train_test_split(
-            orig_df['user_id'].unique(),
-            train_size=0.8,
-            random_state=17_123,
-        )
-        
-        orig_train_df = orig_df[orig_df['user_id'].isin(train_users)]
-        orig_test_df = orig_df[orig_df['user_id'].isin(test_users)]
-        
-        train_data_df, train_labels_df = split_by_label(orig_train_df, col_name='p_recall')
-        test_data_df, test_labels_df = split_by_label(orig_test_df, col_name='p_recall')
-        
         save_npz(
-            os.path.join(config.outputdirectory, 'duolingo-original'), {
+            config,
+            {
                 'train-data': train_data_df,
                 'train-labels': train_labels_df,
                 'test-data': test_data_df,
@@ -103,46 +120,52 @@ def convert_format(config):
             }
         )
         
-        # "categorical" version
-        cat_train_df = cat_df[cat_df['user_id'].isin(train_users)]
-        cat_test_df = cat_df[cat_df['user_id'].isin(test_users)]
-        
-        train_data_df, train_labels_df = split_by_label(cat_train_df, col_name='p_recall')
-        test_data_df, test_labels_df = split_by_label(cat_test_df, col_name='p_recall')
-        
         save_npz(
-            os.path.join(config.outputdirectory, 'duolingo-categorical'), {
-                'train-data': train_data_df,
-                'train-labels': train_labels_df,
-                'test-data': test_data_df,
-                'test-labels': test_labels_df,
-                '_columns-data': column_name_array(train_data_df),
-                '_columns-labels': column_name_array(train_labels_df),
+            cat_config,
+            {
+                'train-data': cat_train_data_df,
+                'train-labels': cat_train_labels_df,
+                'test-data': cat_test_data_df,
+                'test-labels': cat_test_labels_df,
+                '_columns-data': column_name_array(cat_train_data_df),
+                '_columns-labels': column_name_array(cat_train_labels_df),
             }
         )
     
     if config.extras_file:
+        common_extras = {
+            'bibtex': bibtex,
+            'license': 'CC BY-NC 4.0',
+        }
+        
         save_json(
+            config,
             {
-                'profile': generate_profile(orig_df),
+                'train-profile': generate_profile(orig_train_df, config.no_profile),
+                'profile': generate_profile(orig_df, config.no_profile),
                 'categories': orig_categories,
-                'bibtex': bibtex,
-                'license': 'CC BY-NC 4.0',
-            }, os.path.join(config.outputdirectory, 'duolingo-original.json')
+                'column-names-attributes': list(train_data_df.columns),
+                'column-names-target': list(train_labels_df.columns),
+                **common_extras,
+            }
         )
         
         save_json(
+            cat_config,
             {
-                'profile': generate_profile(cat_df),
+                'train-profile': generate_profile(cat_train_df, config.no_profile),
+                'profile': generate_profile(cat_df, config.no_profile),
                 'categories': cat_categories,
-                'bibtex': bibtex,
-                'license': 'CC BY-NC 4.0',
-            }, os.path.join(config.outputdirectory, 'duolingo-categorical.json')
+                'column-names-attributes': list(cat_train_data_df.columns),
+                'column-names-target': list(cat_train_labels_df.columns),
+                **common_extras,
+            }
         )
 
 
 if __name__ == '__main__':
     args = default_config(
+        'duolingo-original',
         download_root='https://archive.ics.uci.edu/ml/machine-learning-databases/covtype/',
     )
     

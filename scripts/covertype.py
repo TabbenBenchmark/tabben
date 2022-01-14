@@ -7,7 +7,7 @@ import os
 import pandas as pd
 
 from utils import column_name_array, convert_categorical, default_config, generate_profile, \
-    save_json, save_npz, split_by_label
+    hvcat, save_json, save_npz, split_by_label, uci_bibtex
 
 column_names = [
     'Elevation',
@@ -35,13 +35,17 @@ def convert_format(config):
     )
     
     df['Cover_Type'] = df['Cover_Type'].astype('category')
-    categories = convert_categorical(df)
+    df, categories = convert_categorical(df)
+
+    train_df = df[:11_340]
+    valid_df = df[11_340:11_340 + 3_780]
+    test_df = df[-565_892:]
+
+    train_data_df, train_labels_df = split_by_label(train_df, col_name='Cover_Type')
+    valid_data_df, valid_labels_df = split_by_label(valid_df, col_name='Cover_Type')
+    test_data_df, test_labels_df = split_by_label(test_df, col_name='Cover_Type')
     
     if config.dataset_file:
-        train_data_df, train_labels_df = split_by_label(df[:11_340], col_name='Cover_Type')
-        valid_data_df, valid_labels_df = split_by_label(df[11_340:11_340 + 3_780], col_name='Cover_Type')
-        test_data_df, test_labels_df = split_by_label(df[-565_892:], col_name='Cover_Type')
-        
         save_npz(
             config,
             {
@@ -60,9 +64,13 @@ def convert_format(config):
         save_json(
             config,
             {
-                'profile': generate_profile(df),
+                'train-profile': generate_profile(hvcat([[train_df], [valid_df]]), config.no_profile),
+                'profile': generate_profile(df, config.no_profile),
                 'categories': categories,
+                'bibtex': uci_bibtex,
                 'license': license_info,
+                'column-names-attributes': list(train_data_df.columns),
+                'column-names-target': list(train_labels_df.columns),
             }
         )
 

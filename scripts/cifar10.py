@@ -71,6 +71,8 @@ def save_arrays(config):
     
     print(f'Replaced {100 * (y_test != y_test_clean).sum() / 10_000:.2f}% of test labels')
     
+    attribute_names = [f'{c}{p}' for c in 'RGB' for p in range(32 * 32)]
+    
     if config.dataset_file:
         save_npz(
             config,
@@ -79,7 +81,7 @@ def save_arrays(config):
                 'train-labels': y_train,
                 'test-data': X_test,
                 'test-labels': y_test_clean,
-                '_columns-data': np.array([f'P{i}' for i in range(32 * 32 * 3)], dtype=np.str_),
+                '_columns-data': np.array(attribute_names, dtype=np.str_),
                 '_columns-labels': np.array(['label'], dtype=np.str_),
             }
         )
@@ -92,6 +94,8 @@ def save_arrays(config):
                     'label': label_categories,
                 },
                 'bibtex': bibtex,
+                'column-names-attributes': attribute_names,
+                'column-names-target': ['label'],
             }
         )
 

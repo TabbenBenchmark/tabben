@@ -5,7 +5,7 @@ Convert the adult census income prediction dataset to the standardized format.
 import pandas as pd
 
 from utils import column_name_array, convert_categorical, create_csv_reader, default_config, \
-    generate_profile, save_json, save_npz, split_by_label, uci_bibtex
+    generate_profile, save_json, save_npz, split_by_label, uci_bibtex, uci_license
 
 column_names = [
     'age',
@@ -22,7 +22,7 @@ column_names = [
     'capital-loss',
     'hours-per-week',
     'native-country',  # categorical
-    'income',  # categorical
+    'income',  # categorical, this is the target variable
 ]
 
 categorical_indices = [1, 3, 5, 6, 7, 8, 9, 13, 14]
@@ -52,14 +52,15 @@ def convert_format(config):
     combined_df['income'] = combined_df['income'].map(lambda i: i.strip('.'))
     
     combined_df[categorical_column_names] = combined_df[categorical_column_names].astype('category')
-    categories = convert_categorical(combined_df)
+    cat_df, categories = convert_categorical(combined_df)
+
+    train_df = cat_df.iloc[:32_561]
+    test_df = cat_df.iloc[32_561:]
+
+    train_data_df, train_labels_df = split_by_label(train_df, 'income')
+    test_data_df, test_labels_df = split_by_label(test_df, 'income')
     
     if config.dataset_file:
-        train_df = combined_df.iloc[:32_561]
-        test_df = combined_df.iloc[32_561:]
-        train_data_df, train_labels_df = split_by_label(train_df, 'income')
-        test_data_df, test_labels_df = split_by_label(test_df, 'income')
-        
         save_npz(
             config,
             {
@@ -76,9 +77,13 @@ def convert_format(config):
         save_json(
             config,
             {
-                'profile': generate_profile(combined_df),
+                'train-profile': generate_profile(combined_df.iloc[:32_561], config.no_profile),
+                'profile': generate_profile(combined_df, config.no_profile),
                 'bibtex': uci_bibtex,
+                'license': uci_license,
                 'categories': categories,
+                'column-names-attributes': list(train_data_df.columns),
+                'column-names-target': list(train_labels_df.columns),
             }
         )
 

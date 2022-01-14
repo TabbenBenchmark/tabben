@@ -21,13 +21,13 @@ def convert_format(config):
         pass
     
     df = read_csv('train.csv')
+
+    train_df, test_df = train_test_split(df, train_size=0.8, random_state=171_234, stratify=df['ACTION'])
+
+    train_data_df, train_labels_df = split_by_label(train_df, 'ACTION')
+    test_data_df, test_labels_df = split_by_label(test_df, 'ACTION')
     
     if config.dataset_file:
-        train_df, test_df = train_test_split(df, train_size=0.8, random_state=171_234, stratify=df['ACTION'])
-        
-        train_data_df, train_labels_df = split_by_label(train_df, 'ACTION')
-        test_data_df, test_labels_df = split_by_label(test_df, 'ACTION')
-        
         save_npz(
             config,
             {
@@ -44,7 +44,13 @@ def convert_format(config):
         save_json(
             config,
             {
-                'profile': generate_profile(df),
+                'train-profile': generate_profile(train_df, config.no_profile),
+                'profile': generate_profile(df, config.no_profile),
+                'column-names-attributes': list(train_data_df.columns),
+                'column-names-target': list(train_labels_df.columns),
+                'categories': {
+                    'ACTION': ['denied', 'approved'],
+                },
             }
         )
 

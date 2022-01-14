@@ -40,6 +40,15 @@ def parse_args():
         '--exclude', '-e', nargs='+', default=[],
         help='Names of datasets to exclude from processing',
     )
+    parser.add_argument(
+        '--no-profile', '-np', nargs='*', default=None,
+        help='Don\'t run profiles for all or a select set of datasets',
+    )
+    
+    parser.add_argument(
+        '--upload', action='store_true',
+        help='Whether to try to use the `gh` cli to upload assets in the output directory',
+    )
     
     parser.add_argument(
         '--python', default='python3',
@@ -82,6 +91,10 @@ def collect_dataset_scripts(config):
             scripts[name] = [config.python, script_file, config.output_directory]
             if config.data_directory is not None:
                 scripts[name].extend(['-s', Path(config.data_directory) / name])
+            
+            if config.no_profile is not None:
+                if len(config.no_profile) == 0 or name in config.no_profile:
+                    scripts[name].append('--no-profile')
     
     return scripts
 
@@ -116,4 +129,6 @@ if __name__ == '__main__':
     config = parse_args()
     scripts = collect_dataset_scripts(config)
     run_scripts(scripts)
-    upload_assets(config)
+    
+    if config.upload:
+        upload_assets(config)

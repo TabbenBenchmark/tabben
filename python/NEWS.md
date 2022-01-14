@@ -6,9 +6,14 @@
 
 ## Breaking Changes
 - removed the `TabularCIFAR10Dataset` as it is no longer needed
+- categorical columns for all datasets start counting at 0
 
 ## Non-Breaking Changes
-
+- many datasets have additional "extras" (every current dataset has extras) available, such as
+  - training data profiles (and full-data profiles that should *not* be used for model selection)
+  - bibtex, licenses when available
+- as a result of the many changes to several datasets, the version for all datasets has been incremented
+  - version numbers are now 3 element integer arrays
 
 ## Bugfixes
 
