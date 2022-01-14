@@ -63,7 +63,9 @@ allowed_tasks = {
 ################################################################################
 #      Functional Interface: working with dataset metadata/benchmark sets      #
 ################################################################################
-def register_dataset(name: str, task: str = 'classification', *, persist=False, **kwargs) -> None:
+def register_dataset(name: str, task: str = 'classification', *,
+                     data_location: str,
+                     persist=False, **kwargs) -> None:
     """
     Add new datasets to the benchmark at runtime (after package loading).
     
@@ -103,22 +105,20 @@ def register_dataset(name: str, task: str = 'classification', *, persist=False, 
     
     if task not in allowed_tasks:
         raise ValueError(f'Unknown task, must be one of {allowed_tasks}')
-    kwargs['task'] = task
-    
-    if 'data_location' not in kwargs:
-        raise ValueError('A `data_location` needs to specified (remote url)')
     
     if 'outputs' not in kwargs:
         warn('The number of outputs was not specified using `outputs`, assuming 1 output variable')
-        kwargs['outputs'] = 1
     
     if 'classes' not in kwargs and task == 'classification':
         warn('The number of classes was not specified using `classes`, assuming 2 classes')
         kwargs['classes'] = 2
     if 'classes' in kwargs and task == 'regression':
         raise ValueError('`classes` should be not specified if the task is regression')
-    
+
+    kwargs['task'] = task
+    kwargs['data_location'] = data_location
     metadata[name] = kwargs
+    
     if persist:
         with resources.path('tabben.datasets', 'data.toml') as p:
             with p.open('w') as f:
