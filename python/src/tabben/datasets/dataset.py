@@ -1,6 +1,6 @@
 """
 Implementation of a dataset class for benchmarks, also providing access methods
-via numpy arrays or pandas dataframes (should not access this class directly). If
+via numpy arrays or pandas dataframes (should not access this module directly). If
 PyTorch is installed, the dataset class can be used as a PyTorch-compatible dataset.
 """
 
@@ -253,9 +253,12 @@ def check_version(dataset_filepath: PathLike, min_version: str):
         # if `_version` not in the file, treat as incompatible with any version
         if '_version' not in data.files:
             return False
+        if not np.issubdtype(data['_version'].dtype, np.integer):
+            return False
         
-        actual_version = tuple(data['_version'].item().split('.'))
+        actual_version = tuple(data['_version'])
     
+    # this assertion may not actually be wanted
     assert len(min_version) == len(actual_version) == 3
     
     for actual_part, min_part in zip(actual_version, min_version):
@@ -283,7 +286,7 @@ def _download_datafile(source_url: PathLike, dest_path: PathLike,
     """
     dest_path = Path(dest_path)
     
-    if dest_path.exists() and (ignore_version or check_version(dest_path, '1.0.0')):
+    if dest_path.exists() and (ignore_version or check_version(dest_path, '1.1.0')):
         print(f'Data already available at `{dest_path}`')
         
         # in any other case, the version in the datafile will *not* be checked:
