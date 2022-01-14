@@ -3,7 +3,7 @@ Test the dataset files themselves and whether they can be loaded properly.
 """
 import pytest
 
-from python.tests.dataloading import check_attributes, check_split_sizes
+from dataloading import check_attributes, check_split_sizes
 from tabben.datasets import OpenTabularDataset, validate_dataset_file
 
 

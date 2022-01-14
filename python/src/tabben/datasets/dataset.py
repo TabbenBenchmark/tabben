@@ -420,14 +420,15 @@ class OpenTabularDataset(Dataset):
             self.input_attributes = data['_columns-data']
             self.output_attributes = data['_columns-labels']
     
-    def _extract_split(self, data: NpzFile, splits: str) -> (np.ndarray, np.ndarray):
+    def _extract_split(self, data: NpzFile, splits: Sequence[str]) -> (np.ndarray, np.ndarray):
         nonexistent_splits = set(splits) - set(self.splits)
         if len(nonexistent_splits) != 0:
             raise ValueError(f'dataset `{self.name}` does not have splits: {", ".join(nonexistent_splits)}')
         
         # return requested splits
         inputs = np.vstack([data[f'{split}-data'] for split in splits])
-        outputs = np.vstack([data[f'{split}-labels'] for split in splits])
+        stack_func = np.hstack if data[f'{splits[0]}-labels'].ndim == 1 else np.vstack
+        outputs = stack_func([data[f'{split}-labels'] for split in splits])
         return inputs, outputs
     
     def __len__(self) -> int:

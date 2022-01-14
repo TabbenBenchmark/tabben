@@ -1,16 +1,6 @@
-import pytest
 from torch.utils.data import DataLoader
 
 from tabben.datasets import OpenTabularDataset
-
-
-################################################################################
-# Shared pytest fixtures (never need to be imported anywhere)
-################################################################################
-
-@pytest.fixture(scope='session')
-def data_dir(tmp_path_factory):
-    return tmp_path_factory.mktemp('data')
 
 
 ################################################################################
