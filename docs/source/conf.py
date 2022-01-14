@@ -17,12 +17,14 @@
 
 # -- Project information -----------------------------------------------------
 
+from importlib import metadata
+
 project = 'Tabben'
 copyright = '2021, UMD Tabular Benchmark Team'
 author = 'UMD Tabular Benchmark Team'
 
 # The full version, including alpha/beta/rc tags
-release = 'v0.0.7-dev'
+release = metadata.version('tabben')
 
 
 # -- General configuration ---------------------------------------------------
