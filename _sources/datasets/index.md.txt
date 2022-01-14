@@ -7,6 +7,7 @@ Here you can find descriptions of each of the datasets, where they came from, ho
 :maxdepth: 1
 
 adult
+amazon
 arcene
 cifar10
 covertype
@@ -15,4 +16,5 @@ higgs
 musk
 parkinsons
 poker
+rossman
 ```

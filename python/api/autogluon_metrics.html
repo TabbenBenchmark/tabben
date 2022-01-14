@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>tabben.evaluators.autogluon &#8212; Tabben v0.0.7-dev documentation</title>
+    <title>tabben.evaluators.autogluon &#8212; Tabben 0.0.7.dev0 documentation</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
   <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -34,7 +34,7 @@
     <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="prev" title="tabben.evaluators.metrics" href="metrics.html" />
+    <link rel="prev" title="tabben.evaluators" href="evaluators.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -58,7 +58,7 @@
       
       
       
-      <h1 class="site-logo" id="site-title">Tabben v0.0.7-dev documentation</h1>
+      <h1 class="site-logo" id="site-title">Tabben 0.0.7.dev0 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
@@ -85,6 +85,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../../datasets/adult.html">
      Adult Census Income Dataset
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../datasets/amazon.html">
+     Amazon Employee Access Dataset
     </a>
    </li>
    <li class="toctree-l2">
@@ -125,6 +130,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../../datasets/poker.html">
      Poker Hand Dataset
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../datasets/rossman.html">
+     Rossman Store Sales Dataset
     </a>
    </li>
   </ul>
@@ -214,15 +224,6 @@
      <code class="docutils literal notranslate">
       <span class="pre">
        tabben.evaluators
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="metrics.html">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       tabben.evaluators.metrics
       </span>
      </code>
     </a>
@@ -344,25 +345,12 @@
 <h1><code class="docutils literal notranslate"><span class="pre">tabben.evaluators.autogluon</span></code><a class="headerlink" href="#tabben-evaluators-autogluon" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="tabben.evaluators.autogluon.get_metrics">
-<span class="sig-prename descclassname"><span class="pre">tabben.evaluators.autogluon.</span></span><span class="sig-name descname"><span class="pre">get_metrics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tabben.evaluators.autogluon.get_metrics" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the specific metric implementations given a dataset’s task (and number
-of classes if classification).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>task</strong> (<em>str</em>) – Task of the dataset</p></li>
-<li><p><strong>classes</strong> (<em>int</em><em>, </em><em>default=2</em>) – Number of classes if the dataset has a classification task</p></li>
-<li><p><strong>_namespace</strong> – Namespace containing the specific implementations of the metrics
-(this is an internal parameter that is used to switch backends)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Set of metrics/functions that should be used to evaluate models on this benchmark</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>sequence of callable</p>
-</dd>
-</dl>
+<span class="sig-prename descclassname"><span class="pre">tabben.evaluators.autogluon.</span></span><span class="sig-name descname"><span class="pre">get_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabben.evaluators.autogluon.get_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return autogluon-compatible metrics given a dataset’s task.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="evaluators.html#tabben.evaluators.get_metrics" title="tabben.evaluators.get_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tabben.evaluators.get_metrics</span></code></a></p>
+</div>
 </dd></dl>
 
 </div>
@@ -373,11 +361,11 @@ of classes if classification).</p>
             
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="metrics.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="evaluators.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title"><code class="docutils literal notranslate"><span class="pre">tabben.evaluators.metrics</span></code></p>
+            <p class="prev-next-title"><code class="docutils literal notranslate"><span class="pre">tabben.evaluators</span></code></p>
         </div>
     </a>
 </div>

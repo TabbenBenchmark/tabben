@@ -10,13 +10,12 @@ The basic unit of work for this package is the [OpenTabularDataset](tabben.datas
     :show-inheritance:
     :members:
     :special-members: __init__
-
-.. autofunction:: tabben.datasets.list_datasets
 ```
 
 ## Metadata
 
 ```{eval-rst}
+.. autofunction:: tabben.datasets.list_datasets
 
 .. autodata:: tabben.datasets.allowed_tasks
 ```
