@@ -1,5 +1,6 @@
-
-# KDD Cup 2009 Dataset
++++
+title = 'KDD Cup 2009 Dataset'
++++
 
 Our `kdd09` dataset is the full set of datasets used for the 2009 KDD Cup
 
