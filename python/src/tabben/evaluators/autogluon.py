@@ -52,4 +52,12 @@ class AutogluonMetrics:
 
 
 # namespaced version of get_metrics function for autogluon-compatible metrics
-get_metrics = partial(generic_get_metrics, namespace=AutogluonMetrics)
+def get_metrics(*args, **kwargs):
+    """
+    Return autogluon-compatible metrics given a dataset's task.
+
+    See Also
+    --------
+    tabben.evaluators.get_metrics
+    """
+    return generic_get_metrics(*args, **kwargs, _namespace=AutogluonMetrics)

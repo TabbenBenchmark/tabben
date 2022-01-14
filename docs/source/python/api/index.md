@@ -7,6 +7,5 @@
 
 datasets
 evaluators
-metrics
 autogluon_metrics
 ```

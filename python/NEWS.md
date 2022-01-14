@@ -3,10 +3,12 @@
 ## New Features
 - added the CIFAR10 dataset as a standardized dataset (i.e. can be accessed directly using OpenTabularDataset)
 - added a DatasetCollection class for bulk processing of datasets
+- multiple splits can be passed into the OpenTabularDataset constructor, e.g. `OpenTabularDataset(dir, name, split=['train', 'valid'])`
 
 ## Breaking Changes
 - removed the `TabularCIFAR10Dataset` as it is no longer needed
 - categorical columns for all datasets start counting at 0
+- these OpenTabularDataset constructor parameters are now keyword only: `download`, `transform`, `target_transform`
 
 ## Non-Breaking Changes
 - many datasets have additional "extras" (every current dataset has extras) available, such as
@@ -20,4 +22,5 @@
 
 ## Non-Code Updates
 - the documentation website is now generated with sphinx, and has API reference info as well
+- dataset pages for `amazon` and `rossman` datasets added to docs website
 - there is now also a Julia package [Tabben.jl](https://umd-otb.github.io/Tabben.jl/latest/) for loading datasets and evaluating models (not at feature parity yet)

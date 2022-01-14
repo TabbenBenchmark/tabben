@@ -361,8 +361,8 @@ class OpenTabularDataset(Dataset):
     """
     
     def __init__(self, data_dir: PathLike, name: str,
-                 split: Union[str, Iterable[str]] = 'train',
-                 download=True,
+                 split: Union[str, Iterable[str]] = 'train', *,
+                 download=True, lazy=False,
                  transform=None, target_transform=None):
         """
         Load and create a dataset with the given `name` (storing the dataset files
@@ -378,6 +378,10 @@ class OpenTabularDataset(Dataset):
             Subset split of the dataset to load
         download : bool, default=True
             Whether to download the dataset files if not already present in `data_dir`
+        lazy : bool, default=False
+            Whether to postpone loading the data into memory until the first access
+            
+            Not implemented yet!
         transform : callable, optional
             Transform or function that will be applied to the input attributes vector
         target_transform : callable, optional
@@ -416,13 +420,15 @@ class OpenTabularDataset(Dataset):
             self.input_attributes = data['_columns-data']
             self.output_attributes = data['_columns-labels']
     
-    def _extract_split(self, data: NpzFile, split: str) -> (np.ndarray, np.ndarray):
-        # TODO support multiple selected splits
-        if split[0] not in self.splits:
-            raise ValueError(f'dataset `{self.name}` does not have a `{split}` split')
+    def _extract_split(self, data: NpzFile, splits: str) -> (np.ndarray, np.ndarray):
+        nonexistent_splits = set(splits) - set(self.splits)
+        if len(nonexistent_splits) != 0:
+            raise ValueError(f'dataset `{self.name}` does not have splits: {", ".join(nonexistent_splits)}')
         
-        # return requested split
-        return data[f'{split[0]}-data'], data[f'{split[0]}-labels']
+        # return requested splits
+        inputs = np.vstack([data[f'{split}-data'] for split in splits])
+        outputs = np.vstack([data[f'{split}-labels'] for split in splits])
+        return inputs, outputs
     
     def __len__(self) -> int:
         """
