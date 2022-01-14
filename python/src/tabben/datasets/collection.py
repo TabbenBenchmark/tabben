@@ -1,4 +1,7 @@
-from tabben.datasets import OpenTabularDataset
+from os import PathLike
+from typing import Iterable, Union
+
+from .dataset import metadata, OpenTabularDataset
 
 __all__ = [
     'DatasetCollection',
@@ -28,7 +31,11 @@ class DatasetCollection:
     """
 
     @classmethod
-    def match(cls, location, *, task=None, outputs=None, classes=None):
+    def match(cls, location: PathLike, *,
+              task: Union[str, Iterable[str]] = None,
+              outputs: Union[int, Iterable[int]] = None,
+              classes: Union[int, Iterable[int]] = None,
+              **kwargs):
         """
         Create a dataset collection consisting of all benchmark datasets that match
         all given conditions. This can be used, for example, to get a collection
@@ -44,6 +51,12 @@ class DatasetCollection:
             Number of outputs that datasets must have
         classes : int or range, optional
             Number of classes that classification datasets must have
+            
+            Note: this will only filter out *classification* datasets that don't
+            have the correct number of classes. That is, if there are other tasks
+            selected, they will not be filtered out by the `classes` filter.
+        **kwargs
+            All other keyword arguments are passed to the constructor.
 
         Returns
         -------
@@ -56,23 +69,43 @@ class DatasetCollection:
             If `classes` is specified but classification datasets are excluded
             using `task`
 
+        Notes
+        -----
+        To do this without requiring that datasets be available/already downloaded,
+        this class method only supports filtering based on metadata that is located
+        in the TOML metadata file, which does not include dataset extras.
         """
         
-        datasets = []
+        datasets = set(metadata.keys())
         
         if task is not None:
-            pass
+            if isinstance(task, str):
+                task = (task,)
+            datasets.difference_update(name for name in datasets if metadata[name]['task'] not in task)
+
+            if 'classification' in task and classes is not None:
+                if isinstance(classes, int):
+                    classes = (classes,)
+    
+                datasets.difference_update(
+                    name for name in datasets
+                    if metadata[name]['task'] == 'classification' and
+                    metadata[name].get('classes', 2) in classes
+                )
         
         if outputs is not None:
-            pass
+            if isinstance(outputs, int):
+                outputs = (outputs,)
+            datasets.difference_update(
+                name for name in datasets
+                if metadata[name].get('outputs', 1) not in outputs
+            )
         
-        if task == 'classification' or 'classification' in task and classes is not None:
-            pass
-        
-        return cls(location, *datasets)
+        return cls(location, *datasets, lazy=True, **kwargs)
 
     def __init__(self, location, *names,
-                 split='train', download=True,
+                 split='train',
+                 download=True, lazy=True,
                  transform=None, target_transform=None):
         """
         Load and create a collection of datasets stored/downloaded into `location`
@@ -135,6 +168,7 @@ class DatasetCollection:
                 download=download,
                 transform=iter_transform,
                 target_transform=iter_target_transform,
+                lazy=lazy
             )
 
     def items(self):
