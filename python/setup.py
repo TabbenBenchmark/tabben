@@ -37,7 +37,6 @@ setuptools.setup(
         'scikit-metrics',
         'simplejson',
         'toml',
-        'torch',
         'tqdm',
     ]
 )
