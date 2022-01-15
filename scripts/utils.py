@@ -89,8 +89,8 @@ def column_name_array(df):
 def hvcat(arrays):
     return pd.concat(
         [
-            pd.concat(row, axis=1) for row in arrays
-        ], axis=0
+            pd.concat(row, axis=1, ignore_index=True, copy=False) for row in arrays
+        ], axis=0, copy=False
     )
 
 
@@ -169,7 +169,10 @@ def convert_categorical(df):
         categories[column] = list(df[column].cat.categories)
     
     cat_df = df.copy()
-    cat_df[categorical_columns] = df[categorical_columns].apply(lambda x: x.cat.codes)
+    
+    for i in range(0, len(categorical_columns), 10):
+        cat_df[categorical_columns[i:i+10]] = df[categorical_columns[i:i+10]].apply(lambda x: x.cat.codes)
+        cat_df = cat_df.copy()
     
     return cat_df, categories
 
