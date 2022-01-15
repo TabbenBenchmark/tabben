@@ -6,6 +6,7 @@ PyTorch is installed, the dataset class can be used as a PyTorch-compatible data
 
 import pathlib
 import shutil
+import warnings
 from collections import defaultdict
 from functools import cached_property, partial
 from importlib import resources
@@ -396,6 +397,10 @@ class OpenTabularDataset(Dataset):
         
         if self.name not in metadata:
             raise ValueError(f'dataset with name `{self.name}` not recognized')
+        
+        if 'test' in self.split:
+            warnings.warn('Test set being loaded: make sure you only use this once! '
+                          'Do not use this for statistics.')
         
         # download data if not yet already
         data_filename = self.data_dir / f'{self.name}.npz'
