@@ -8,4 +8,5 @@ build-backend = "setuptools.build_meta"
 [tool.pytest.ini_options]
 markers = [
     "large: marks tests that use very large datasets (deselect with '-m \"not large\"')",
+    "dataset: marks tests that are designed to test the datasets (and loading them) specifically"
 ]

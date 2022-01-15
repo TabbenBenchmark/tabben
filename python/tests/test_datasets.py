@@ -11,6 +11,7 @@ from tabben.datasets import OpenTabularDataset, validate_dataset_file
 # Tests for each individual dataset
 ################################################################################
 
+@pytest.mark.dataset
 def test_adult(data_dir):
     num_features = 14
     train_examples = 32_561
@@ -33,6 +34,7 @@ def test_adult(data_dir):
     validate_dataset_file(data_dir / 'adult.npz')
 
 
+@pytest.mark.dataset
 def test_amazon(data_dir):
     num_features = 9
     train_examples = 26_215
@@ -55,6 +57,7 @@ def test_amazon(data_dir):
     validate_dataset_file(data_dir / 'amazon.npz')
 
 
+@pytest.mark.dataset
 def test_arcene(data_dir):
     train_test_shape = (100, 10_000)
     
@@ -75,6 +78,7 @@ def test_arcene(data_dir):
     validate_dataset_file(data_dir / 'arcene.npz')
 
 
+@pytest.mark.dataset
 @pytest.mark.large
 def test_cifar10(data_dir):
     num_features = 32 * 32 * 3
@@ -96,6 +100,7 @@ def test_cifar10(data_dir):
     validate_dataset_file(data_dir / 'cifar10.npz')
 
 
+@pytest.mark.dataset
 def test_covertype(data_dir):
     num_features = 54
     
@@ -117,6 +122,7 @@ def test_covertype(data_dir):
     validate_dataset_file(data_dir / 'covertype.npz')
 
 
+@pytest.mark.dataset
 @pytest.mark.large
 def test_duolingo_original(data_dir):
     num_features = 10
@@ -137,6 +143,7 @@ def test_duolingo_original(data_dir):
     validate_dataset_file(data_dir / 'duolingo-original.npz')
 
 
+@pytest.mark.dataset
 @pytest.mark.large
 def test_duolingo_categorical(data_dir):
     num_features = 10
@@ -157,6 +164,7 @@ def test_duolingo_categorical(data_dir):
     validate_dataset_file(data_dir / 'duolingo-categorical.npz')
 
 
+@pytest.mark.dataset
 @pytest.mark.large
 def test_higgs(data_dir):
     num_features = 28
@@ -178,6 +186,7 @@ def test_higgs(data_dir):
     validate_dataset_file(data_dir / 'higgs.npz')
 
 
+@pytest.mark.dataset
 def test_musk(data_dir):
     num_features = 166
     train_examples = 5548
@@ -200,6 +209,7 @@ def test_musk(data_dir):
     validate_dataset_file(data_dir / 'musk.npz')
 
 
+@pytest.mark.dataset
 def test_parkinsons(data_dir):
     num_features = 16
     num_outputs = 2
@@ -222,6 +232,7 @@ def test_parkinsons(data_dir):
     validate_dataset_file(data_dir / 'parkinsons.npz')
 
 
+@pytest.mark.dataset
 def test_poker(data_dir):
     num_features = 10
     
@@ -242,6 +253,7 @@ def test_poker(data_dir):
     validate_dataset_file(data_dir / 'poker.npz')
 
 
+@pytest.mark.dataset
 def test_rossman(data_dir):
     num_features = 18
     train_examples = 814_688
