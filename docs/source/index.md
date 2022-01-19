@@ -23,7 +23,7 @@ python/api/index
 
 ## Getting Started
 
-To install the package, you can use your favorite python package manager. Using `pip` for example,
+To install the package, you can use your favorite python package manager (we recommend Python 3.8). Using `pip` for example,
 ```shell
 pip install tabben
 ```
