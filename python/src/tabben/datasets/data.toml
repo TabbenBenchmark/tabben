@@ -1,68 +1,68 @@
 [arcene]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/arcene.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/arcene.json"
+data_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/arcene.npz"
+extras_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/arcene.json"
 task = "classification"
 classes = 2
 
 [covertype]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/covertype.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/covertype.json"
+data_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/covertype.npz"
+extras_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/covertype.json"
 task = "classification"
 classes = 7
 
 [higgs]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/higgs.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/higgs.json"
+data_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/higgs.npz"
+extras_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/higgs.json"
 task = "classification"
 classes = 2
 
 [poker]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/poker.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/poker.json"
+data_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/poker.npz"
+extras_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/poker.json"
 task = "classification"
 classes = 10
 
 [adult]
 classes = 2
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/adult.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/adult.json"
+data_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/adult.npz"
+extras_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/adult.json"
 task = "classification"
 
 [parkinsons]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/parkinsons.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/parkinsons.json"
+data_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/parkinsons.npz"
+extras_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/parkinsons.json"
 outputs = 2
 task = "regression"
 
 [musk]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/musk.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/musk.json"
+data_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/musk.npz"
+extras_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/musk.json"
 task = "classification"
 classes = 2
 
 [rossman]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/rossman.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/rossman.json"
+data_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/rossman.npz"
+extras_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/rossman.json"
 task = "regression"
 
 [amazon]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/amazon.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/amazon.json"
+data_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/amazon.npz"
+extras_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/amazon.json"
 task = "classification"
 classes = 2
 
 [duolingo-original]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/duolingo-original.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/duolingo-original.json"
+data_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/duolingo-original.npz"
+extras_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/duolingo-original.json"
 task = "regression"
 
 [duolingo-categorical]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/duolingo-original.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/duolingo-original.json"
+data_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/duolingo-original.npz"
+extras_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/duolingo-original.json"
 task = "regression"
 
 [cifar10]
-data_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/cifar10.npz"
-extras_location = "https://github.com/umd-otb/OpenTabularDataBenchmark/releases/download/v0.0.7-pre/cifar10.json"
+data_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/cifar10.npz"
+extras_location = "https://github.com/TabbenBenchmark/tabben/releases/download/v0.0.7-pre/cifar10.json"
 task = "classification"
 classes = 10

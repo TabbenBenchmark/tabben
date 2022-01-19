@@ -15,9 +15,9 @@ setuptools.setup(
     description='A package for working with datasets from an open benchmark for tabular data',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/umd-otb/OpenTabularDataBenchmark',
+    url='https://github.com/TabbenBenchmark/tabben',
     project_urls={
-        'Bug Tracker': 'https://github.com/umd-otb/OpenTabularDataBenchmark/issues',
+        'Bug Tracker': 'https://github.com/TabbenBenchmark/tabben/issues',
     },
     classifiers=[
         'Programming Language :: Python :: 3',

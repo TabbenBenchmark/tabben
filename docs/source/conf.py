@@ -64,7 +64,7 @@ myst_heading_anchors = 2
 html_theme = 'sphinx_book_theme'
 
 html_theme_options = {
-    'repository_url': 'https://github.com/umd-otb/OpenTabularDataBenchmark',
+    'repository_url': 'https://github.com/TabbenBenchmark/tabben',
     'use_repository_button': True,
     'use_download_button': True,
     'use_issues_button': True,

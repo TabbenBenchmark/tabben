@@ -1,6 +1,6 @@
 # A Python package for the Open Benchmark for Tabular Data
 
-[![Package Unit Tests (Latest)](https://github.com/umd-otb/OpenTabularDataBenchmark/actions/workflows/test.yml/badge.svg)](https://github.com/umd-otb/OpenTabularDataBenchmark/actions/workflows/test.yml)
+[![Package Unit Tests (Latest)](https://github.com/TabbenBenchmark/tabben/actions/workflows/test.yml/badge.svg)](https://github.com/TabbenBenchmark/tabben/actions/workflows/test.yml)
 
 This is a Python package for working with the tabben benchmark for tabular data (for machine learning tasks):
 - loading, processing, or inspecting datasets,
@@ -23,7 +23,7 @@ pip3 install -e .
 
 ## Documentation
 
-See the [package docs](https://umd-otb.github.io/OpenTabularDataBenchmark/) for tutorials, API references, and details about each of the datasets included in the benchmark.
+See the [package docs](https://tabbenbenchmark.github.io/tabben/) for tutorials, API references, and details about each of the datasets included in the benchmark.
 
 ## Testing
 
