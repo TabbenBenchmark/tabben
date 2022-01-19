@@ -174,6 +174,12 @@ class DatasetCollection:
     def items(self):
         return self.datasets.items()
     
+    def __len__(self):
+        return len(self.datasets)
+    
+    def __getitem__(self, item):
+        return self.datasets[item]
+    
     def __iter__(self):
         return iter(self.datasets.values())
 
