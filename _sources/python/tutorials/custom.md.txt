@@ -1,7 +1,7 @@
 
 # Custom Datasets
 
-It's possible to add private or other datasets in the benchmark (at least locally). The data needs to be in a NPZ file in a particular format (see the developer's documentation in the [scripts](https://github.com/umd-otb/OpenTabularDataBenchmark/blob/main/scripts/README.md) directory), and then you can call the `register_dataset` function:
+It's possible to add private or other datasets in the benchmark (at least locally). The data needs to be in a NPZ file in a particular format (see the developer's documentation in the [scripts](https://github.com/TabbenBenchmark/tabben/blob/main/scripts/README.md) directory), and then you can call the `register_dataset` function:
 ```python
 from tabben.datasets import register_dataset
 
@@ -14,7 +14,7 @@ register_dataset(
 )
 ```
 
-If you want to contribute a dataset to the official benchmark, you could run this with the keyword argument `persist=True` to save this dataset to the data file and open a pull request to the main repository (assuming built from source). See the [contributing guidelines](https://github.com/umd-otb/OpenTabularDataBenchmark/blob/main/CONTRIBUTING.md) for details.
+If you want to contribute a dataset to the official benchmark, you could run this with the keyword argument `persist=True` to save this dataset to the data file and open a pull request to the main repository (assuming built from source). See the [contributing guidelines](https://github.com/TabbenBenchmark/tabben/blob/main/CONTRIBUTING.md) for details.
 
 ## Helpers
 
